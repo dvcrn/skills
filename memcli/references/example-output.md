@@ -124,3 +124,99 @@ Output:
 ```text
 Error: Missing credentials. Set MEMRISE_USERNAME and MEMRISE_PASSWORD env vars or pass --username/--password.
 ```
+
+## Authenticated Examples (Environment Variables)
+
+The following commands assume `MEMRISE_USERNAME` and `MEMRISE_PASSWORD` are set
+in the shell environment.
+
+### Courses JSON Summary
+
+Command:
+
+```bash
+bun run ./dist/index.js courses --output json \
+  | jq '{applied_filter,course_count:(.courses|length),first_course:(.courses[0]|{id,name,slug})}'
+```
+
+Output:
+
+```json
+{
+  "applied_filter": "teaching",
+  "course_count": 5,
+  "first_course": {
+    "id": "1268555",
+    "name": "Daily Random Japanese",
+    "slug": "daily-random-japanese"
+  }
+}
+```
+
+### Levels JSON Summary
+
+Command:
+
+```bash
+bun run ./dist/index.js levels 6711617 --output json \
+  | jq 'map({id,index,title,pool_id}) | .[:3]'
+```
+
+Output:
+
+```json
+[
+  {
+    "id": 16240224,
+    "index": 1,
+    "title": "01/12",
+    "pool_id": 7772442
+  },
+  {
+    "id": 16242332,
+    "index": 2,
+    "title": "01/13",
+    "pool_id": 7772442
+  },
+  {
+    "id": 16242559,
+    "index": 3,
+    "title": "01/15",
+    "pool_id": 7772442
+  }
+]
+```
+
+### Words JSON Summary
+
+Command:
+
+```bash
+bun run ./dist/index.js words 6711617 --limit 3 --output json \
+  | jq 'map({id,learning_element,definition_element,item_type})'
+```
+
+Output:
+
+```json
+[
+  {
+    "id": 31156870906114,
+    "learning_element": "mii",
+    "definition_element": "to have",
+    "item_type": "word"
+  },
+  {
+    "id": 31156870447362,
+    "learning_element": "kin",
+    "definition_element": "eat, drink",
+    "item_type": "word"
+  },
+  {
+    "id": 31156933296386,
+    "learning_element": "sawadee",
+    "definition_element": "hello",
+    "item_type": "word"
+  }
+]
+```

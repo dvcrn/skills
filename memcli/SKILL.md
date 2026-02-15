@@ -39,6 +39,18 @@ export MEMRISE_PASSWORD="your_password"
 export MEMRISE_CLIENT_ID="your_client_id" # optional
 ```
 
+For installed CLI usage with environment credentials:
+
+```bash
+memcli courses --output json
+```
+
+If running from source during development:
+
+```bash
+bun run ./dist/index.js courses --output json
+```
+
 Use `--username` and `--password` only when explicitly requested.
 
 ## Common Tasks
