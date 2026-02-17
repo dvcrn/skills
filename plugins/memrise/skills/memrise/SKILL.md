@@ -26,9 +26,9 @@ Read `references/example-output.md` when you need concrete output examples.
 Use package install commands:
 
 ```bash
-npm install -g memrise-cli
+npm install -g memrise
 # or
-bun add -g memrise-cli
+bun add -g memrise
 ```
 
 Use environment variables by default:
