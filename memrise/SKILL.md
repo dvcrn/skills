@@ -1,9 +1,9 @@
 ---
-name: memcli
+name: memrise
 description: Operate the Memrise CLI for community courses, including authentication setup, course/level/word lookup, pool searches, and adding items. Use when requests mention `memcli` commands or the npm package `memrise-cli` (which installs the `memcli` binary), especially for command construction, troubleshooting flags, and script-friendly JSON output.
 ---
 
-# Memcli
+# Memrise
 
 ## Overview
 
