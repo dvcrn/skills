@@ -1,5 +1,5 @@
 {
-  "name": "dvcrn-skills",
+  "name": "dvcrn/skills",
   "owner": {
     "name": "David Mohl",
     "email": "git@d.sh"
@@ -10,12 +10,20 @@
   },
   "plugins": [
     {
-      "name": "dvcrn-skills",
-      "description": "Productivity skills for CLI tools and workflows including Memrise and TripIt",
+      "name": "memrise",
+      "description": "Operate the Memrise CLI for community courses, including authentication setup, course/level/word lookup, pool searches, and adding items",
       "source": "./",
       "strict": false,
       "skills": [
-        "./skills/memrise",
+        "./skills/memrise"
+      ]
+    },
+    {
+      "name": "tripit",
+      "description": "Operate and validate the TripIt CLI for trip and itinerary workflows, including CRUD operations for trips, hotels, flights, transport, activities, and document attachments",
+      "source": "./",
+      "strict": false,
+      "skills": [
         "./skills/tripit"
       ]
     }
