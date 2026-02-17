@@ -1,9 +1,0 @@
-{
-  "name": "dvcrn-skills",
-  "description": "Productivity skills for CLI tools and workflows including Memrise and TripIt",
-  "version": "1.0.0",
-  "author": {
-    "name": "David Mohl",
-    "email": "git@d.sh"
-  }
-}

@@ -12,20 +12,12 @@
     {
       "name": "memrise",
       "description": "Operate the Memrise CLI for community courses, including authentication setup, course/level/word lookup, pool searches, and adding items",
-      "source": "./",
-      "strict": false,
-      "skills": [
-        "./skills/memrise"
-      ]
+      "source": "./plugins/memrise"
     },
     {
       "name": "tripit",
       "description": "Operate and validate the TripIt CLI for trip and itinerary workflows, including CRUD operations for trips, hotels, flights, transport, activities, and document attachments",
-      "source": "./",
-      "strict": false,
-      "skills": [
-        "./skills/tripit"
-      ]
+      "source": "./plugins/tripit"
     }
   ]
 }
