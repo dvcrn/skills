@@ -1,0 +1,23 @@
+{
+  "name": "dvcrn-skills",
+  "owner": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  },
+  "metadata": {
+    "description": "Productivity skills for CLI tools and workflows",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "dvcrn-skills",
+      "description": "Productivity skills for CLI tools and workflows including Memrise and TripIt",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/memrise",
+        "./skills/tripit"
+      ]
+    }
+  ]
+}
