@@ -18,6 +18,11 @@
       "name": "tripit",
       "description": "Operate and validate the TripIt CLI for trip and itinerary workflows, including CRUD operations for trips, hotels, flights, transport, activities, and document attachments",
       "source": "./plugins/tripit"
+    },
+    {
+      "name": "wework",
+      "description": "Book and manage WeWork hot desk bookings",
+      "source": "./plugins/wework"
     }
   ]
 }
