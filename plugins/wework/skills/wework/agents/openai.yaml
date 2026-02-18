@@ -1,0 +1,4 @@
+interface:
+  display_name: "WeWork CLI"
+  short_description: "Use wework to find desks and manage bookings"
+  default_prompt: "Use the wework CLI to authenticate, list locations, inspect desk availability, book workspaces, list bookings, and export calendar files with safe command sequences."
