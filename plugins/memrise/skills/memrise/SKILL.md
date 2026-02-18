@@ -19,7 +19,7 @@ Read `references/example-output.md` when you need concrete output examples.
 2. Confirm authentication source (env vars or flags).
 3. Run a read-only command first (`courses`, `course-levels`, `words`, `search-pool`).
 4. For automation, append `--output json` when supported.
-5. Before write operations (`add-to-course`, `add-to-level`), validate the target IDs and fields with read commands.
+5. Before write operations (`add-to-course`, `add-to-level`, `add-level`), validate the target IDs and fields with read commands.
 
 ## Installation And Auth
 
@@ -72,6 +72,15 @@ memcli search-pool <pool-id> --field "1=Hello"
 
 # add item to course
 memcli add-to-course <course-id> --field "1=Hello" --field "2=Bonjour"
+
+# list levels including empty/draft levels
+memcli levels <course-id> --include-empty
+
+# add a new level to a course
+memcli add-level <course-id>
+
+# add a new level with pool-id and kind
+memcli add-level <course-id> --pool-id <pool-id> --kind <kind>
 ```
 
 When needed, use JSON columns format instead of repeated fields:
@@ -89,7 +98,7 @@ Use `--output json` for automation, parsing, and downstream tools.
 
 Before write operations:
 
-1. Confirm the target object exists (`course-by-id`, `course-levels`, `get-pool`).
+1. Confirm the target object exists (`course-by-id`, `course-levels`, `levels --include-empty`, `get-pool`).
 2. Confirm the fields map to the course column layout (`course-columns`).
 3. Prefer a small test insert in a known sandbox course before bulk updates.
 

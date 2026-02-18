@@ -7,7 +7,8 @@
   - `--offset <n>`
 - `course-by-id <course-id>`: Fetch course by ID.
 - `course-by-slug <slug>`: Fetch course by slug.
-- `course-levels <course-id>`: List levels in a course.
+- `course-levels <course-id>` / `levels <course-id>`: List levels in a course.
+  - `--include-empty`: Include draft/empty levels.
 - `course-columns <course-id>`: Show column configuration.
 - `words <course-id>`: List words/items.
   - `--level <index>`: 1-based level index.
@@ -23,6 +24,9 @@
   - `--level-index <n>` (default `0`)
 - `add-to-level <level-id>`: Add item to a specific level.
   - `--field <key>=<value>` (repeatable)
+- `add-level-to-course <course-id>` / `add-level <course-id>`: Add a new level to a course.
+  - `--pool-id <id>`: Pool ID (optional)
+  - `--kind <string>`: Level kind (optional)
 
 ## Shared Options
 

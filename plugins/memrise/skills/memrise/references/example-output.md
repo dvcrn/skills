@@ -38,6 +38,7 @@ Commands:
   search-pool [options] <pool-id>                       Search pool by column values
   add-thing-course|add-to-course [options] <course-id>  Add a thing to a course (first level by default)
   add-thing-level|add-to-level [options] <level-id>     Add a thing to a specific level
+  add-level-to-course|add-level [options] <course-id>   Add a new level to a course
   help [command]                                        display help for command
 ```
 
@@ -84,6 +85,30 @@ Options:
   --level <index>   Level index (1-based)
   --limit <number>  Limit items
   -h, --help        display help for command
+```
+
+## `add-level` Help
+
+Command:
+
+```bash
+bun run ./dist/index.js add-level --help
+```
+
+Output:
+
+```text
+Usage: memcli add-level-to-course|add-level [options] <course-id>
+
+Add a new level to a course
+
+Arguments:
+  course-id          Course ID
+
+Options:
+  --pool-id <id>     Pool ID
+  --kind <string>    Level kind
+  -h, --help         display help for command
 ```
 
 ## `add-to-course` Help
@@ -160,6 +185,15 @@ Command:
 ```bash
 bun run ./dist/index.js levels 6711617 --output json \
   | jq 'map({id,index,title,pool_id}) | .[:3]'
+```
+
+### Levels Including Empty (--include-empty)
+
+Command:
+
+```bash
+bun run ./dist/index.js levels 6711617 --include-empty --output json \
+  | jq 'map({id,index,title,pool_id})'
 ```
 
 Output:
