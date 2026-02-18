@@ -1,0 +1,3 @@
+- When adding a new plugin, add it to .claude-plugin/marketplace.json + plugins/ folder
+- Each plugin needs to also have a .claude-plugin folder
+- Inspect existing directory structure of existing plugins
