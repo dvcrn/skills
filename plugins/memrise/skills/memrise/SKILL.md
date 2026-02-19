@@ -98,3 +98,10 @@ Before write operations:
 3. Prefer a small test insert in a known sandbox course before bulk updates.
 
 If credentials fail, re-check env var names and whether the user wants explicit `--username/--password` flags.
+
+## Version Notes
+
+Current npm package behavior (verified with `memcli --help`):
+- `levels|course-levels` supports `--include-empty`.
+- `rename-level|set-level-title` and `delete-level|remove-level` are available.
+- Prefer live `memcli --help` output over stale examples when behavior differs.

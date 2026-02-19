@@ -1,14 +1,15 @@
 # memcli Example Output
 
-Captured on February 15, 2026 from `/Users/david/src/memcli` using:
-`bun run ./dist/index.js ...`
+Captured on February 19, 2026 using installed npm package `memrise-cli` (`memcli --version` = `1.0.0`).
+
+Note: Prefer installed `memcli` help/output over older source-run examples when they differ.
 
 ## Root Help
 
 Command:
 
 ```bash
-bun run ./dist/index.js --help
+memcli --help
 ```
 
 Output:
@@ -30,7 +31,7 @@ Commands:
   courses|my-courses [options]                          List your teaching courses
   course-by-id|course-id <course-id>                    Get course by ID
   course-by-slug|course-slug <slug>                     Get course by slug
-  levels|course-levels <course-id>                      Get levels for a course
+  levels|course-levels [options] <course-id>            Get levels for a course
   columns|course-columns <course-id>                    Get columns for a course
   words|items [options] <course-id>                     Get words/items in a course or specific level
   learnable <learnable-id>                              Get learnable item by ID
@@ -39,6 +40,8 @@ Commands:
   add-thing-course|add-to-course [options] <course-id>  Add a thing to a course (first level by default)
   add-thing-level|add-to-level [options] <level-id>     Add a thing to a specific level
   add-level-to-course|add-level [options] <course-id>   Add a new level to a course
+  rename-level|set-level-title <level-id> <new-title>   Rename a level
+  delete-level|remove-level <level-id>                  Delete a level
   help [command]                                        display help for command
 ```
 
@@ -47,7 +50,7 @@ Commands:
 Command:
 
 ```bash
-bun run ./dist/index.js courses --help
+memcli courses --help
 ```
 
 Output:
@@ -68,7 +71,7 @@ Options:
 Command:
 
 ```bash
-bun run ./dist/index.js words --help
+memcli words --help
 ```
 
 Output:
@@ -87,12 +90,35 @@ Options:
   -h, --help        display help for command
 ```
 
+## `levels` Help
+
+Command:
+
+```bash
+memcli levels --help
+```
+
+Output:
+
+```text
+Usage: memcli levels|course-levels [options] <course-id>
+
+Get levels for a course
+
+Arguments:
+  course-id        Course ID
+
+Options:
+  --include-empty  Include empty/draft levels
+  -h, --help       display help for command
+```
+
 ## `add-level` Help
 
 Command:
 
 ```bash
-bun run ./dist/index.js add-level --help
+memcli add-level --help
 ```
 
 Output:
@@ -111,12 +137,57 @@ Options:
   -h, --help         display help for command
 ```
 
+## `set-level-title` Help
+
+Command:
+
+```bash
+memcli set-level-title --help
+```
+
+Output:
+
+```text
+Usage: memcli rename-level|set-level-title [options] <level-id> <new-title>
+
+Rename a level
+
+Arguments:
+  level-id    Level ID
+  new-title   New title
+
+Options:
+  -h, --help  display help for command
+```
+
+## `remove-level` Help
+
+Command:
+
+```bash
+memcli remove-level --help
+```
+
+Output:
+
+```text
+Usage: memcli delete-level|remove-level [options] <level-id>
+
+Delete a level
+
+Arguments:
+  level-id    Level ID
+
+Options:
+  -h, --help  display help for command
+```
+
 ## `add-to-course` Help
 
 Command:
 
 ```bash
-bun run ./dist/index.js add-to-course --help
+memcli add-to-course --help
 ```
 
 Output:
@@ -141,7 +212,7 @@ Options:
 Command:
 
 ```bash
-bun run ./dist/index.js courses
+memcli courses
 ```
 
 Output:
@@ -160,7 +231,7 @@ in the shell environment.
 Command:
 
 ```bash
-bun run ./dist/index.js courses --output json \
+memcli courses --output json \
   | jq '{applied_filter,course_count:(.courses|length),first_course:(.courses[0]|{id,name,slug})}'
 ```
 
@@ -183,7 +254,7 @@ Output:
 Command:
 
 ```bash
-bun run ./dist/index.js levels 6711617 --output json \
+memcli levels 6711617 --output json \
   | jq 'map({id,index,title,pool_id}) | .[:3]'
 ```
 
@@ -192,7 +263,7 @@ bun run ./dist/index.js levels 6711617 --output json \
 Command:
 
 ```bash
-bun run ./dist/index.js levels 6711617 --include-empty --output json \
+memcli levels 6711617 --include-empty --output json \
   | jq 'map({id,index,title,pool_id})'
 ```
 
@@ -226,7 +297,7 @@ Output:
 Command:
 
 ```bash
-bun run ./dist/index.js words 6711617 --limit 3 --output json \
+memcli words 6711617 --limit 3 --output json \
   | jq 'map({id,learning_element,definition_element,item_type})'
 ```
 
