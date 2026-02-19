@@ -1,7 +1,7 @@
 {
   "name": "memrise",
   "description": "Operate the Memrise CLI for community courses, including authentication setup, course/level/word lookup, pool searches, and adding items",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "author": {
     "name": "David Mohl",
     "email": "git@d.sh"
