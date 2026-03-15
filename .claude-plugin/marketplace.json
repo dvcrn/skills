@@ -10,6 +10,11 @@
   },
   "plugins": [
     {
+      "name": "chainenv",
+      "description": "Operate chainenv for local secret workflows, including backend diagnostics, config-aware key lookup, shell export generation, secret writes, and backend copy operations",
+      "source": "./plugins/chainenv"
+    },
+    {
       "name": "memrise",
       "description": "Operate the Memrise CLI for community courses, including authentication setup, course/level/word lookup, pool searches, and adding items",
       "source": "./plugins/memrise"
