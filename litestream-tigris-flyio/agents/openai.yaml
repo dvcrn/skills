@@ -1,0 +1,4 @@
+interface:
+  display_name: "Litestream + Tigris (Fly.io)"
+  short_description: "Set up Litestream replication to Tigris on Fly.io for SQLite"
+  default_prompt: "Set up Litestream on Fly.io with Tigris for SQLite; include env vars, config, restore steps, and validation checks."

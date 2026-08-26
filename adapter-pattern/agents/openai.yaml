@@ -1,0 +1,4 @@
+interface:
+  display_name: "Adapter Pattern"
+  short_description: "Build Elixir adapters with Mox-backed tests"
+  default_prompt: "Use $adapter-pattern to add a behaviour, default implementation, and Mox-backed test setup."

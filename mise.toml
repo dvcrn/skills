@@ -1,0 +1,12 @@
+[tasks.link]
+description = "Symlink all local skills into ~/.agents/skills"
+run = '''
+mkdir -p "$HOME/.agents/skills"
+for skill in */; do
+  skill_name="${skill%/}"
+  [[ "$skill_name" =~ ^\. ]] && continue
+  [[ "$skill_name" == "plugins" ]] && continue
+  ln -sfn "$PWD/$skill_name" "$HOME/.agents/skills/$skill_name"
+done
+echo "All local skills linked to ~/.agents/skills"
+'''
