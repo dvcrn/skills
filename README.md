@@ -39,6 +39,9 @@ npx skills add dvcrn/skills
 - `phoenix-colocated-hooks`: Colocated Phoenix LiveView template hooks.
 - `phoenix-colocated-js`: Phoenix.LiveView.ColocatedJS compilation and imports.
 
+### Swift & SwiftUI
+- `swiftui-stores`: State management using @Observable Store containers and @Environment injection.
+
 ### CLI Plugins
 - `memrise`: Operate the Memrise CLI (`memcli`).
 - `tripit`: Operate and validate the TripIt CLI.
