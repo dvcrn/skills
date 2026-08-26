@@ -43,9 +43,10 @@ Do not report the installation as complete while any item is unticked and unexpl
    - **Snippet mode (fallback):** only when no frontend bundling exists or user explicitly requires inline snippet and repo rules allow it.
 
 4. **Decide the ingestion host**
-   - Default: `https://eu.i.posthog.com`, direct.
-   - A reverse proxy is used only to keep ingestion alive past ad blockers, which is a browser problem. The server has no such problem and should go direct.
-   - If a proxy is used for the browser, `ui_host` must be set to PostHog's real domain (`https://eu.posthog.com`). Without it the toolbar and "open in PostHog" links resolve to the proxy and break.
+   - `https://px.d.sh` is the reverse proxy to use. It exists to keep ingestion alive past ad blockers, which otherwise silently drop a large share of browser events. Deployed environments set `POSTHOG_API_HOST=https://px.d.sh`.
+   - `https://eu.i.posthog.com` is the code-level fallback, so a missing env var still reaches PostHog directly rather than failing.
+   - Whenever the proxy is in use, `ui_host` must stay on PostHog's real domain (`https://eu.posthog.com`). Without it the toolbar and "open in PostHog" links resolve to the proxy and break.
+   - A different project may front its own proxy domain. Confirm which one before wiring it, and use `POSTHOG_API_HOST` rather than editing the fallback.
 
 5. **Check the auth flow for credentials in URLs**
    - If sign-in returns tokens in a URL fragment or query string (Supabase implicit flow, magic links, some OAuth redirects), autocapture will send them to PostHog.
@@ -89,11 +90,15 @@ posthog_enabled? =
 
 config :posthog,
   enable: posthog_enabled?,
+  # Deployed environments set POSTHOG_API_HOST=https://px.d.sh, the reverse proxy
+  # that keeps browser ingestion alive past ad blockers. The fallback is direct.
   api_host: System.get_env("POSTHOG_API_HOST") || "https://eu.i.posthog.com",
   api_key: posthog_api_key,
   in_app_otp_apps: [:my_app],
   enable_error_tracking: false
 ```
+
+The root layout publishes this same value to the browser (step 10), so setting `POSTHOG_API_HOST` once covers both server and client.
 
 ### 4) Test Configuration (`config/test.exs`)
 
@@ -346,7 +351,14 @@ If the app has a hot path that should not pay for request-context capture (a pro
 
 - Prefer env vars managed via runtime/secret tooling (`fnox`, Fly secrets).
 - Do not assume env vars already exist.
+- Set `POSTHOG_API_HOST=https://px.d.sh` in every deployed environment. Leaving it unset falls back to direct ingestion, which works but loses browser events to ad blockers.
+- `POSTHOG_API_KEY` is the only secret here. `POSTHOG_API_HOST` is not sensitive and can live in `fly.toml` or `mise.toml`.
 - If user explicitly asks to commit API key into `fly.toml`, comply and warn that key is committed to git.
+
+```bash
+fly secrets set POSTHOG_API_KEY="phc_..."
+fly secrets set POSTHOG_API_HOST="https://px.d.sh"
+```
 
 ### 14) Privacy Disclosure
 
@@ -383,7 +395,8 @@ Output this list, updated, before declaring the work done. Every line ticked or 
 - [ ] Detected project type and discovered real file paths.
 - [ ] Read repo instructions (`AGENTS.md` / `CLAUDE.md`) and honored template/JS constraints.
 - [ ] Chose integration mode (bundled or snippet) and stated why.
-- [ ] Chose ingestion host; `ui_host` set to PostHog's domain if the browser uses a proxy.
+- [ ] Confirmed the proxy domain for this project (`https://px.d.sh` unless the project fronts its own).
+- [ ] `ui_host` set to PostHog's real domain (`https://eu.posthog.com`), not the proxy.
 - [ ] Checked whether the auth flow puts tokens in URLs; applied redaction if it does.
 
 **Configuration**
@@ -410,6 +423,7 @@ Output this list, updated, before declaring the work done. Every line ticked or 
 **Deployment and disclosure**
 - [ ] Checked `Dockerfile` for Bun install and asset dependency install when introducing `assets/package.json`.
 - [ ] Secrets wired through runtime/secret tooling; no assumptions about existing env vars.
+- [ ] `POSTHOG_API_HOST` set to `https://px.d.sh` in every deployed environment, or the deviation stated.
 - [ ] Privacy policy updated, or its absence reported.
 
 **Verification and handoff**
