@@ -35,6 +35,8 @@ npx skills add dvcrn/skills
 
 ### Elixir & Phoenix
 - `adapter-pattern`: Standard for Elixir adapter boundaries with repo-owned behaviours.
+- `install-posthog-elixir`: Step-by-step workflow to install and configure PostHog in Elixir/Phoenix projects.
+- `install-sentry-elixir`: Step-by-step workflow to install and configure Sentry with modern defaults in Elixir/Phoenix projects.
 - `phoenix-hooks`: Phoenix LiveView client hooks (`phx-hook`).
 - `phoenix-colocated-hooks`: Colocated Phoenix LiveView template hooks.
 - `phoenix-colocated-js`: Phoenix.LiveView.ColocatedJS compilation and imports.
