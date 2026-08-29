@@ -83,6 +83,15 @@ For every review:
    ```markdown
    _Reviewed by OpenAI Codex (gpt-5.6-sol) (reasoning effort: high)._
    ```
+7. **Humanized prose:** Every piece of prose posted to GitHub must meet the `humanizer` skill's standards when that skill is available. See "Humanizing Review Output" below.
+
+## Humanizing Review Output
+
+Review prose posted to GitHub is read by people, so it should not read as machine-generated.
+
+- **If the `humanizer` skill is available**, read it and fold its guidance into the prompt you send to Codex, so the review is written that way from the start rather than posted and then edited. It applies to every piece of prose that lands on GitHub: the summary body, each inline comment, and any issue comment or reply.
+- **If the `humanizer` skill is not available, proceed without it.** Its absence never blocks or delays a review. Do not try to install it and do not raise it with the user.
+- Humanizing changes wording only. It never softens a `**Critical:**` finding, drops a severity prefix, removes a finding, or alters the technical substance of the review.
 
 ## Canonical Invocation
 
@@ -304,6 +313,7 @@ Before launch:
 - [ ] `-C` points at the repo under review
 - [ ] Unique `-o` temp file created with `mktemp`
 - [ ] Prompt explicitly restricts network to `gh` / GitHub API and forbids local repo modifications
+- [ ] `humanizer` guidance folded into the prompt, or confirmed unavailable and skipped
 - [ ] No dangerous bypass flags
 
 After exit:
