@@ -16,15 +16,20 @@
 
 ### 2. Publishing & Multi-Machine Sync
 - When changes or new skills are ready:
-  1. Add the new skill to `README.md` under the appropriate category.
-  2. Commit specific files (`git status` -> explicit `git add` -> commit).
-  3. Push to GitHub (`git push origin main`).
+  1. Add the new skill to a category in `skills.json`.
+  2. Run `mise run sync` to regenerate the manifests and the README list.
+  3. Commit specific files (`git status` -> explicit `git add` -> commit).
+  4. Push to GitHub (`git push origin main`).
 - Remote environments or clean machines can update their global installation using:
   ```bash
   npx skills update -g
   ```
 
 ## Plugin Architecture
-- When adding a new plugin, add it to `.claude-plugin/marketplace.json` + `plugins/` folder.
-- Each plugin must have its own `.claude-plugin` directory.
+- `.claude-plugin/marketplace.json`, `plugins/*/.claude-plugin/plugin.json`, and the skill list in `README.md` are **generated**. Never edit them by hand; run `mise run sync`.
+- Root skill directories are the source of truth. `sync` wraps each one in `plugins/<name>/` with a relative symlink at `plugins/<name>/skills/<name>`, so skill content is never duplicated.
+- A plugin whose `skills/<name>` is a real directory (not a symlink) is hand-authored and left untouched by `sync`.
+- `skills.json` holds the marketplace identity and the README category map. Every skill and plugin must appear under exactly one category or `sync` fails.
+- `mise run sync-check` fails when the generated files are stale. Run it before pushing.
+- `node scripts/sync.mjs --prune` deletes generated plugin dirs whose root skill is gone; without it, `sync` reports them and stops.
 

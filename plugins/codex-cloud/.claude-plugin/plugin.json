@@ -1,0 +1,9 @@
+{
+  "name": "codex-cloud",
+  "description": "Run Codex tasks in cloud environments.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

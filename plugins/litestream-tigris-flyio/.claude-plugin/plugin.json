@@ -1,0 +1,9 @@
+{
+  "name": "litestream-tigris-flyio",
+  "description": "Set up, configure, and troubleshoot Litestream replication to Tigris (Fly.io) for SQLite apps, including Fly.io deployments with Litestream-only or LiteFS+Litestream paths, required secrets/env vars, entrypoint scripts, and restore/validation checks.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

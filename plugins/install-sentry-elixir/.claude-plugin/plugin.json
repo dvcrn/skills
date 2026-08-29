@@ -1,0 +1,9 @@
+{
+  "name": "install-sentry-elixir",
+  "description": "Install and configure Sentry in an Elixir or Phoenix project using official modern defaults, including runtime DSN configuration, Sentry.LoggerHandler with log message capture and rate limiting, Sentry.PlugContext placement, Cowboy/Bandit server detection, Oban error reporting, PII scrubbing, source code packaging for releases, and verification.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

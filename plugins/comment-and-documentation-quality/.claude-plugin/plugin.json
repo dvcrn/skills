@@ -1,0 +1,9 @@
+{
+  "name": "comment-and-documentation-quality",
+  "description": "Standards and quality gates for code comments, JSDoc/docstrings, technical documentation, and git commit messages.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

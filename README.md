@@ -10,41 +10,46 @@ npx skills add dvcrn/skills
 
 ## Included Skills
 
+<!-- BEGIN GENERATED SKILLS -->
+
 ### Tools & Automation
-- `fnox`: Manage secrets with fnox across age, 1password, and keychain backends.
+- `fnox`: Manage secrets with fnox.
 - `mise-tasks`: Guide to using mise task runner features efficiently.
-- `gh`: Create GitHub issues and pull requests using the GitHub CLI (`gh`).
-- `jules`: Interact with Google's Jules asynchronous coding agent.
-- `litestream-tigris-flyio`: Set up and troubleshoot Litestream replication to Tigris on Fly.io.
-- `encrypt-for-cloud-agent`: Encrypt secrets for cloud agents using shared age keys.
+- `gh`: Create GitHub issues and pull requests using the GitHub CLI (gh). Always write the body to a file in .tmp/ and pass it via --body-file so descriptions are descriptive and consistent.
+- `jules`: Interact with Jules, Google's asynchronous coding agent.
+- `litestream-tigris-flyio`: Set up, configure, and troubleshoot Litestream replication to Tigris (Fly.io) for SQLite apps, including Fly.io deployments with Litestream-only or LiteFS+Litestream paths, required secrets/env vars, entrypoint scripts, and restore/validation checks.
+- `encrypt-for-cloud-agent`: Encrypt a secret for cloud agents using the shared cloud age key, producing a value ready to paste into fnox.cloud.toml.
 - `codex-cloud`: Run Codex tasks in cloud environments.
 
 ### Multi-Agent Delegation & Review Loop
-- `ask-gemini`: Delegate tasks to Gemini 3.7 Flash via Antigravity CLI (`agy`).
-- `ask-gemini-for-review`: Multi-axis code review with Gemini 3.7 Flash.
-- `ask-gemini-for-pr-review`: GitHub PR code review with Gemini 3.7 Flash.
-- `ask-gemini-for-comment-audit`: Audit code comments, docs, and commits with Gemini.
-- `ask-codex`: Delegate tasks to OpenAI Codex via Codex CLI (`codex exec`).
-- `ask-codex-for-review`: Multi-axis code review with Codex CLI.
-- `ask-codex-for-pr-review`: GitHub PR code review with Codex CLI.
-- `pr-code-review-and-quality`: Multi-axis GitHub PR code review engine.
-- `address-pr-review-comments`: Implement fixes for GitHub PR review comments.
-- `triage-pr-review-comments`: Analyze GitHub PR review comments and determine action.
-- `loop-fix-github-review`: Automated loop to address GitHub PR review threads.
-- `comment-and-documentation-quality`: Guidelines for code comments and docs.
+- `ask-gemini`: Delegate questions or tasks to Gemini 3.7 Flash or Gemini 3.7 Flash (High) via the Antigravity CLI (agy).
+- `ask-gemini-for-review`: Delegates code review to Gemini 3.7 Flash (High) via the Antigravity CLI (agy), enforcing the strict standards of the code-review-and-quality skill.
+- `ask-gemini-for-pr-review`: Delegates GitHub PR code review to Gemini 3.7 Flash (High) via the Antigravity CLI (`agy`), enforcing the strict standards of the pr-code-review-and-quality skill.
+- `ask-gemini-for-comment-audit`: Delegates code comment, documentation, and commit message audits to Gemini 3.7 Flash or Gemini 3.7 Flash (Medium) via the Antigravity CLI (agy), enforcing the standards of the comment-and-documentation-quality skill.
+- `ask-codex`: Delegate questions or tasks to OpenAI Codex via the official Codex CLI (`codex exec`). Codex is a highly capable coding model — use this when an independent Codex perspective materially improves complex reasoning, code review, research, or implementation work.
+- `ask-codex-for-review`: Delegates code review to OpenAI Codex via the official Codex CLI (`codex exec`), enforcing the strict standards of the code-review-and-quality skill.
+- `ask-codex-for-pr-review`: Delegates GitHub PR code review to OpenAI Codex via the official Codex CLI (`codex exec`), enforcing the strict standards of the pr-code-review-and-quality skill.
+- `pr-code-review-and-quality`: Conducts a multi-axis code review of a GitHub pull request and posts it back to the PR as inline review comments plus a summary assessment.
+- `address-pr-review-comments`: Handle GitHub PR review comment autofix sessions - fetch unresolved threads, triage, fix code, reply, and resolve threads via GraphQL.
+- `triage-pr-review-comments`: Analyzes GitHub PR review comments, investigates the relevant codebase context, and provides a verdict on whether each comment should be fixed or ignored. Does not make code changes.
+- `loop-fix-github-review`: Continuous agentic loop to automatically fetch, triage, fix, and resolve GitHub PR review comments. Runs an infinite loop of fixing high priority comments, pushing changes, re-requesting review, and sleeping for 8 minutes.
+- `comment-and-documentation-quality`: Standards and quality gates for code comments, JSDoc/docstrings, technical documentation, and git commit messages.
 
 ### Elixir & Phoenix
-- `adapter-pattern`: Standard for Elixir adapter boundaries with repo-owned behaviours.
-- `install-posthog-elixir`: Step-by-step workflow to install and configure PostHog in Elixir/Phoenix projects.
-- `install-sentry-elixir`: Step-by-step workflow to install and configure Sentry with modern defaults in Elixir/Phoenix projects.
-- `phoenix-hooks`: Phoenix LiveView client hooks (`phx-hook`).
-- `phoenix-colocated-hooks`: Colocated Phoenix LiveView template hooks.
-- `phoenix-colocated-js`: Phoenix.LiveView.ColocatedJS compilation and imports.
+- `adapter-pattern`: Standard for Elixir adapter boundaries using a repo-owned behaviour, a thin public wrapper that selects the default implementation with Application.get_env/3, concrete implementation modules under the same namespace, and Mox mocks wired through test/test_helper.exs with Application.put_env/3 overrides.
+- `install-posthog-elixir`: Install and configure PostHog in an Elixir/Phoenix project, including backend SDK, runtime configuration, an app-owned analytics boundary, identity wiring, JS client assets, template wiring, Plug middleware, and verification.
+- `install-sentry-elixir`: Install and configure Sentry in an Elixir or Phoenix project using official modern defaults, including runtime DSN configuration, Sentry.LoggerHandler with log message capture and rate limiting, Sentry.PlugContext placement, Cowboy/Bandit server detection, Oban error reporting, PII scrubbing, source code packaging for releases, and verification.
+- `phoenix-hooks`: Use when we need an explanation of standard Phoenix LiveView client hooks (phx-hook) and when to use colocated vs regular hooks.
+- `phoenix-colocated-hooks`: Use when we need an explanation of phoenix colocated hooks.
+- `phoenix-colocated-js`: Use when we need an explanation of Phoenix.LiveView.ColocatedJS and how colocated JS is compiled and imported.
 
 ### Swift & SwiftUI
-- `swiftui-stores`: State management using @Observable Store containers and @Environment injection.
+- `swiftui-stores`: SwiftUI state management using @Observable Store containers (Observation framework, iOS 17+), @Environment injection, store composition, derived state, and async mutation patterns.
 
 ### CLI Plugins
-- `memrise`: Operate the Memrise CLI (`memcli`).
-- `tripit`: Operate and validate the TripIt CLI.
-- `wework`: Operate the WeWork CLI for desk bookings and availability.
+- `chainenv`: Operate chainenv for local secret workflows, including backend diagnostics, config-aware key lookup, shell export generation, secret writes, and backend copy operations.
+- `memrise`: Operate the Memrise CLI for community courses, including authentication setup, course/level/word lookup, pool searches, and adding items.
+- `tripit`: Operate and validate the TripIt CLI for trip and itinerary workflows, including CRUD operations for trips, hotels, flights, transport, activities, and document attachments.
+- `wework`: Operate the WeWork CLI for workspace booking workflows, including location lookup, desk availability checks, booking creation, booking listing, and calendar export.
+
+<!-- END GENERATED SKILLS -->

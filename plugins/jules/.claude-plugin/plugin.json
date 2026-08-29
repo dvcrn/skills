@@ -1,0 +1,9 @@
+{
+  "name": "jules",
+  "description": "Interact with Jules, Google's asynchronous coding agent.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

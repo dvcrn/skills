@@ -17,3 +17,11 @@ done
 echo "All local skills linked to ~/.agents/skills and ~/.claude/skills"
 '''
 
+
+[tasks.sync]
+description = "Regenerate plugin manifests, marketplace.json, and the README skill list"
+run = "node scripts/sync.mjs"
+
+[tasks.sync-check]
+description = "Fail if the generated plugin manifests, marketplace, or README are stale"
+run = "node scripts/sync.mjs --check"

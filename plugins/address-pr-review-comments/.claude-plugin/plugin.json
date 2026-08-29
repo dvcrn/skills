@@ -1,0 +1,9 @@
+{
+  "name": "address-pr-review-comments",
+  "description": "Handle GitHub PR review comment autofix sessions - fetch unresolved threads, triage, fix code, reply, and resolve threads via GraphQL.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

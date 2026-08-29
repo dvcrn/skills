@@ -1,0 +1,9 @@
+{
+  "name": "phoenix-colocated-hooks",
+  "description": "Use when we need an explanation of phoenix colocated hooks.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

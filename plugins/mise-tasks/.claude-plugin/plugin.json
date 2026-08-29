@@ -1,0 +1,9 @@
+{
+  "name": "mise-tasks",
+  "description": "Guide to using mise task runner features efficiently.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

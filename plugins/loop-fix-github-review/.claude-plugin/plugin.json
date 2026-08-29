@@ -1,0 +1,9 @@
+{
+  "name": "loop-fix-github-review",
+  "description": "Continuous agentic loop to automatically fetch, triage, fix, and resolve GitHub PR review comments. Runs an infinite loop of fixing high priority comments, pushing changes, re-requesting review, and sleeping for 8 minutes.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

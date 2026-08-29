@@ -1,0 +1,9 @@
+{
+  "name": "phoenix-colocated-js",
+  "description": "Use when we need an explanation of Phoenix.LiveView.ColocatedJS and how colocated JS is compiled and imported.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

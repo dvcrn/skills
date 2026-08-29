@@ -1,0 +1,9 @@
+{
+  "name": "ask-codex",
+  "description": "Delegate questions or tasks to OpenAI Codex via the official Codex CLI (`codex exec`). Codex is a highly capable coding model — use this when an independent Codex perspective materially improves complex reasoning, code review, research, or implementation work.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

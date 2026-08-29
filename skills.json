@@ -1,0 +1,70 @@
+{
+  "marketplace": {
+    "name": "dvcrn-skills",
+    "owner": {
+      "name": "David Mohl",
+      "email": "git@d.sh"
+    },
+    "metadata": {
+      "description": "Productivity skills for CLI tools and workflows",
+      "version": "1.0.0"
+    }
+  },
+  "categories": [
+    {
+      "title": "Tools & Automation",
+      "skills": [
+        "fnox",
+        "mise-tasks",
+        "gh",
+        "jules",
+        "litestream-tigris-flyio",
+        "encrypt-for-cloud-agent",
+        "codex-cloud"
+      ]
+    },
+    {
+      "title": "Multi-Agent Delegation & Review Loop",
+      "skills": [
+        "ask-gemini",
+        "ask-gemini-for-review",
+        "ask-gemini-for-pr-review",
+        "ask-gemini-for-comment-audit",
+        "ask-codex",
+        "ask-codex-for-review",
+        "ask-codex-for-pr-review",
+        "pr-code-review-and-quality",
+        "address-pr-review-comments",
+        "triage-pr-review-comments",
+        "loop-fix-github-review",
+        "comment-and-documentation-quality"
+      ]
+    },
+    {
+      "title": "Elixir & Phoenix",
+      "skills": [
+        "adapter-pattern",
+        "install-posthog-elixir",
+        "install-sentry-elixir",
+        "phoenix-hooks",
+        "phoenix-colocated-hooks",
+        "phoenix-colocated-js"
+      ]
+    },
+    {
+      "title": "Swift & SwiftUI",
+      "skills": [
+        "swiftui-stores"
+      ]
+    },
+    {
+      "title": "CLI Plugins",
+      "skills": [
+        "chainenv",
+        "memrise",
+        "tripit",
+        "wework"
+      ]
+    }
+  ]
+}

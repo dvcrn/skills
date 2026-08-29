@@ -1,0 +1,9 @@
+{
+  "name": "encrypt-for-cloud-agent",
+  "description": "Encrypt a secret for cloud agents using the shared cloud age key, producing a value ready to paste into fnox.cloud.toml.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}
