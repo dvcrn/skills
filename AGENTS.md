@@ -31,6 +31,15 @@
   npx skills update -g
   ```
 
+## Commit Messages
+
+- Subject line only by default. Add a body only when it carries a "why" the diff cannot show, and cap it at 3 lines.
+- Do not restate the diff, walk through the files touched, narrate the debugging that led here, or note compliance with a repo rule.
+
+## Scripting
+
+- Keep logic in a file under `scripts/`, not in an inline `node -e` or `python -c` inside a shell script or task. Inline snippets hide quoting bugs and cannot be tested.
+
 ## Plugin Architecture
 - `.claude-plugin/marketplace.json`, `plugins/*/.claude-plugin/plugin.json`, and the skill list in `README.md` are **generated**. Never edit them by hand; run `mise run sync`.
 - Root skill directories are the source of truth. `sync` wraps each one in `plugins/<name>/` with a relative symlink at `plugins/<name>/skills/<name>`, so skill content is never duplicated.

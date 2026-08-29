@@ -100,21 +100,7 @@ fi
 # A skill cannot have two owners: once this repo provides it by symlink, the
 # global installer must stop managing it or the next update restores a copy.
 if [ "$ADOPT" = true ] && [ -f "$LOCK" ]; then
-  removed=$(REPO_SKILLS="${skills[*]}" node -e '
-    const fs = require("fs")
-    const lock = process.argv[1]
-    const names = new Set(process.env.REPO_SKILLS.split(" "))
-    const json = JSON.parse(fs.readFileSync(lock, "utf8"))
-    const gone = Object.keys(json.skills ?? {}).filter(
-      (k) => names.has(k) && JSON.stringify(json.skills[k]).includes("dvcrn/skills"),
-    )
-    if (gone.length > 0) {
-      fs.copyFileSync(lock, lock + ".bak")
-      for (const k of gone) delete json.skills[k]
-      fs.writeFileSync(lock, JSON.stringify(json, null, 2) + "\n")
-    }
-    console.log(gone.length)
-  ' "$LOCK")
+  removed=$(node "$(dirname "$0")/release-lock.mjs" "$LOCK" "${skills[@]}")
   if [ "$removed" -gt 0 ]; then
     echo "  released $removed entries from ${LOCK/#$HOME/$TILDE} (backup: .skill-lock.json.bak)"
   fi
