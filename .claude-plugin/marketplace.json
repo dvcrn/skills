@@ -36,7 +36,7 @@
     },
     {
       "name": "ask-gemini",
-      "description": "Delegate questions or tasks to Gemini 3.7 Flash or Gemini 3.7 Flash (High) via the Antigravity CLI (agy).",
+      "description": "Delegate questions or tasks to Gemini 3.7 Flash via the Antigravity CLI (agy).",
       "source": "./plugins/ask-gemini"
     },
     {

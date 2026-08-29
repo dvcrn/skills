@@ -22,7 +22,7 @@ npx skills add dvcrn/skills
 - `codex-cloud`: Run Codex tasks in cloud environments.
 
 ### Multi-Agent Delegation & Review Loop
-- `ask-gemini`: Delegate questions or tasks to Gemini 3.7 Flash or Gemini 3.7 Flash (High) via the Antigravity CLI (agy).
+- `ask-gemini`: Delegate questions or tasks to Gemini 3.7 Flash via the Antigravity CLI (agy).
 - `ask-gemini-for-review`: Delegates code review to Gemini 3.7 Flash (High) via the Antigravity CLI (agy), enforcing the strict standards of the code-review-and-quality skill.
 - `ask-gemini-for-pr-review`: Delegates GitHub PR code review to Gemini 3.7 Flash (High) via the Antigravity CLI (`agy`), enforcing the strict standards of the pr-code-review-and-quality skill.
 - `ask-gemini-for-comment-audit`: Delegates code comment, documentation, and commit message audits to Gemini 3.7 Flash or Gemini 3.7 Flash (Medium) via the Antigravity CLI (agy), enforcing the standards of the comment-and-documentation-quality skill.

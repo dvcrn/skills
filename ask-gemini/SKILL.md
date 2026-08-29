@@ -1,21 +1,23 @@
 ---
 name: ask-gemini
-description: Delegate questions or tasks to Gemini 3.7 Flash or Gemini 3.7 Flash (High) via the Antigravity CLI (agy). Use Gemini 3.7 Flash for fast lookups, explanations, and simple questions. Use Gemini 3.7 Flash (High) for deep reasoning, complex code analysis, architecture questions, or multi-file research.
+description: Delegate questions or tasks to Gemini 3.7 Flash via the Antigravity CLI (agy). Use Medium by default, Low for quick lookups, and High for deep reasoning or complex research.
 ---
 
 # Ask Gemini
 
-This skill lets you query Gemini 3.7 Flash via the `agy` CLI, choosing standard or high reasoning effort depending on task complexity.
+This skill lets you query Gemini 3.7 Flash via the `agy` CLI. Medium reasoning
+effort is the default; drop to low or raise to high based on task complexity.
 
 ## Model Selection Guidance
 
-- **`Gemini 3.7 Flash` (Default for general questions):** Use for simple questions, syntax/API lookups, fast explanations, or straightforward tasks where low latency is desired without high reasoning overhead.
-- **`Gemini 3.7 Flash (High)` (For complex reasoning):** Use for deep debugging, complex architectural questions, heavy multi-file research, or tasks requiring extensive chain-of-thought analysis.
+- **`Gemini 3.7 Flash (Medium)` (Default):** Use for involved implementation questions, focused code analysis, or architecture discussions.
+- **`Gemini 3.7 Flash (Low)`:** Use for simple questions, syntax/API lookups, fast explanations, or straightforward tasks.
+- **`Gemini 3.7 Flash (High)`:** Use for deep debugging, complex architectural questions, or extensive multi-file research.
 
 ## When to Use
 
 - You need to ask Gemini a question or give it a task
-- You want fast responses with Gemini 3.7 Flash, or deep reasoning with Gemini 3.7 Flash (High)
+- You want to dial reasoning effort up or down from the medium default
 - You want to delegate a prompt or reasoning step to Gemini without leaving the agent loop
 
 ## Important: Gemini's Proactive Nature
@@ -35,14 +37,14 @@ When delegating code review or research tasks, Gemini can traverse large codebas
 
 ## How to Call Gemini
 
-### Standard / Simple Questions:
+### Standard Questions (default):
 ```bash
-agy --model "Gemini 3.7 Flash" --print-timeout 10m -p "your prompt here"
+agy --model "Gemini 3.7 Flash (Medium)" --print-timeout 10m -p "your prompt here"
 ```
 
-### Complex Reasoning / Codebase Tasks:
+### Codebase Tasks:
 ```bash
-agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m -p "your prompt here"
+agy --model "Gemini 3.7 Flash (Medium)" --add-dir /path/to/repo --print-timeout 10m -p "your prompt here"
 ```
 
 ### Workspace access (`--add-dir`)
@@ -60,8 +62,9 @@ NOTE: ALWAYS RUN GEMINI WITH `--print-timeout 10m` AS GEMINI CAN TAKE QUITE A WH
 
 ### Important Flags
 
-- `--model "Gemini 3.7 Flash"` — Default model for simple questions & fast lookups
-- `--model "Gemini 3.7 Flash (High)"` — High reasoning effort for complex tasks and deep analysis
+- `--model "Gemini 3.7 Flash (Medium)"` - Default reasoning effort; use this unless the task calls for otherwise
+- `--model "Gemini 3.7 Flash (Low)"` - Low reasoning effort for simple questions and fast lookups
+- `--model "Gemini 3.7 Flash (High)"` - High reasoning effort for complex tasks and deep analysis
 - `--add-dir <path>` — Add each directory Gemini needs to access. There is no `--workdir` flag; use `--add-dir` for the repo and any other required paths.
 - `--print-timeout 10m` — Always set a 10 minute print timeout; Gemini can take a while.
 - `--prompt` / `-p` — Run a single prompt non-interactively and print the response
@@ -101,15 +104,15 @@ Available subcommands:
 ## Example Usage
 
 ```bash
-# Simple question (fast, no reasoning overhead)
-agy --model "Gemini 3.7 Flash" --print-timeout 10m -p "This is just a question. Do not make any code changes or run commands. Explain how Cloudflare Durable Objects work"
+# Simple question
+agy --model "Gemini 3.7 Flash (Medium)" --print-timeout 10m -p "This is just a question. Do not make any code changes or run commands. Explain how Cloudflare Durable Objects work"
 
-# Complex code research - ask Gemini with High reasoning to explore a directory (no changes)
-agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m -p "This is just research. Do not make any code changes. Explore the ./server directory and explain the authentication flow. Read whatever files you need."
+# Code research - explore a directory (no changes)
+agy --model "Gemini 3.7 Flash (Medium)" --add-dir /path/to/repo --print-timeout 10m -p "This is just research. Do not make any code changes. Explore the ./server directory and explain the authentication flow. Read whatever files you need."
 
 # Task delegation: code review only (explicit boundaries)
-agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions -p "This is a code review only. Do not make any code changes. Review the code in ./src, identify improvements, and only output the suggested improvements. Do not implement anything."
+agy --model "Gemini 3.7 Flash (Medium)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions -p "This is a code review only. Do not make any code changes. Review the code in ./src, identify improvements, and only output the suggested improvements. Do not implement anything."
 
 # Continue a conversation
-agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m --continue -p "Now refactor it using the adapter pattern"
+agy --model "Gemini 3.7 Flash (Medium)" --add-dir /path/to/repo --print-timeout 10m --continue -p "Now refactor it using the adapter pattern"
 ```
