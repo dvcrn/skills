@@ -1,22 +1,10 @@
 [tasks.link]
 description = "Symlink all local skills into ~/.agents/skills and ~/.claude/skills"
-run = '''
-mkdir -p "$HOME/.agents/skills"
-[ -d "$HOME/.claude" ] && mkdir -p "$HOME/.claude/skills"
+run = "bash scripts/link.sh"
 
-for skill in */; do
-  skill_name="${skill%/}"
-  [[ "$skill_name" =~ ^\. ]] && continue
-  [[ "$skill_name" == "plugins" ]] && continue
-  
-  ln -sfn "$PWD/$skill_name" "$HOME/.agents/skills/$skill_name"
-  if [ -d "$HOME/.claude" ]; then
-    ln -sfn "$PWD/$skill_name" "$HOME/.claude/skills/$skill_name"
-  fi
-done
-echo "All local skills linked to ~/.agents/skills and ~/.claude/skills"
-'''
-
+[tasks.link-adopt]
+description = "Like link, but replaces globally installed skill copies with symlinks and releases them from the skill lock"
+run = "bash scripts/link.sh --adopt"
 
 [tasks.sync]
 description = "Regenerate plugin manifests, marketplace.json, and the README skill list"

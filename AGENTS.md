@@ -15,6 +15,9 @@
 - Run `mise run link` to symlink all repository skills into `~/.agents/skills/` and `~/.claude/skills/`.
 - Once symlinked, edits made to existing skill files take effect immediately across all agents (Claude Code, Codex, Antigravity, etc.) without rebuilding or reinstalling.
 - When creating a **new** skill directory, run `mise run link` once to create the new symlink.
+- Only directories containing a `SKILL.md` are linked, and links this repo previously created for directories that are no longer skills get pruned.
+- **A skill has exactly one owner.** `link` refuses to overwrite a real directory, because that is a copy installed by `npx skills add -g`. Run `mise run link-adopt` to replace those copies with symlinks and drop them from `~/.agents/.skill-lock.json`, so a later `npx skills update -g` cannot restore the copies. The four `plugins/` CLI skills stay owned by the global installer.
+- Never use `ln -sfn` against a directory destination. When the destination is an existing real directory, macOS `ln` creates the link *inside* it, producing `~/.agents/skills/<name>/<name>` and making agents discover the same `SKILL.md` twice.
 
 ### 2. Publishing & Multi-Machine Sync
 - When changes or new skills are ready:
