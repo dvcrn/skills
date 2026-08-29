@@ -4,8 +4,10 @@
 
 ## Skill Authoring
 - Every skill folder must contain a `SKILL.md` file with valid YAML frontmatter (`name`, `description`).
+- The frontmatter `name` must match the directory name, or `sync` fails.
 - Keep skill instructions actionable, high-information, and free of narrative fluff.
 - Reference materials should go into a `references/` subdirectory when needed.
+- **Run `mise run sync` after any skill change**, not just when adding one. Adding, renaming, or removing a skill directory and editing a `SKILL.md` frontmatter `name` or `description` all change the generated manifests and README. Editing a skill body does not, but running `sync` is cheap and idempotent, so run it regardless.
 
 ## Development & Linking Workflow
 
@@ -16,10 +18,11 @@
 
 ### 2. Publishing & Multi-Machine Sync
 - When changes or new skills are ready:
-  1. Add the new skill to a category in `skills.json`.
+  1. For a new skill, add it to a category in `skills.json`. For a removed skill, drop it from `skills.json` and run `node scripts/sync.mjs --prune`.
   2. Run `mise run sync` to regenerate the manifests and the README list.
-  3. Commit specific files (`git status` -> explicit `git add` -> commit).
+  3. Commit specific files (`git status` -> explicit `git add` -> commit). Include the regenerated files in the same commit as the skill change so the marketplace never lags the skills.
   4. Push to GitHub (`git push origin main`).
+- If `sync` reports no updates, there was nothing to regenerate. Commit the skill change on its own.
 - Remote environments or clean machines can update their global installation using:
   ```bash
   npx skills update -g
