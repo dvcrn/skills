@@ -1,17 +1,20 @@
 ---
-name: ask-gemini-for-pr-review
-description: Delegates GitHub PR code review to Gemini 3.7 Flash (High) via the Antigravity CLI (`agy`), enforcing the strict standards of the pr-code-review-and-quality skill. Use this when you want Gemini to review a GitHub pull request, evaluate it against the five-axis standard, and post comments/reviews directly to GitHub.
+name: ask-gemini-for-dual-pr-review
+description: Delegates a combined GitHub PR code and comment review to Gemini 3.7 Flash (High) via the Antigravity CLI (`agy`), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass. Use this when a PR review should judge both the code and the prose written around it, and post the result to GitHub.
 ---
 
-# Ask Gemini for PR Review
+# Ask Gemini for Dual PR Review
 
-This skill delegates a comprehensive, multi-axis GitHub pull request review to Gemini 3.7 Flash (High) using the `agy` CLI. It combines Gemini's high reasoning capabilities with the strict review and posting standards defined in the `pr-code-review-and-quality` skill, delivering inline comments and a summary assessment directly to the PR on GitHub.
+This skill delegates a comprehensive GitHub pull request review to Gemini 3.7 Flash (High) using the `agy` CLI, judging the code and the prose written around it in a single pass. It combines Gemini's high reasoning capabilities with the `code-and-comment-quality` aggregate, which loads both `pr-code-review-and-quality` (review axes and GitHub posting rules) and `comment-and-documentation-quality` (comments, docstrings, commit messages), delivering inline comments and a summary assessment directly to the PR on GitHub.
+
+For a code-only PR review, use `ask-gemini-for-pr-review`. For a comment audit on its own, use `ask-gemini-for-comment-audit`.
 
 ## When to Use
 
 - The user asks Gemini to review a GitHub pull request (by number, URL, or `owner/repo#N`)
 - A PR is ready for merge and needs an independent Gemini perspective and quality gate
-- Evaluating a PR across the five axes (Correctness, Readability, Architecture, Security, Performance) and posting structured review findings directly to GitHub comments
+- Evaluating a PR across the five axes (Correctness, Readability, Architecture, Security, Performance) *and* the comment, documentation, and commit message standard, posting structured findings directly to GitHub comments
+- You would otherwise run `ask-gemini-for-pr-review` and `ask-gemini-for-comment-audit` back to back and reconcile two reports by hand
 
 ## Step 0: PR Requirement & Resolution (Required)
 
@@ -38,29 +41,36 @@ gh pr view NUMBER --repo OWNER/REPO --json number,title,state,isDraft,author,bas
 
 ## Standards Source (skill name)
 
-Always use the **`pr-code-review-and-quality`** skill as the review standard.
+Always use the **`code-and-comment-quality`** aggregate, which names both component standards.
 
-- **Skill name:** `pr-code-review-and-quality`
-- **Canonical path:** `/Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md`
+| Skill | Canonical path |
+| --- | --- |
+| `code-and-comment-quality` (aggregate) | `/Users/david/.agents/skills/code-and-comment-quality/SKILL.md` |
+| `pr-code-review-and-quality` (component) | `/Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md` |
+| `comment-and-documentation-quality` (component) | `/Users/david/.agents/skills/comment-and-documentation-quality/SKILL.md` |
+
+A PR target uses `pr-code-review-and-quality`, not `code-review-and-quality`, because it also carries the GitHub posting rules.
 
 **Fail closed:**
-1. Resolve the standards file at the canonical path before launch (or inject its contents)
-2. If the file is missing, **STOP** and tell the user the `pr-code-review-and-quality` skill cannot be found
+1. Resolve all three files at their canonical paths before launch (or inject their contents)
+2. If any file is missing, **STOP** and tell the user exactly which skill cannot be found and the path that was tried
 3. Do **not** search broader skill trees for alternate copies
+4. Do **not** substitute your own idea of the standard, and do **not** proceed with one component when both were required
+5. If the user is told a skill is missing and still wants the review, run it with the skills that resolved and state in the review body which standard was not applied
 
-Pass the skill name in the prompt so Gemini knows which standard it is applying, e.g.:
+Pass the skill names in the prompt so Gemini knows which standards it is applying, e.g.:
 
-> "Apply the `pr-code-review-and-quality` skill standards..."
+> "Apply the `code-and-comment-quality` aggregate: the `pr-code-review-and-quality` and `comment-and-documentation-quality` skill standards..."
 
 ## Required: Report Missing Skills
 
 This skill is only as good as the standards it loads, so a missing skill is a
 reportable condition, never something to silently work around.
 
-- Every prompt must instruct Gemini to **STOP and state which skill is missing, and where it looked**, if the `pr-code-review-and-quality` skill cannot be resolved.
+- Every prompt must instruct Gemini to **STOP and state which skill is missing, and where it looked**, if the `code-and-comment-quality` aggregate or either component skill cannot be resolved.
 - Relay that message to the user verbatim. Never present a review as complete when a standard was missing.
-- Never let Gemini substitute its own idea of the standard, and never let it invent the rules from the skill's name.
-- If the user has been told and still wants the review, rerun with the skills that do resolve and require Gemini to state in its output which standard was not applied.
+- Never let Gemini substitute its own idea of the standard, and never let it continue with one component when both were required.
+- If the user has been told and still wants the review, rerun with the skills that do resolve and require Gemini to state in the review body which standard was not applied.
 
 ## Review-Only & GitHub Posting Boundaries
 
@@ -69,10 +79,13 @@ For every review:
 - Review and GitHub posting only — no code changes / no implementation in the local repository
 - No arbitrary web search or browsing — network access is restricted to GitHub CLI (`gh`) and GitHub API for fetching PR data and posting the review
 - Specific target: the specified GitHub PR (`OWNER/REPO#NUMBER`)
-- Read only: PR metadata, diff, full changed files from repository / GitHub API, `pr-code-review-and-quality` standard, and directly necessary repository context
+- Read only: PR metadata, diff, full changed files from repository / GitHub API, the `code-and-comment-quality` aggregate and its component standards, and directly necessary repository context
 - Do **not** inspect secrets, credentials, `.env` files, private keys, binaries, package internals, or unrelated paths
 
 ## Core PR Review Rules (from `pr-code-review-and-quality`)
+
+These apply unchanged. Comment and documentation findings are normal findings: give them the same severity treatment as code findings, anchor them to the lines they concern, and fold them into the single review rather than a second report.
+
 
 1. **Output rule:** The review goes on the PR as a single GitHub review, not dumped as terminal prose. Post it, then report the review URL and a one-paragraph summary.
 2. **Event type:** Always submit with `event: "COMMENT"`. Never `APPROVE`, never `REQUEST_CHANGES`. The verdict is stated in the review body text; GitHub's merge gate stays under human control.
@@ -114,7 +127,7 @@ NOTE: ALWAYS RUN GEMINI WITH `--print-timeout 10m` AS GEMINI CAN TAKE QUITE A WH
 
 - Pass `--add-dir` for **every path** Gemini needs to read or write.
 - Include the target repository and the standards skill directory:
-  `--add-dir /path/to/repo --add-dir /Users/david/.agents/skills/pr-code-review-and-quality`
+  `--add-dir /path/to/repo` plus `--add-dir` for each of the three standards directories
 
 ### Important Flags
 
@@ -126,14 +139,16 @@ NOTE: ALWAYS RUN GEMINI WITH `--print-timeout 10m` AS GEMINI CAN TAKE QUITE A WH
 
 ## Method 1: Tell Gemini to use the skill directly
 
-Always include `--add-dir <repo>`, `--add-dir /Users/david/.agents/skills/pr-code-review-and-quality`, `--print-timeout 10m`, and `--dangerously-skip-permissions`.
+Always include `--add-dir <repo>`, one `--add-dir` per standards directory (aggregate plus both components), `--print-timeout 10m`, and `--dangerously-skip-permissions`.
 
 ```bash
 PR="123" # e.g. 123, owner/repo#123, or https://github.com/owner/repo/pull/123
 
 agy --model "Gemini 3.7 Flash (High)" \
   --add-dir /path/to/repo \
+  --add-dir /Users/david/.agents/skills/code-and-comment-quality \
   --add-dir /Users/david/.agents/skills/pr-code-review-and-quality \
+  --add-dir /Users/david/.agents/skills/comment-and-documentation-quality \
   --print-timeout 10m \
   --dangerously-skip-permissions \
   -p "This is a GitHub pull request review task.
@@ -141,7 +156,7 @@ Do not make any code changes in the repository. Do not implement anything locall
 Do not search the general web. Network access is permitted ONLY for GitHub CLI (gh) and GitHub API calls.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
-First, load the skill 'pr-code-review-and-quality'. If this skill is not available, STOP and tell the user that this skill can not be found.
+First, load the skill 'code-and-comment-quality' and the component skills it names: 'pr-code-review-and-quality' and 'comment-and-documentation-quality'. If any of these skills is not available, STOP and tell the user exactly which skill can not be found and where you looked. Do not substitute your own standard.
 
 Target PR: $PR
 
@@ -175,16 +190,22 @@ Let Gemini use its tools to read the standard before reviewing the target PR.
 
 ```bash
 PR="123" # e.g. 123, owner/repo#123, or https://github.com/owner/repo/pull/123
+AGGREGATE="/Users/david/.agents/skills/code-and-comment-quality/SKILL.md"
 STANDARDS="/Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md"
+COMMENT_STANDARDS="/Users/david/.agents/skills/comment-and-documentation-quality/SKILL.md"
 
-if [ ! -f "$STANDARDS" ]; then
-  echo "pr-code-review-and-quality skill not found at $STANDARDS"
-  exit 1
-fi
+for f in "$AGGREGATE" "$STANDARDS" "$COMMENT_STANDARDS"; do
+  if [ ! -f "$f" ]; then
+    echo "required skill not found at $f" >&2
+    exit 1
+  fi
+done
 
 agy --model "Gemini 3.7 Flash (High)" \
   --add-dir /path/to/repo \
+  --add-dir /Users/david/.agents/skills/code-and-comment-quality \
   --add-dir /Users/david/.agents/skills/pr-code-review-and-quality \
+  --add-dir /Users/david/.agents/skills/comment-and-documentation-quality \
   --print-timeout 10m \
   --dangerously-skip-permissions \
   -p "This is a GitHub pull request review task.
@@ -192,8 +213,8 @@ Do not make any code changes in the repository. Do not implement anything locall
 Do not search the general web. Network access is permitted ONLY for GitHub CLI (gh) and GitHub API calls.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
-First, read your review standards from /Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md.
-If that file cannot be found, STOP and say the pr-code-review-and-quality skill is missing.
+First, read the aggregate standard from /Users/david/.agents/skills/code-and-comment-quality/SKILL.md, then read the component standards it names at /Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md and /Users/david/.agents/skills/comment-and-documentation-quality/SKILL.md.
+If any of those files cannot be found, STOP and say exactly which skill is missing and the path you tried. Do not substitute your own standard.
 
 Target PR: $PR
 
@@ -227,14 +248,19 @@ If you prefer to inject the standards directly into the prompt without relying o
 
 ```bash
 PR="123"
+AGGREGATE="/Users/david/.agents/skills/code-and-comment-quality/SKILL.md"
 STANDARDS="/Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md"
+COMMENT_STANDARDS="/Users/david/.agents/skills/comment-and-documentation-quality/SKILL.md"
 
-if [ ! -f "$STANDARDS" ]; then
-  echo "pr-code-review-and-quality skill not found at $STANDARDS"
-  exit 1
-fi
+for f in "$AGGREGATE" "$STANDARDS" "$COMMENT_STANDARDS"; do
+  if [ ! -f "$f" ]; then
+    echo "required skill not found at $f" >&2
+    exit 1
+  fi
+done
 
 REVIEW_STANDARDS=$(cat "$STANDARDS")
+COMMENT_RULES=$(cat "$COMMENT_STANDARDS")
 
 agy --model "Gemini 3.7 Flash (High)" \
   --add-dir /path/to/repo \
@@ -245,14 +271,19 @@ Do not make any code changes in the repository. Do not implement anything locall
 Do not search the general web. Network access is permitted ONLY for GitHub CLI (gh) and GitHub API calls.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
-Apply the skill named pr-code-review-and-quality.
-Here are the standards you MUST follow:
+Apply the aggregate named code-and-comment-quality, and its components pr-code-review-and-quality and comment-and-documentation-quality. If any is missing, STOP and name the missing skill and the path you tried.
+Here are the two standards you MUST follow.
 
+PR REVIEW STANDARD:
 $REVIEW_STANDARDS
+
+COMMENT AND DOCUMENTATION STANDARD:
+$COMMENT_RULES
 
 Target PR: $PR
 
-Review the pull request against the five axes and post the review directly to GitHub following the standards above.
+Review the pull request against the five axes and against the comment, documentation, and commit message standard in a single pass, and post one review directly to GitHub following the standards above.
+Comment findings are normal findings: give them the same severity labels and anchor them to the lines they concern. Do not emit a second report.
 Ensure inline comments are anchored inside diff hunks and submitted in a single review with event: \"COMMENT\".
 Open the summary body with dynamic model attribution based on the model actually used (e.g. '_Reviewed by Gemini 3.7 Flash (High) (reasoning effort: high)._').
 Verify the review posted, then output the review URL and a one-paragraph summary."
@@ -266,8 +297,12 @@ Do not make any code changes in the repository. Do not implement anything locall
 Do not search the general web. Network access is permitted ONLY for GitHub CLI (gh) and GitHub API calls.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
-Standards skill name: pr-code-review-and-quality
-Standards file: /Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md
+Standards aggregate: code-and-comment-quality
+Aggregate file: /Users/david/.agents/skills/code-and-comment-quality/SKILL.md
+Component files:
+  /Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md
+  /Users/david/.agents/skills/comment-and-documentation-quality/SKILL.md
+If any of these is missing, STOP and name it plus the path you tried.
 (or use the injected standards)
 
 Target PR:
@@ -309,8 +344,10 @@ Before launch:
 
 - [ ] PR target is explicitly provided (if not, STOP and ask the user)
 - [ ] PR target resolved to OWNER, REPO, NUMBER
-- [ ] Standards file exists at canonical path `/Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md` (or injected)
-- [ ] `pr-code-review-and-quality` skill name passed in prompt
+- [ ] Aggregate and both component standards exist at their canonical paths (or are injected)
+- [ ] Missing skills reported to the user by name and path, never silently substituted
+- [ ] `code-and-comment-quality` plus both component skill names passed in prompt
+- [ ] `--add-dir` passed for each standards directory
 - [ ] `--model "Gemini 3.7 Flash (High)"` set
 - [ ] `--print-timeout 10m` set
 - [ ] `--add-dir` points at repo and standards directory
@@ -325,6 +362,7 @@ After exit:
 
 ## Notes
 
-- Prefer this skill over `ask-gemini-for-review` when reviewing GitHub pull requests and posting comments back to GitHub
-- For reviewing local, uncommitted changes or local branch diffs without GitHub posting, use `ask-gemini-for-review`
+- Prefer this skill over `ask-gemini-for-dual-review` when reviewing GitHub pull requests and posting comments back to GitHub
+- For a code-only PR review without the comment audit, use `ask-gemini-for-pr-review`
+- For reviewing local, uncommitted changes or local branch diffs without GitHub posting, use `ask-gemini-for-dual-review`
 - For general non-review Gemini tasks, use `ask-gemini`

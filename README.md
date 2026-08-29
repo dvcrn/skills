@@ -24,7 +24,9 @@ npx skills add dvcrn/skills
 ### Multi-Agent Delegation & Review Loop
 - `ask-gemini`: Delegate questions or tasks to Gemini 3.7 Flash via the Antigravity CLI (agy).
 - `ask-gemini-for-review`: Delegates code review to Gemini 3.7 Flash (High) via the Antigravity CLI (agy), enforcing the strict standards of the code-review-and-quality skill.
+- `ask-gemini-for-dual-review`: Delegates a combined code and comment review to Gemini 3.7 Flash (High) via the Antigravity CLI (agy), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass.
 - `ask-gemini-for-pr-review`: Delegates GitHub PR code review to Gemini 3.7 Flash (High) via the Antigravity CLI (`agy`), enforcing the strict standards of the pr-code-review-and-quality skill.
+- `ask-gemini-for-dual-pr-review`: Delegates a combined GitHub PR code and comment review to Gemini 3.7 Flash (High) via the Antigravity CLI (`agy`), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass.
 - `ask-gemini-for-comment-audit`: Delegates code comment, documentation, and commit message audits to Gemini 3.7 Flash or Gemini 3.7 Flash (Medium) via the Antigravity CLI (agy), enforcing the standards of the comment-and-documentation-quality skill.
 - `ask-codex`: Delegate questions or tasks to OpenAI Codex via the official Codex CLI (`codex exec`). Codex is a highly capable coding model — use this when an independent Codex perspective materially improves complex reasoning, code review, research, or implementation work.
 - `ask-codex-for-review`: Delegates code review to OpenAI Codex via the official Codex CLI (`codex exec`), enforcing the strict standards of the code-review-and-quality skill.
@@ -34,6 +36,7 @@ npx skills add dvcrn/skills
 - `triage-pr-review-comments`: Analyzes GitHub PR review comments, investigates the relevant codebase context, and provides a verdict on whether each comment should be fixed or ignored. Does not make code changes.
 - `loop-fix-github-review`: Continuous agentic loop to automatically fetch, triage, fix, and resolve GitHub PR review comments. Runs an infinite loop of fixing high priority comments, pushing changes, re-requesting review, and sleeping for 8 minutes.
 - `comment-and-documentation-quality`: Standards and quality gates for code comments, JSDoc/docstrings, technical documentation, and git commit messages.
+- `code-and-comment-quality`: Aggregate review standard that combines the code review axes with the comment, documentation, and commit message audit into a single pass.
 
 ### Elixir & Phoenix
 - `adapter-pattern`: Standard for Elixir adapter boundaries using a repo-owned behaviour, a thin public wrapper that selects the default implementation with Application.get_env/3, concrete implementation modules under the same namespace, and Mox mocks wired through test/test_helper.exs with Application.put_env/3 overrides.

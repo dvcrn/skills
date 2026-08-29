@@ -28,7 +28,9 @@
       "skills": [
         "ask-gemini",
         "ask-gemini-for-review",
+        "ask-gemini-for-dual-review",
         "ask-gemini-for-pr-review",
+        "ask-gemini-for-dual-pr-review",
         "ask-gemini-for-comment-audit",
         "ask-codex",
         "ask-codex-for-review",
@@ -37,7 +39,8 @@
         "address-pr-review-comments",
         "triage-pr-review-comments",
         "loop-fix-github-review",
-        "comment-and-documentation-quality"
+        "comment-and-documentation-quality",
+        "code-and-comment-quality"
       ]
     },
     {

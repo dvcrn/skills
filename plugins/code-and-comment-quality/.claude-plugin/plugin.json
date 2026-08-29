@@ -1,0 +1,9 @@
+{
+  "name": "code-and-comment-quality",
+  "description": "Aggregate review standard that combines the code review axes with the comment, documentation, and commit message audit into a single pass.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

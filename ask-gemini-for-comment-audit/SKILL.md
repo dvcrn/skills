@@ -28,6 +28,16 @@ Always use the **`comment-and-documentation-quality`** skill as the review stand
 
 ---
 
+## Required: Report Missing Skills
+
+This skill is only as good as the standards it loads, so a missing skill is a
+reportable condition, never something to silently work around.
+
+- Every prompt must instruct Gemini to **STOP and state which skill is missing, and where it looked**, if the `comment-and-documentation-quality` skill cannot be resolved.
+- Relay that message to the user verbatim. Never present a review as complete when a standard was missing.
+- Never let Gemini substitute its own idea of the standard, and never let it invent the rules from the skill's name.
+- If the user has been told and still wants the review, rerun with the skills that do resolve and require Gemini to state in its output which standard was not applied.
+
 ## How to Call Gemini for Audit
 
 Always use the `agy` CLI with `--add-dir <repo>` and `--print-timeout 10m`. Specify the target scope or range in the prompt.

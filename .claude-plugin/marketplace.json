@@ -45,6 +45,16 @@
       "source": "./plugins/ask-gemini-for-comment-audit"
     },
     {
+      "name": "ask-gemini-for-dual-pr-review",
+      "description": "Delegates a combined GitHub PR code and comment review to Gemini 3.7 Flash (High) via the Antigravity CLI (`agy`), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass.",
+      "source": "./plugins/ask-gemini-for-dual-pr-review"
+    },
+    {
+      "name": "ask-gemini-for-dual-review",
+      "description": "Delegates a combined code and comment review to Gemini 3.7 Flash (High) via the Antigravity CLI (agy), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass.",
+      "source": "./plugins/ask-gemini-for-dual-review"
+    },
+    {
       "name": "ask-gemini-for-pr-review",
       "description": "Delegates GitHub PR code review to Gemini 3.7 Flash (High) via the Antigravity CLI (`agy`), enforcing the strict standards of the pr-code-review-and-quality skill.",
       "source": "./plugins/ask-gemini-for-pr-review"
@@ -58,6 +68,11 @@
       "name": "chainenv",
       "description": "Operate chainenv for local secret workflows, including backend diagnostics, config-aware key lookup, shell export generation, secret writes, and backend copy operations",
       "source": "./plugins/chainenv"
+    },
+    {
+      "name": "code-and-comment-quality",
+      "description": "Aggregate review standard that combines the code review axes with the comment, documentation, and commit message audit into a single pass.",
+      "source": "./plugins/code-and-comment-quality"
     },
     {
       "name": "codex-cloud",

@@ -23,6 +23,16 @@ Since Gemini is running as a separate process via `agy`, you need to give it the
 **Location of the review standards:** `~/.agents/skills/code-review-and-quality/SKILL.md`
 If the skill is **not** present in this directory, instruct Gemini to search the usual skill folders such as `~/.agents/skills/`
 
+## Required: Report Missing Skills
+
+This skill is only as good as the standards it loads, so a missing skill is a
+reportable condition, never something to silently work around.
+
+- Every prompt must instruct Gemini to **STOP and state which skill is missing, and where it looked**, if the `code-review-and-quality` skill cannot be resolved.
+- Relay that message to the user verbatim. Never present a review as complete when a standard was missing.
+- Never let Gemini substitute its own idea of the standard, and never let it invent the rules from the skill's name.
+- If the user has been told and still wants the review, rerun with the skills that do resolve and require Gemini to state in its output which standard was not applied.
+
 ## How to Call Gemini for Review
 
 Always use the `agy` CLI. Be explicit that Gemini is _only_ reviewing and should not make any code changes.
@@ -52,7 +62,7 @@ agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10
 Let Gemini use its tools to read the standard before reviewing the target file(s).
 
 ```bash
-agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions -p "This is a code review task. Do not make any code changes, just provide the review output. First, read your review standards from /Users/david/.agents/skills/code-review-and-quality/SKILL.md. Then, review the code in ./src/my_file.ts against the five axes (Correctness, Readability, Architecture, Security, Performance). Output the review using the severity labels (Critical, Nit, Optional, etc.). Do not implement the changes."
+agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions -p "This is a code review task. Do not make any code changes, just provide the review output. First, read your review standards from /Users/david/.agents/skills/code-review-and-quality/SKILL.md. If that file cannot be found, STOP and say the code-review-and-quality skill is missing and give the path you tried; do not substitute your own standard. Then, review the code in ./src/my_file.ts against the five axes (Correctness, Readability, Architecture, Security, Performance). Output the review using the severity labels (Critical, Nit, Optional, etc.). Do not implement the changes."
 ```
 
 ### Method 3: Pass the context explicitly
@@ -61,7 +71,9 @@ If you prefer to inject the context directly into the prompt without relying on 
 
 ```bash
 # Store the standards in a variable
-REVIEW_STANDARDS=$(cat /Users/david/.agents/skills/code-review-and-quality/SKILL.md)
+STANDARDS="/Users/david/.agents/skills/code-review-and-quality/SKILL.md"
+[ -f "$STANDARDS" ] || { echo "code-review-and-quality skill not found at $STANDARDS" >&2; exit 1; }
+REVIEW_STANDARDS=$(cat "$STANDARDS")
 
 # Run agy with the injected standards
 agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m -p "Perform a code review on ./src/my_file.ts. Do not make any code changes. Here are the standards you MUST follow:

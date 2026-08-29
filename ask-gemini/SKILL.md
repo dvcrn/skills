@@ -35,6 +35,13 @@ When delegating code review or research tasks, Gemini can traverse large codebas
 
 > "Review the authentication flow. Read whatever files you need but only suggest changes — do not implement them."
 
+## Required: Report Missing Skills
+
+This skill loads no standards of its own. When a prompt you build tells Gemini to
+load a skill, it must also tell Gemini to **STOP and state which skill is missing,
+and where it looked**, rather than guessing the rules from the skill's name. Relay
+that message to the user verbatim instead of presenting the result as complete.
+
 ## How to Call Gemini
 
 ### Standard Questions (default):
