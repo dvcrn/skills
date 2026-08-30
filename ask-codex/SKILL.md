@@ -1,6 +1,6 @@
 ---
 name: ask-codex
-description: Delegate questions or tasks to OpenAI Codex via the official Codex CLI (`codex exec`). Codex is a highly capable coding model — use this when an independent Codex perspective materially improves complex reasoning, code review, research, or implementation work.
+description: Delegate questions or tasks to OpenAI Codex via `codex exec`. Use gpt-5.6-sol with medium effort for ordinary work and high effort for reviews when an independent Codex perspective materially improves the result.
 ---
 
 # Ask Codex
@@ -16,6 +16,14 @@ Use local Codex only. This is **not** the `codex-cloud` skill and **not** `pi`.
 - You want to offload a prompt without leaving the agent loop
 
 Do **not** use this for trivial questions the current agent can answer well.
+
+## Self-Contained Prompts
+
+Each `codex exec` call starts a separate session. Build a self-contained prompt with the relevant code, question, constraints, and prior decisions. Do not forward a context-dependent user message without the context needed to answer it.
+
+## Required: Report Missing Skills
+
+This skill loads no standards itself. When a prompt instructs Codex to load another skill, require it to stop and report the missing skill and attempted path rather than inventing the standard. Relay that failure to the user instead of presenting the task as complete.
 
 ## Important: Codex's Proactive Nature
 
@@ -44,6 +52,7 @@ OUT="$(mktemp -t codex-last-message.XXXXXX)"
 
 codex exec \
   -m gpt-5.6-sol \
+  -c model_reasoning_effort="medium" \
   -C /path/to/repo \
   -s read-only \
   --ephemeral \
@@ -76,6 +85,7 @@ cat "$OUT"
 ```bash
 codex exec \
   -m gpt-5.6-sol \
+  -c model_reasoning_effort="medium" \
   -C /path/to/repo \
   --add-dir /Users/david/.agents/skills/code-review-and-quality \
   -s read-only \
@@ -124,13 +134,26 @@ Rules:
 
 ### Model
 
-- Skill default model: **`gpt-5.6-sol`**
-- Pass `-m gpt-5.6-sol` in skill invocations unless the user requests a different Codex model
-- Reasoning effort can be overridden if needed:
+- Ordinary questions, research, and implementation: **`gpt-5.6-sol` with medium effort**
+- Code, comment, and PR reviews: **`gpt-5.6-sol` with high effort**
+- Use the requested model or effort when the user specifies one
+- Set effort explicitly in every invocation:
 
 ```bash
 -c model_reasoning_effort="high"
 ```
+
+### Failure fallback
+
+If a call times out or fails, preserve the requested model family and report any fallback used:
+
+1. Retry once unchanged for a transient failure.
+2. If the prompt is unusually long, trim it to the essential context and retry.
+3. Lower reasoning effort one level at a time (`high` to `medium` to `low`, or `medium` to `low`).
+4. At `low`, switch from `gpt-5.6-sol` to `gpt-5.6-terra` at `low` only as a final fallback.
+5. Stop after the Terra attempt. Do not continue cycling through models.
+
+Do not lower effort or change model families after a substantive model response. The ladder applies only to execution failures and timeouts.
 
 ### Secrets / least privilege
 
@@ -148,7 +171,8 @@ State network policy explicitly in every prompt:
 
 ## Important Flags
 
-- `-m gpt-5.6-sol` — skill default model
+- `-m gpt-5.6-sol` — skill default model family
+- `-c model_reasoning_effort="medium|high"` — medium normally, high for reviews
 - `-C <path>` — primary workspace / working root
 - `--add-dir <path>` — additional writable dirs (narrowest path only)
 - `-s read-only|workspace-write` — always set explicitly; never `danger-full-access`
@@ -191,6 +215,7 @@ OUT="$(mktemp -t codex-last-message.XXXXXX)"
 # Simple question (explicitly tell Codex not to act)
 codex exec \
   -m gpt-5.6-sol \
+  -c model_reasoning_effort="medium" \
   -s read-only \
   --ephemeral \
   -o "$OUT" \
@@ -199,6 +224,7 @@ codex exec \
 # Code research - explore a directory (local only, no changes)
 codex exec \
   -m gpt-5.6-sol \
+  -c model_reasoning_effort="medium" \
   -C /path/to/repo \
   -s read-only \
   --ephemeral \
@@ -208,6 +234,7 @@ codex exec \
 # Document / skill review (strictly no exploration beyond listed files)
 codex exec \
   -m gpt-5.6-sol \
+  -c model_reasoning_effort="medium" \
   -C /path/to/docs \
   -s read-only \
   --skip-git-repo-check \
@@ -218,6 +245,7 @@ codex exec \
 # Code review only (explicit boundaries)
 codex exec \
   -m gpt-5.6-sol \
+  -c model_reasoning_effort="high" \
   -C /path/to/repo \
   -s read-only \
   --ephemeral \
@@ -227,6 +255,7 @@ codex exec \
 # Implementation task (writes allowed in workspace, still constrained)
 codex exec \
   -m gpt-5.6-sol \
+  -c model_reasoning_effort="medium" \
   -C /path/to/repo \
   -s workspace-write \
   --ephemeral \

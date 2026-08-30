@@ -21,17 +21,32 @@
     },
     {
       "name": "ask-codex",
-      "description": "Delegate questions or tasks to OpenAI Codex via the official Codex CLI (`codex exec`). Codex is a highly capable coding model — use this when an independent Codex perspective materially improves complex reasoning, code review, research, or implementation work.",
+      "description": "Delegate questions or tasks to OpenAI Codex via `codex exec`.",
       "source": "./plugins/ask-codex"
     },
     {
+      "name": "ask-codex-for-comment-audit",
+      "description": "Delegates code comment, documentation, and commit message audits to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the comment-and-documentation-quality skill without changing code.",
+      "source": "./plugins/ask-codex-for-comment-audit"
+    },
+    {
+      "name": "ask-codex-for-dual-pr-review",
+      "description": "Delegates a combined GitHub PR code and comment review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-and-comment-quality aggregate and posting one structured review to GitHub.",
+      "source": "./plugins/ask-codex-for-dual-pr-review"
+    },
+    {
+      "name": "ask-codex-for-dual-review",
+      "description": "Delegates a combined code and comment review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-and-comment-quality aggregate for local targets without GitHub posting.",
+      "source": "./plugins/ask-codex-for-dual-review"
+    },
+    {
       "name": "ask-codex-for-pr-review",
-      "description": "Delegates GitHub PR code review to OpenAI Codex via the official Codex CLI (`codex exec`), enforcing the strict standards of the pr-code-review-and-quality skill.",
+      "description": "Delegates GitHub PR code review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the pr-code-review-and-quality skill and posting one structured review to GitHub.",
       "source": "./plugins/ask-codex-for-pr-review"
     },
     {
       "name": "ask-codex-for-review",
-      "description": "Delegates code review to OpenAI Codex via the official Codex CLI (`codex exec`), enforcing the strict standards of the code-review-and-quality skill.",
+      "description": "Delegates code review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-review-and-quality skill.",
       "source": "./plugins/ask-codex-for-review"
     },
     {

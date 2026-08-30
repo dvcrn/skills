@@ -39,6 +39,10 @@ Always use the `agy` CLI. Be explicit that Gemini is _only_ reviewing and should
 
 NOTE: ALWAYS RUN GEMINI WITH `--print-timeout 10m` AS GEMINI CAN TAKE QUITE A WHILE.
 
+## Failure fallback
+
+For execution failures or timeouts, retry once unchanged, shorten an unusually long prompt, then lower Gemini 3.7 Flash from high to medium to low. Stop after the low-effort attempt, report any fallback used, and do not apply the ladder after a substantive review response.
+
 ### Workspace access (`--add-dir`)
 
 `agy` uses `--add-dir <path>` to add a repository (or other directory) as its workspace. It does **not** have a `--workdir` flag.
@@ -54,7 +58,7 @@ This requires no `--dangerously-skip-permissions`, so attempt this first.
 Always include `--add-dir <repo>` and `--print-timeout 10m`.
 
 ```bash
-agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m -p "This is a code review task. Do not make any code changes, just provide the review output. First, load the skill 'code-review-and-quality'. If this skill is not available, STOP and tell the user that this skill can not be found. Then, review the code in ./src/my_file.ts against the five axes (Correctness, Readability, Architecture, Security, Performance). Output the review using the severity labels (Critical, Nit, Optional, etc.). Do not implement the changes."
+agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m -p "This is a code review task. Do not make any code changes, just provide the review output. Use the code-review-and-quality skill. If the skill is not available, immediately STOP and report that back. Do not invent a substitute standard. Then, review the code in ./src/my_file.ts against the five axes (Correctness, Readability, Architecture, Security, Performance). Output the review using the severity labels (Critical, Nit, Optional, etc.). Do not implement the changes."
 ```
 
 ### Method 2: Tell Gemini to read the file (Recommended)
@@ -62,7 +66,7 @@ agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10
 Let Gemini use its tools to read the standard before reviewing the target file(s).
 
 ```bash
-agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions -p "This is a code review task. Do not make any code changes, just provide the review output. First, read your review standards from /Users/david/.agents/skills/code-review-and-quality/SKILL.md. If that file cannot be found, STOP and say the code-review-and-quality skill is missing and give the path you tried; do not substitute your own standard. Then, review the code in ./src/my_file.ts against the five axes (Correctness, Readability, Architecture, Security, Performance). Output the review using the severity labels (Critical, Nit, Optional, etc.). Do not implement the changes."
+agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions -p "This is a code review task. Do not make any code changes, just provide the review output. Use the code-review-and-quality skill at /Users/david/.agents/skills/code-review-and-quality/SKILL.md. If the skill is not available, immediately STOP and report that back with the path you tried. Do not invent a substitute standard. Then, review the code in ./src/my_file.ts against the five axes (Correctness, Readability, Architecture, Security, Performance). Output the review using the severity labels (Critical, Nit, Optional, etc.). Do not implement the changes."
 ```
 
 ### Method 3: Pass the context explicitly
@@ -76,7 +80,7 @@ STANDARDS="/Users/david/.agents/skills/code-review-and-quality/SKILL.md"
 REVIEW_STANDARDS=$(cat "$STANDARDS")
 
 # Run agy with the injected standards
-agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m -p "Perform a code review on ./src/my_file.ts. Do not make any code changes. Here are the standards you MUST follow:
+agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m -p "Perform a code review on ./src/my_file.ts. Do not make any code changes. Use the code-review-and-quality skill. If the skill is not available, immediately STOP and report that back. Do not invent a substitute standard. Here are the standards you MUST follow:
 
 $REVIEW_STANDARDS
 

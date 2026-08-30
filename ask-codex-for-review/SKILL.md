@@ -1,6 +1,6 @@
 ---
 name: ask-codex-for-review
-description: Delegates code review to OpenAI Codex via the official Codex CLI (`codex exec`), enforcing the strict standards of the code-review-and-quality skill. Use this when you want a highly capable model to review code, PRs, or files against the five-axis standard.
+description: Delegates code review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-review-and-quality skill. Use for local files, changes, branches, commits, or checked-out PRs that need a five-axis review.
 ---
 
 # Ask Codex for Review
@@ -30,6 +30,12 @@ Always use the **`code-review-and-quality`** skill as the review standard.
 Pass the skill name in the prompt so Codex knows which standard it is applying, e.g.:
 
 > "Apply the `code-review-and-quality` skill standards..."
+
+## Required: Report Missing Skills
+
+- Every prompt must require Codex to stop and state the missing skill and attempted path if `code-review-and-quality` cannot be resolved.
+- Relay that message to the user. Never present the review as complete or let Codex invent a substitute standard.
+- After reporting the failure, proceed without the standard only when the user explicitly requests it, and state in the output which standard was not applied.
 
 ## Review-Only Boundaries
 
@@ -75,6 +81,7 @@ fi
 
 if codex exec \
   -m gpt-5.6-sol \
+  -c model_reasoning_effort="high" \
   -C "$REPO" \
   --add-dir /Users/david/.agents/skills/code-review-and-quality \
   -s read-only \
@@ -109,8 +116,13 @@ rm -f "$OUT"
 
 ### Model
 
-- Default: **`gpt-5.6-sol`**
-- Override with `-m` only if the user requests a different Codex model
+- Default: **`gpt-5.6-sol` with high reasoning effort**
+- Always pass `-c model_reasoning_effort="high"` unless the user requests another effort
+- Override `-m` only if the user requests another Codex model
+
+### Failure fallback
+
+For execution failures or timeouts, retry once unchanged, shorten an unusually long prompt, then lower effort from `high` to `medium` to `low`. If Sol still fails at `low`, try `gpt-5.6-terra` at `low` once and stop. Report any fallback used. Never apply this ladder after a substantive review response.
 
 ## Method 1: Codex reads the standards file (Recommended)
 
@@ -126,6 +138,7 @@ fi
 
 if codex exec \
   -m gpt-5.6-sol \
+  -c model_reasoning_effort="high" \
   -C "$REPO" \
   --add-dir /Users/david/.agents/skills/code-review-and-quality \
   -s read-only \
@@ -138,9 +151,8 @@ Do not run mutating commands.
 Read only the review target, the code-review-and-quality standard, and directly necessary repository context.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
-Apply the skill named code-review-and-quality.
-First, read the standards from /Users/david/.agents/skills/code-review-and-quality/SKILL.md.
-If that file cannot be found, STOP and say the code-review-and-quality skill is missing.
+Use the code-review-and-quality skill at /Users/david/.agents/skills/code-review-and-quality/SKILL.md.
+If the skill is not available, immediately STOP and report that back with the path you tried. Do not invent a substitute standard.
 
 Then review ./src/my_file.ts against the five axes (Correctness, Readability, Architecture, Security, Performance).
 Output findings with severity labels (Critical, Nit, Optional, etc.).
@@ -172,6 +184,7 @@ REVIEW_STANDARDS="$(cat "$STANDARDS")"
 
 if codex exec \
   -m gpt-5.6-sol \
+  -c model_reasoning_effort="high" \
   -C "$REPO" \
   -s read-only \
   --ephemeral \
@@ -182,7 +195,7 @@ Do not access the network or search the web.
 Read only the review target and directly necessary repository context.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
-Apply the skill named code-review-and-quality.
+Use the code-review-and-quality skill. If the skill is not available, immediately STOP and report that back. Do not invent a substitute standard.
 Here are the standards you MUST follow:
 
 $REVIEW_STANDARDS
@@ -227,6 +240,7 @@ cd /path/to/repo || exit 1
 
 if codex exec review \
   -m gpt-5.6-sol \
+  -c model_reasoning_effort="high" \
   --uncommitted \
   --ephemeral \
   -o "$OUT" \
@@ -236,8 +250,8 @@ Do not access the network or search the web.
 Do not run mutating commands.
 Read only the review target, the code-review-and-quality standard, and directly necessary repository context.
 
-Apply the skill named code-review-and-quality.
-If you can read files, use /Users/david/.agents/skills/code-review-and-quality/SKILL.md.
+Use the code-review-and-quality skill at /Users/david/.agents/skills/code-review-and-quality/SKILL.md.
+If the skill is not available, immediately STOP and report that back with the path you tried. Do not invent a substitute standard.
 Evaluate against Correctness, Readability, Architecture, Security, Performance.
 Use severity labels. Output the review only."
 then
@@ -270,6 +284,7 @@ Do not inspect secrets, credentials, binaries, or unrelated paths.
 
 Standards skill name: code-review-and-quality
 Standards file: /Users/david/.agents/skills/code-review-and-quality/SKILL.md
+Use this skill. If it is not available, immediately STOP and report that back with the path you tried. Do not invent a substitute standard.
 (or use the injected standards)
 
 Target:

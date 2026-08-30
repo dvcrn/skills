@@ -108,6 +108,10 @@ Always use the `agy` CLI. Be explicit that Gemini is _only_ reviewing and postin
 
 NOTE: ALWAYS RUN GEMINI WITH `--print-timeout 10m` AS GEMINI CAN TAKE QUITE A WHILE.
 
+## Failure fallback
+
+For execution failures or timeouts, retry once unchanged, shorten an unusually long prompt, then lower Gemini 3.7 Flash from high to medium to low. Stop after the low-effort attempt, report any fallback used, and use the actual fallback model in the GitHub attribution. Do not apply the ladder after a substantive review response.
+
 ### Workspace access (`--add-dir`)
 
 `agy` uses `--add-dir <path>` to add a repository (or other directory) as its workspace. It does **not** have a `--workdir` flag.
@@ -141,7 +145,7 @@ Do not make any code changes in the repository. Do not implement anything locall
 Do not search the general web. Network access is permitted ONLY for GitHub CLI (gh) and GitHub API calls.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
-First, load the skill 'pr-code-review-and-quality'. If this skill is not available, STOP and tell the user that this skill can not be found.
+Use the pr-code-review-and-quality skill. If the skill is not available, immediately STOP and report that back. Do not invent a substitute standard.
 
 Target PR: $PR
 
@@ -192,8 +196,8 @@ Do not make any code changes in the repository. Do not implement anything locall
 Do not search the general web. Network access is permitted ONLY for GitHub CLI (gh) and GitHub API calls.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
-First, read your review standards from /Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md.
-If that file cannot be found, STOP and say the pr-code-review-and-quality skill is missing.
+Use the pr-code-review-and-quality skill at /Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md.
+If the skill is not available, immediately STOP and report that back with the path you tried. Do not invent a substitute standard.
 
 Target PR: $PR
 
@@ -245,7 +249,7 @@ Do not make any code changes in the repository. Do not implement anything locall
 Do not search the general web. Network access is permitted ONLY for GitHub CLI (gh) and GitHub API calls.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
-Apply the skill named pr-code-review-and-quality.
+Use the pr-code-review-and-quality skill. If the skill is not available, immediately STOP and report that back. Do not invent a substitute standard.
 Here are the standards you MUST follow:
 
 $REVIEW_STANDARDS
@@ -268,6 +272,7 @@ Do not inspect secrets, credentials, binaries, or unrelated paths.
 
 Standards skill name: pr-code-review-and-quality
 Standards file: /Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md
+Use this skill. If it is not available, immediately STOP and report that back with the path you tried. Do not invent a substitute standard.
 (or use the injected standards)
 
 Target PR:

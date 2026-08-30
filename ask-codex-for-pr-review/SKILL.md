@@ -1,6 +1,6 @@
 ---
 name: ask-codex-for-pr-review
-description: Delegates GitHub PR code review to OpenAI Codex via the official Codex CLI (`codex exec`), enforcing the strict standards of the pr-code-review-and-quality skill. Use this when asked to review a PR with Codex, evaluate a GitHub pull request against the five-axis standard, and post comments/reviews directly to GitHub.
+description: Delegates GitHub PR code review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the pr-code-review-and-quality skill and posting one structured review to GitHub.
 ---
 
 # Ask Codex for PR Review
@@ -54,6 +54,12 @@ Pass the skill name in the prompt so Codex knows which standard it is applying, 
 
 > "Apply the `pr-code-review-and-quality` skill standards..."
 
+## Required: Report Missing Skills
+
+- Every prompt must require Codex to stop and state the missing skill and attempted path if `pr-code-review-and-quality` cannot be resolved.
+- Relay that message to the user. Never present the review as complete or let Codex invent a substitute standard.
+- After reporting the failure, proceed without the standard only when the user explicitly requests it, and state in the review body which standard was not applied.
+
 ## Review-Only & GitHub Posting Boundaries
 
 For every review:
@@ -79,9 +85,9 @@ For every review:
    - `**Optional:**` / `**Consider:**` — Suggestion worth considering
    - `**FYI**` — Informational context the author genuinely lacks
 5. **No praise inline:** Never post compliments as inline comments. If the PR is good, state it once in the summary body.
-6. **Model attribution:** The first line of the review summary body must attribute the review:
+6. **Model attribution:** The first line of the review summary body must dynamically identify the model and reasoning effort actually used:
    ```markdown
-   _Reviewed by OpenAI Codex (gpt-5.6-sol) (reasoning effort: high)._
+   _Reviewed by OpenAI Codex (<model>) (reasoning effort: <effort>)._
    ```
 7. **Humanized prose:** Every piece of prose posted to GitHub must meet the `humanizer` skill's standards when that skill is available. See "Humanizing Review Output" below.
 
@@ -111,6 +117,7 @@ fi
 
 if codex exec \
   -m gpt-5.6-sol \
+  -c model_reasoning_effort="high" \
   -C "$REPO" \
   --add-dir /Users/david/.agents/skills/pr-code-review-and-quality \
   -s read-only \
@@ -141,8 +148,13 @@ fi
 
 ### Model
 
-- Default: **`gpt-5.6-sol`**
-- Override with `-m` only if the user requests a different Codex model
+- Default: **`gpt-5.6-sol` with high reasoning effort**
+- Always pass `-c model_reasoning_effort="high"` unless the user requests another effort
+- Override `-m` only if the user requests another Codex model
+
+### Failure fallback
+
+For execution failures or timeouts, retry once unchanged, shorten an unusually long prompt, then lower effort from `high` to `medium` to `low`. If Sol still fails at `low`, try `gpt-5.6-terra` at `low` once and stop. Report any fallback used and use the actual fallback model and effort in the GitHub attribution. Never apply this ladder after a substantive review response.
 
 ## Method 1: Codex reads the standards file (Recommended)
 
@@ -159,6 +171,7 @@ fi
 
 if codex exec \
   -m gpt-5.6-sol \
+  -c model_reasoning_effort="high" \
   -C "$REPO" \
   --add-dir /Users/david/.agents/skills/pr-code-review-and-quality \
   -s read-only \
@@ -169,9 +182,8 @@ Do not make any code changes in the repository. Do not implement anything locall
 Do not search the general web. Network access is permitted ONLY for GitHub CLI (gh) and GitHub API calls.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
-Apply the skill named pr-code-review-and-quality.
-First, read the review standards from /Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md.
-If that file cannot be found, STOP and say the pr-code-review-and-quality skill is missing.
+Use the pr-code-review-and-quality skill at /Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md.
+If the skill is not available, immediately STOP and report that back with the path you tried. Do not invent a substitute standard.
 
 Target PR: $PR
 
@@ -192,7 +204,7 @@ Follow the review workflow in the standards:
    - Write JSON payload to a temporary file (e.g. /tmp/pr-review.json) containing:
      - commit_id (head SHA)
      - event: \"COMMENT\"
-     - body: markdown summary opening with '_Reviewed by OpenAI Codex (gpt-5.6-sol) (reasoning effort: high)._' followed by summary, verdict, blocking/should-fix/optional items, and coverage.
+     - body: markdown summary opening with dynamic attribution for the model and reasoning effort actually used, followed by summary, verdict, blocking/should-fix/optional items, and coverage.
      - comments: array of inline comments with path, line, side (RIGHT/LEFT), and body.
    - POST via: gh api repos/OWNER/REPO/pulls/NUMBER/reviews --method POST --input /tmp/pr-review.json
 7. Verify the review landed on the PR.
@@ -225,6 +237,7 @@ REVIEW_STANDARDS="$(cat "$STANDARDS")"
 
 if codex exec \
   -m gpt-5.6-sol \
+  -c model_reasoning_effort="high" \
   -C "$REPO" \
   -s read-only \
   --ephemeral \
@@ -234,7 +247,7 @@ Do not make any code changes in the repository. Do not implement anything locall
 Do not search the general web. Network access is permitted ONLY for GitHub CLI (gh) and GitHub API calls.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
-Apply the skill named pr-code-review-and-quality.
+Use the pr-code-review-and-quality skill. If the skill is not available, immediately STOP and report that back. Do not invent a substitute standard.
 Here are the standards you MUST follow:
 
 $REVIEW_STANDARDS
@@ -243,7 +256,7 @@ Target PR: $PR
 
 Review the pull request against the five axes and post the review directly to GitHub following the standards above.
 Ensure inline comments are anchored inside diff hunks and submitted in a single review with event: \"COMMENT\".
-Open the summary body with '_Reviewed by OpenAI Codex (gpt-5.6-sol) (reasoning effort: high)._'.
+Open the summary body with dynamic attribution for the Codex model and reasoning effort actually used.
 Verify the review posted, then output the review URL and a one-paragraph summary."
 then
   cat "$OUT"
@@ -266,6 +279,7 @@ Do not inspect secrets, credentials, binaries, or unrelated paths.
 
 Standards skill name: pr-code-review-and-quality
 Standards file: /Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md
+Use this skill. If it is not available, immediately STOP and report that back with the path you tried. Do not invent a substitute standard.
 (or use the injected standards)
 
 Target PR:
@@ -287,7 +301,7 @@ Review Process:
    - Move unanchored findings to the summary body
 5. Post the review to GitHub:
    - Submit as ONE review with event: "COMMENT" via gh api repos/OWNER/REPO/pulls/NUMBER/reviews
-   - Include model attribution on line 1: '_Reviewed by OpenAI Codex (gpt-5.6-sol) (reasoning effort: high)._'
+   - Include dynamic model attribution on line 1: '_Reviewed by OpenAI Codex (<model>) (reasoning effort: <effort>)._'
 6. Output:
    - Review URL on GitHub
    - One-paragraph summary of what was posted

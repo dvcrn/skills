@@ -42,6 +42,10 @@ reportable condition, never something to silently work around.
 
 Always use the `agy` CLI with `--add-dir <repo>` and `--print-timeout 10m`. Specify the target scope or range in the prompt.
 
+## Failure fallback
+
+For execution failures or timeouts, retry once unchanged, shorten an unusually long prompt, then lower Gemini 3.7 Flash one effort level at a time to low. Stop after the low-effort attempt, report any fallback used, and do not apply the ladder after a substantive audit response.
+
 ### 1. Branch Changes (Changes Against `main` or `origin/main`)
 
 When auditing changes made on a branch or PR:
@@ -51,7 +55,7 @@ agy --model "Gemini 3.7 Flash (Medium)" \
   --add-dir /path/to/repo \
   --print-timeout 10m \
   -p "This is an audit-only task. Do not make any file changes or run commands that modify the repository.
-First, load the skill 'comment-and-documentation-quality'. If this skill is not available, STOP and tell the user that this skill cannot be found.
+Use the comment-and-documentation-quality skill. If the skill is not available, immediately STOP and report that back. Do not invent a substitute standard.
 
 Target: Changes on current branch against main (or origin/main).
 
@@ -71,7 +75,7 @@ agy --model "Gemini 3.7 Flash (Medium)" \
   --add-dir /path/to/repo \
   --print-timeout 10m \
   -p "This is an audit-only task. Do not make any file changes or run commands that modify the repository.
-First, load the skill 'comment-and-documentation-quality'. If this skill is not available, STOP and tell the user that this skill cannot be found.
+Use the comment-and-documentation-quality skill. If the skill is not available, immediately STOP and report that back. Do not invent a substitute standard.
 
 Target: Uncommitted / working tree changes.
 
@@ -91,7 +95,7 @@ agy --model "Gemini 3.7 Flash (Medium)" \
   --add-dir /path/to/repo \
   --print-timeout 10m \
   -p "This is an audit-only task. Do not make any file changes or run commands that modify the repository.
-First, load the skill 'comment-and-documentation-quality'. If this skill is not available, STOP and tell the user that this skill cannot be found.
+Use the comment-and-documentation-quality skill. If the skill is not available, immediately STOP and report that back. Do not invent a substitute standard.
 
 Target: ./src and ./README.md (or entire repository)
 
@@ -108,7 +112,7 @@ agy --model "Gemini 3.7 Flash" \
   --add-dir /path/to/repo \
   --print-timeout 10m \
   -p "This is an audit-only task. Do not make any file changes or run commands that modify the repository.
-First, load the skill 'comment-and-documentation-quality'. If this skill is not available, STOP and tell the user that this skill cannot be found.
+Use the comment-and-documentation-quality skill. If the skill is not available, immediately STOP and report that back. Do not invent a substitute standard.
 
 Target commit range: main..HEAD (or last N commits)
 
@@ -178,4 +182,3 @@ Gemini outputs findings in this exact format:
   entitlement checks as the subscription block only tracks billing state.
   ```
 ```
-

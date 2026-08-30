@@ -45,6 +45,10 @@ Always use the `agy` CLI. Be explicit that Gemini is _only_ reviewing and should
 
 NOTE: ALWAYS RUN GEMINI WITH `--print-timeout 10m` AS GEMINI CAN TAKE QUITE A WHILE.
 
+## Failure fallback
+
+For execution failures or timeouts, retry once unchanged, shorten an unusually long prompt, then lower Gemini 3.7 Flash from high to medium to low. Stop after the low-effort attempt, report any fallback used, and do not apply the ladder after a substantive review response.
+
 ### Workspace access (`--add-dir`)
 
 `agy` uses `--add-dir <path>` to add a repository (or other directory) as its workspace. It does **not** have a `--workdir` flag.
@@ -60,7 +64,7 @@ This requires no `--dangerously-skip-permissions`, so attempt this first.
 Always include `--add-dir <repo>` and `--print-timeout 10m`.
 
 ```bash
-agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m -p "This is a combined code and comment review task. Do not make any code changes, just provide the review output. First, load the skill 'code-and-comment-quality' and the component skills it names: 'code-review-and-quality' and 'comment-and-documentation-quality'. If any of these skills is not available, STOP and tell the user exactly which skill can not be found and where you looked. Do not substitute your own standard. Then, review the code in ./src/my_file.ts against the five axes (Correctness, Readability, Architecture, Security, Performance) and against the comment, documentation, and commit message standards, in a single pass. Output one review using the severity labels (Critical, Nit, Optional, etc.), with comment findings anchored to the lines they concern. Do not implement the changes."
+agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m -p "This is a combined code and comment review task. Do not make any code changes, just provide the review output. Use the code-and-comment-quality aggregate and its code-review-and-quality and comment-and-documentation-quality component skills. If any skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute or continue with one component. Then, review the code in ./src/my_file.ts against the five axes (Correctness, Readability, Architecture, Security, Performance) and against the comment, documentation, and commit message standards, in a single pass. Output one review using the severity labels (Critical, Nit, Optional, etc.), with comment findings anchored to the lines they concern. Do not implement the changes."
 ```
 
 ### Method 2: Tell Gemini to read the file (Recommended)
@@ -68,7 +72,7 @@ agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10
 Let Gemini use its tools to read the standard before reviewing the target file(s).
 
 ```bash
-agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions -p "This is a combined code and comment review task. Do not make any code changes, just provide the review output. First, read /Users/david/.agents/skills/code-and-comment-quality/SKILL.md, then read the component standards it names at /Users/david/.agents/skills/code-review-and-quality/SKILL.md and /Users/david/.agents/skills/comment-and-documentation-quality/SKILL.md. If any of these files does not exist, STOP and tell the user exactly which one is missing and the path you tried. Do not substitute your own standard. Then, review the code in ./src/my_file.ts against the five axes (Correctness, Readability, Architecture, Security, Performance) and against the comment, documentation, and commit message standards, in a single pass. Output one review using the severity labels (Critical, Nit, Optional, etc.), with comment findings anchored to the lines they concern. Do not implement the changes."
+agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions -p "This is a combined code and comment review task. Do not make any code changes, just provide the review output. Use the code-and-comment-quality aggregate at /Users/david/.agents/skills/code-and-comment-quality/SKILL.md and its component skills at /Users/david/.agents/skills/code-review-and-quality/SKILL.md and /Users/david/.agents/skills/comment-and-documentation-quality/SKILL.md. If any skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute or continue with one component. Then, review the code in ./src/my_file.ts against the five axes (Correctness, Readability, Architecture, Security, Performance) and against the comment, documentation, and commit message standards, in a single pass. Output one review using the severity labels (Critical, Nit, Optional, etc.), with comment findings anchored to the lines they concern. Do not implement the changes."
 ```
 
 ### Method 3: Pass the context explicitly
@@ -84,7 +88,7 @@ REVIEW_STANDARDS=$(cat /Users/david/.agents/skills/code-review-and-quality/SKILL
 COMMENT_STANDARDS=$(cat /Users/david/.agents/skills/comment-and-documentation-quality/SKILL.md)
 
 # Run agy with the injected standards
-agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m -p "Perform a combined code and comment review on ./src/my_file.ts. Do not make any code changes. Here are the two standards you MUST follow.
+agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m -p "Perform a combined code and comment review on ./src/my_file.ts. Do not make any code changes. Use the code-and-comment-quality aggregate and its code-review-and-quality and comment-and-documentation-quality component skills. If any skill is not available, immediately STOP and report that back. Do not invent a substitute or continue with one component. Here are the two standards you MUST follow.
 
 CODE REVIEW STANDARD:
 $REVIEW_STANDARDS

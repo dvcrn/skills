@@ -42,6 +42,14 @@ load a skill, it must also tell Gemini to **STOP and state which skill is missin
 and where it looked**, rather than guessing the rules from the skill's name. Relay
 that message to the user verbatim instead of presenting the result as complete.
 
+## Self-Contained Prompts
+
+Each `agy -p` call is a separate non-interactive request. Include the relevant code, question, constraints, and prior decisions instead of forwarding a context-dependent user message without its context.
+
+## Failure fallback
+
+For execution failures or timeouts, retry once unchanged, shorten an unusually long prompt, then lower effort from medium to low. Stay on Gemini 3.7 Flash and stop after the low-effort attempt. Report any fallback used, and do not apply the ladder after a substantive response.
+
 ## How to Call Gemini
 
 ### Standard Questions (default):

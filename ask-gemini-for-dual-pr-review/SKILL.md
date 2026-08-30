@@ -121,6 +121,10 @@ Always use the `agy` CLI. Be explicit that Gemini is _only_ reviewing and postin
 
 NOTE: ALWAYS RUN GEMINI WITH `--print-timeout 10m` AS GEMINI CAN TAKE QUITE A WHILE.
 
+## Failure fallback
+
+For execution failures or timeouts, retry once unchanged, shorten an unusually long prompt, then lower Gemini 3.7 Flash from high to medium to low. Stop after the low-effort attempt, report any fallback used, and use the actual fallback model in the GitHub attribution. Do not apply the ladder after a substantive review response.
+
 ### Workspace access (`--add-dir`)
 
 `agy` uses `--add-dir <path>` to add a repository (or other directory) as its workspace. It does **not** have a `--workdir` flag.
@@ -156,7 +160,7 @@ Do not make any code changes in the repository. Do not implement anything locall
 Do not search the general web. Network access is permitted ONLY for GitHub CLI (gh) and GitHub API calls.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
-First, load the skill 'code-and-comment-quality' and the component skills it names: 'pr-code-review-and-quality' and 'comment-and-documentation-quality'. If any of these skills is not available, STOP and tell the user exactly which skill can not be found and where you looked. Do not substitute your own standard.
+Use the code-and-comment-quality aggregate and its pr-code-review-and-quality and comment-and-documentation-quality component skills. If any skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute or continue with one component.
 
 Target PR: $PR
 
@@ -213,8 +217,8 @@ Do not make any code changes in the repository. Do not implement anything locall
 Do not search the general web. Network access is permitted ONLY for GitHub CLI (gh) and GitHub API calls.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
-First, read the aggregate standard from /Users/david/.agents/skills/code-and-comment-quality/SKILL.md, then read the component standards it names at /Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md and /Users/david/.agents/skills/comment-and-documentation-quality/SKILL.md.
-If any of those files cannot be found, STOP and say exactly which skill is missing and the path you tried. Do not substitute your own standard.
+Use the code-and-comment-quality aggregate at /Users/david/.agents/skills/code-and-comment-quality/SKILL.md and its component skills at /Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md and /Users/david/.agents/skills/comment-and-documentation-quality/SKILL.md.
+If any skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute or continue with one component.
 
 Target PR: $PR
 
@@ -271,7 +275,7 @@ Do not make any code changes in the repository. Do not implement anything locall
 Do not search the general web. Network access is permitted ONLY for GitHub CLI (gh) and GitHub API calls.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
-Apply the aggregate named code-and-comment-quality, and its components pr-code-review-and-quality and comment-and-documentation-quality. If any is missing, STOP and name the missing skill and the path you tried.
+Use the code-and-comment-quality aggregate and its pr-code-review-and-quality and comment-and-documentation-quality component skills. If any skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute or continue with one component.
 Here are the two standards you MUST follow.
 
 PR REVIEW STANDARD:
@@ -302,7 +306,8 @@ Aggregate file: /Users/david/.agents/skills/code-and-comment-quality/SKILL.md
 Component files:
   /Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md
   /Users/david/.agents/skills/comment-and-documentation-quality/SKILL.md
-If any of these is missing, STOP and name it plus the path you tried.
+Use this aggregate and both component skills.
+If any skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute or continue with one component.
 (or use the injected standards)
 
 Target PR:
