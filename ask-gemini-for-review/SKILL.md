@@ -20,8 +20,8 @@ Since Gemini is running as a separate process via `agy`, you need to give it the
 1. Instructing Gemini to read the `code-review-and-quality` skill file itself.
 2. Reading the `code-review-and-quality` skill file locally and passing its contents in the prompt.
 
-**Location of the review standards:** `~/.agents/skills/code-review-and-quality/SKILL.md`
-If the skill is **not** present in this directory, instruct Gemini to search the usual skill folders such as `~/.agents/skills/`
+**Canonical path:** `/Users/david/.agents/skills/code-review-and-quality/SKILL.md`
+If the skill is missing at this path, stop and report it. Do not search broader skill trees or substitute another standard.
 
 ## Required: Report Missing Skills
 
@@ -58,7 +58,7 @@ This requires no `--dangerously-skip-permissions`, so attempt this first.
 Always include `--add-dir <repo>` and `--print-timeout 10m`.
 
 ```bash
-agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m -p "This is a code review task. Do not make any code changes, just provide the review output. Use the code-review-and-quality skill. If the skill is not available, immediately STOP and report that back. Do not invent a substitute standard. Then, review the code in ./src/my_file.ts against the five axes (Correctness, Readability, Architecture, Security, Performance). Output the review using the severity labels (Critical, Nit, Optional, etc.). Do not implement the changes."
+agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m -p "This is a code review task. Do not make any code changes, just provide the review output. Use the code-review-and-quality skill. If the skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard. Then, review the code in ./src/my_file.ts against the five axes (Correctness, Readability, Architecture, Security, Performance). Output the review using the severity labels (Critical, Nit, Optional, etc.). Do not implement the changes."
 ```
 
 ### Method 2: Tell Gemini to read the file (Recommended)
@@ -66,7 +66,7 @@ agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10
 Let Gemini use its tools to read the standard before reviewing the target file(s).
 
 ```bash
-agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions -p "This is a code review task. Do not make any code changes, just provide the review output. Use the code-review-and-quality skill at /Users/david/.agents/skills/code-review-and-quality/SKILL.md. If the skill is not available, immediately STOP and report that back with the path you tried. Do not invent a substitute standard. Then, review the code in ./src/my_file.ts against the five axes (Correctness, Readability, Architecture, Security, Performance). Output the review using the severity labels (Critical, Nit, Optional, etc.). Do not implement the changes."
+agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions -p "This is a code review task. Do not make any code changes, just provide the review output. Use the code-review-and-quality skill at /Users/david/.agents/skills/code-review-and-quality/SKILL.md. If the skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard. Then, review the code in ./src/my_file.ts against the five axes (Correctness, Readability, Architecture, Security, Performance). Output the review using the severity labels (Critical, Nit, Optional, etc.). Do not implement the changes."
 ```
 
 ### Method 3: Pass the context explicitly
@@ -80,7 +80,7 @@ STANDARDS="/Users/david/.agents/skills/code-review-and-quality/SKILL.md"
 REVIEW_STANDARDS=$(cat "$STANDARDS")
 
 # Run agy with the injected standards
-agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m -p "Perform a code review on ./src/my_file.ts. Do not make any code changes. Use the code-review-and-quality skill. If the skill is not available, immediately STOP and report that back. Do not invent a substitute standard. Here are the standards you MUST follow:
+agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m -p "Perform a code review on ./src/my_file.ts. Do not make any code changes. Use the code-review-and-quality skill. If the skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard. Here are the standards you MUST follow:
 
 $REVIEW_STANDARDS
 
@@ -105,4 +105,3 @@ By delegating to Gemini with this skill, you ensure it evaluates:
 3. **Architecture**: Module boundaries, appropriate abstractions, coupling.
 4. **Security**: Vulnerabilities, input validation, external data handling.
 5. **Performance**: Bottlenecks, N+1 query patterns, memory usage.
-```

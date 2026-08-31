@@ -152,7 +152,7 @@ Read only the review target, the code-review-and-quality standard, and directly 
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
 Use the code-review-and-quality skill at /Users/david/.agents/skills/code-review-and-quality/SKILL.md.
-If the skill is not available, immediately STOP and report that back with the path you tried. Do not invent a substitute standard.
+If the skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
 
 Then review ./src/my_file.ts against the five axes (Correctness, Readability, Architecture, Security, Performance).
 Output findings with severity labels (Critical, Nit, Optional, etc.).
@@ -195,7 +195,7 @@ Do not access the network or search the web.
 Read only the review target and directly necessary repository context.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
-Use the code-review-and-quality skill. If the skill is not available, immediately STOP and report that back. Do not invent a substitute standard.
+Use the code-review-and-quality skill. If the skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
 Here are the standards you MUST follow:
 
 $REVIEW_STANDARDS
@@ -251,7 +251,7 @@ Do not run mutating commands.
 Read only the review target, the code-review-and-quality standard, and directly necessary repository context.
 
 Use the code-review-and-quality skill at /Users/david/.agents/skills/code-review-and-quality/SKILL.md.
-If the skill is not available, immediately STOP and report that back with the path you tried. Do not invent a substitute standard.
+If the skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
 Evaluate against Correctness, Readability, Architecture, Security, Performance.
 Use severity labels. Output the review only."
 then
@@ -284,7 +284,7 @@ Do not inspect secrets, credentials, binaries, or unrelated paths.
 
 Standards skill name: code-review-and-quality
 Standards file: /Users/david/.agents/skills/code-review-and-quality/SKILL.md
-Use this skill. If it is not available, immediately STOP and report that back with the path you tried. Do not invent a substitute standard.
+Use this skill. If it is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
 (or use the injected standards)
 
 Target:

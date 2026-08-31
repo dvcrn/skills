@@ -56,7 +56,7 @@
     },
     {
       "name": "ask-gemini-for-comment-audit",
-      "description": "Delegates code comment, documentation, and commit message audits to Gemini 3.7 Flash or Gemini 3.7 Flash (Medium) via the Antigravity CLI (agy), enforcing the standards of the comment-and-documentation-quality skill.",
+      "description": "Delegates code comment, documentation, and commit message audits to Gemini 3.7 Flash (Medium) via the Antigravity CLI (agy), enforcing the comment-and-documentation-quality skill.",
       "source": "./plugins/ask-gemini-for-comment-audit"
     },
     {

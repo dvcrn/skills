@@ -1,11 +1,11 @@
 ---
 name: ask-gemini-for-comment-audit
-description: Delegates code comment, documentation, and commit message audits to Gemini 3.7 Flash or Gemini 3.7 Flash (Medium) via the Antigravity CLI (agy), enforcing the standards of the comment-and-documentation-quality skill. Use to sweep repositories, directories, branches, unstaged changes, or commit ranges for AI comment fluff, over-explanation, ghost commentary, and em dashes.
+description: Delegates code comment, documentation, and commit message audits to Gemini 3.7 Flash (Medium) via the Antigravity CLI (agy), enforcing the comment-and-documentation-quality skill. Use for repositories, branches, working tree changes, files, or commit ranges.
 ---
 
 # Ask Gemini for Comment & Commit Audit
 
-This skill delegates a code comment, documentation, and commit message hygiene sweep to Gemini 3.7 Flash (or Flash Medium) using the `agy` CLI. It combines Gemini's semantic analysis with the standards in `comment-and-documentation-quality`.
+This skill delegates a code comment, documentation, and commit message hygiene sweep to Gemini 3.7 Flash (Medium) using the `agy` CLI. It combines Gemini's semantic analysis with the standards in `comment-and-documentation-quality`.
 
 Do not extract or pipe raw `git diff` text into the prompt. Gemini runs in the workspace and inspects the repository, git ranges, and full files itself.
 
@@ -26,7 +26,20 @@ Do not extract or pipe raw `git diff` text into the prompt. Gemini runs in the w
 
 Always use the **`comment-and-documentation-quality`** skill as the review standard.
 
----
+- **Skill name:** `comment-and-documentation-quality`
+- **Canonical path:** `/Users/david/.agents/skills/comment-and-documentation-quality/SKILL.md`
+
+Fail closed before launch:
+
+```bash
+STANDARDS="/Users/david/.agents/skills/comment-and-documentation-quality/SKILL.md"
+if [ ! -f "$STANDARDS" ]; then
+  echo "comment-and-documentation-quality skill not found at $STANDARDS" >&2
+  exit 1
+fi
+```
+
+Do not search broader skill trees or substitute another standard.
 
 ## Required: Report Missing Skills
 
@@ -40,11 +53,47 @@ reportable condition, never something to silently work around.
 
 ## How to Call Gemini for Audit
 
-Always use the `agy` CLI with `--add-dir <repo>` and `--print-timeout 10m`. Specify the target scope or range in the prompt.
+Always use the `agy` CLI with `--add-dir <repo>`, `--add-dir /Users/david/.agents/skills/comment-and-documentation-quality`, and `--print-timeout 10m`. Specify the target scope or range in the prompt.
 
 ## Failure fallback
 
 For execution failures or timeouts, retry once unchanged, shorten an unusually long prompt, then lower Gemini 3.7 Flash one effort level at a time to low. Stop after the low-effort attempt, report any fallback used, and do not apply the ladder after a substantive audit response.
+
+### Standards access methods
+
+1. Prefer asking Gemini to use the named skill directly, as shown in the target examples below.
+2. To make Gemini read the canonical file directly, add the skill directory, use `--dangerously-skip-permissions`, and name the canonical path in the prompt.
+
+```bash
+agy --model "Gemini 3.7 Flash (Medium)" \
+  --add-dir /path/to/repo \
+  --add-dir /Users/david/.agents/skills/comment-and-documentation-quality \
+  --print-timeout 10m \
+  --dangerously-skip-permissions \
+  -p "This is an audit-only task. Do not modify repository state.
+Use the comment-and-documentation-quality skill at /Users/david/.agents/skills/comment-and-documentation-quality/SKILL.md. If the skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
+
+Target: <files, directory, working tree, branch comparison, or commit range>
+Output findings only."
+```
+
+3. To inject the standard, read it only after the preflight check and include both the skill name and contents in the prompt:
+
+```bash
+AUDIT_STANDARD="$(cat "$STANDARDS")"
+
+agy --model "Gemini 3.7 Flash (Medium)" \
+  --add-dir /path/to/repo \
+  --print-timeout 10m \
+  -p "This is an audit-only task. Do not modify repository state.
+Use the comment-and-documentation-quality skill. If the skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
+
+COMMENT AND DOCUMENTATION STANDARD:
+$AUDIT_STANDARD
+
+Target: <files, directory, working tree, branch comparison, or commit range>
+Output findings only."
+```
 
 ### 1. Branch Changes (Changes Against `main` or `origin/main`)
 
@@ -53,9 +102,10 @@ When auditing changes made on a branch or PR:
 ```bash
 agy --model "Gemini 3.7 Flash (Medium)" \
   --add-dir /path/to/repo \
+  --add-dir /Users/david/.agents/skills/comment-and-documentation-quality \
   --print-timeout 10m \
   -p "This is an audit-only task. Do not make any file changes or run commands that modify the repository.
-Use the comment-and-documentation-quality skill. If the skill is not available, immediately STOP and report that back. Do not invent a substitute standard.
+Use the comment-and-documentation-quality skill. If the skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
 
 Target: Changes on current branch against main (or origin/main).
 
@@ -73,9 +123,10 @@ When auditing uncommitted or staged work in progress:
 ```bash
 agy --model "Gemini 3.7 Flash (Medium)" \
   --add-dir /path/to/repo \
+  --add-dir /Users/david/.agents/skills/comment-and-documentation-quality \
   --print-timeout 10m \
   -p "This is an audit-only task. Do not make any file changes or run commands that modify the repository.
-Use the comment-and-documentation-quality skill. If the skill is not available, immediately STOP and report that back. Do not invent a substitute standard.
+Use the comment-and-documentation-quality skill. If the skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
 
 Target: Uncommitted / working tree changes.
 
@@ -93,9 +144,10 @@ When auditing a specific path or the entire repository:
 ```bash
 agy --model "Gemini 3.7 Flash (Medium)" \
   --add-dir /path/to/repo \
+  --add-dir /Users/david/.agents/skills/comment-and-documentation-quality \
   --print-timeout 10m \
   -p "This is an audit-only task. Do not make any file changes or run commands that modify the repository.
-Use the comment-and-documentation-quality skill. If the skill is not available, immediately STOP and report that back. Do not invent a substitute standard.
+Use the comment-and-documentation-quality skill. If the skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
 
 Target: ./src and ./README.md (or entire repository)
 
@@ -108,11 +160,12 @@ Output findings strictly using the structured report format."
 When auditing commit messages across a branch or range (e.g. `main..HEAD` or `HEAD~5..HEAD`):
 
 ```bash
-agy --model "Gemini 3.7 Flash" \
+agy --model "Gemini 3.7 Flash (Medium)" \
   --add-dir /path/to/repo \
+  --add-dir /Users/david/.agents/skills/comment-and-documentation-quality \
   --print-timeout 10m \
   -p "This is an audit-only task. Do not make any file changes or run commands that modify the repository.
-Use the comment-and-documentation-quality skill. If the skill is not available, immediately STOP and report that back. Do not invent a substitute standard.
+Use the comment-and-documentation-quality skill. If the skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
 
 Target commit range: main..HEAD (or last N commits)
 

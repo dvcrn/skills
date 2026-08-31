@@ -145,7 +145,7 @@ Do not make any code changes in the repository. Do not implement anything locall
 Do not search the general web. Network access is permitted ONLY for GitHub CLI (gh) and GitHub API calls.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
-Use the pr-code-review-and-quality skill. If the skill is not available, immediately STOP and report that back. Do not invent a substitute standard.
+Use the pr-code-review-and-quality skill. If the skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
 
 Target PR: $PR
 
@@ -197,7 +197,7 @@ Do not search the general web. Network access is permitted ONLY for GitHub CLI (
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
 Use the pr-code-review-and-quality skill at /Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md.
-If the skill is not available, immediately STOP and report that back with the path you tried. Do not invent a substitute standard.
+If the skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
 
 Target PR: $PR
 
@@ -249,7 +249,7 @@ Do not make any code changes in the repository. Do not implement anything locall
 Do not search the general web. Network access is permitted ONLY for GitHub CLI (gh) and GitHub API calls.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
-Use the pr-code-review-and-quality skill. If the skill is not available, immediately STOP and report that back. Do not invent a substitute standard.
+Use the pr-code-review-and-quality skill. If the skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
 Here are the standards you MUST follow:
 
 $REVIEW_STANDARDS
@@ -272,7 +272,7 @@ Do not inspect secrets, credentials, binaries, or unrelated paths.
 
 Standards skill name: pr-code-review-and-quality
 Standards file: /Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md
-Use this skill. If it is not available, immediately STOP and report that back with the path you tried. Do not invent a substitute standard.
+Use this skill. If it is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
 (or use the injected standards)
 
 Target PR:

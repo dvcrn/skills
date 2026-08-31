@@ -60,7 +60,7 @@ if codex exec \
   "This is a comment, documentation, and commit message audit only.
 Do not modify files, commits, or repository state. Do not access the network.
 Use the comment-and-documentation-quality skill at /Users/david/.agents/skills/comment-and-documentation-quality/SKILL.md.
-If the skill is not available, immediately STOP and report that back with the path you tried. Do not invent a substitute standard.
+If the skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
 
 Target: <files, directory, working tree, branch comparison, or commit range>
 

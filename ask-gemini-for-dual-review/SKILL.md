@@ -88,7 +88,7 @@ REVIEW_STANDARDS=$(cat /Users/david/.agents/skills/code-review-and-quality/SKILL
 COMMENT_STANDARDS=$(cat /Users/david/.agents/skills/comment-and-documentation-quality/SKILL.md)
 
 # Run agy with the injected standards
-agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m -p "Perform a combined code and comment review on ./src/my_file.ts. Do not make any code changes. Use the code-and-comment-quality aggregate and its code-review-and-quality and comment-and-documentation-quality component skills. If any skill is not available, immediately STOP and report that back. Do not invent a substitute or continue with one component. Here are the two standards you MUST follow.
+agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m -p "Perform a combined code and comment review on ./src/my_file.ts. Do not make any code changes. Use the code-and-comment-quality aggregate and its code-review-and-quality and comment-and-documentation-quality component skills. If any skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute or continue with one component. Here are the two standards you MUST follow.
 
 CODE REVIEW STANDARD:
 $REVIEW_STANDARDS
@@ -118,4 +118,3 @@ By delegating to Gemini with this skill, you ensure it evaluates:
 4. **Security**: Vulnerabilities, input validation, external data handling.
 5. **Performance**: Bottlenecks, N+1 query patterns, memory usage.
 6. **Comments & Documentation**: Signal-free commentary, restated code, ghost commentary about what changed, narrative fluff, and the punctuation and tone rules from `comment-and-documentation-quality`.
-```

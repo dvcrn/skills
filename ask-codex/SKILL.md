@@ -171,8 +171,8 @@ State network policy explicitly in every prompt:
 
 ## Important Flags
 
-- `-m gpt-5.6-sol` — skill default model family
-- `-c model_reasoning_effort="medium|high"` — medium normally, high for reviews
+- `-m gpt-5.6-sol`: Skill default model family.
+- `-c model_reasoning_effort="medium|high"`: Medium normally, high for reviews.
 - `-C <path>` — primary workspace / working root
 - `--add-dir <path>` — additional writable dirs (narrowest path only)
 - `-s read-only|workspace-write` — always set explicitly; never `danger-full-access`
