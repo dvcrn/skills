@@ -1,0 +1,9 @@
+{
+  "name": "github-comment-quality",
+  "description": "Use whenever creating, reviewing, or commenting on GitHub pull requests, issues, discussions, or review threads. Enforces high-signal technical brevity, provides concise templates, eliminates AI execution diaries, defensiveness, report bloat, and bot watermarks, and bans em dashes.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

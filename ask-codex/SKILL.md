@@ -87,7 +87,7 @@ codex exec \
   -m gpt-5.6-sol \
   -c model_reasoning_effort="medium" \
   -C /path/to/repo \
-  --add-dir /Users/david/.agents/skills/code-review-and-quality \
+  --add-dir ~/.agents/skills/code-review-and-quality \
   -s read-only \
   --ephemeral \
   -o "$OUT" \
@@ -103,7 +103,7 @@ Your interactive Codex config may default to a more permissive sandbox (includin
 Only these two modes are allowed by this skill:
 
 | Mode | When to use |
-|---|---|
+| --- | --- |
 | `read-only` | **Default.** Questions, research, review, analysis |
 | `workspace-write` | Implementation tasks that need file edits inside the workspace |
 
@@ -127,6 +127,7 @@ codex exec ... -o "$OUT" "..."
 ```
 
 Rules:
+
 - Do **not** reuse a fixed shared path like `/tmp/codex-last-message.txt`
 - Read `$OUT` only after successful command completion
 - Treat missing output as failure, not as an empty answer
@@ -268,6 +269,7 @@ codex exec \
 Prefer a **fresh** `codex exec` for most agent delegations.
 
 If you must resume:
+
 - Prefer an explicit session ID over `--last`
 - Avoid `--last` when concurrent runs are possible
 - Reassert sandbox intent, scope, and action constraints in the resume prompt

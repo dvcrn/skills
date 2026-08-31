@@ -43,9 +43,10 @@ gh pr view NUMBER --repo OWNER/REPO --json number,title,state,isDraft,author,bas
 Always use the **`pr-code-review-and-quality`** skill as the review standard.
 
 - **Skill name:** `pr-code-review-and-quality`
-- **Canonical path:** `/Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md`
+- **Canonical path:** `~/.agents/skills/pr-code-review-and-quality/SKILL.md`
 
 **Fail closed:**
+
 1. Resolve the standards file at the canonical path before launch (or inject its contents)
 2. If the file is missing, **STOP** and tell the user the `pr-code-review-and-quality` skill cannot be found
 3. Do **not** search broader skill trees for alternate copies
@@ -86,9 +87,11 @@ For every review:
    - `**FYI**` — Informational context the author genuinely lacks
 5. **No praise inline:** Never post compliments as inline comments. If the PR is good, state it once in the summary body.
 6. **Model attribution:** The first line of the review summary body must dynamically identify the model and reasoning effort actually used:
+
    ```markdown
    _Reviewed by OpenAI Codex (<model>) (reasoning effort: <effort>)._
    ```
+
 7. **Humanized prose:** Every piece of prose posted to GitHub must meet the `humanizer` skill's standards when that skill is available. See "Humanizing Review Output" below.
 
 ## Humanizing Review Output
@@ -106,7 +109,7 @@ Use this envelope for invoking Codex:
 ```bash
 OUT="$(mktemp -t codex-pr-review.XXXXXX)"
 REPO="/path/to/repo"
-STANDARDS="/Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md"
+STANDARDS="${HOME}/.agents/skills/pr-code-review-and-quality/SKILL.md"
 PR="123" # Must be resolved: bare number, owner/repo#123, or URL
 
 # Fail closed if standards are missing
@@ -119,7 +122,7 @@ if codex exec \
   -m gpt-5.6-sol \
   -c model_reasoning_effort="high" \
   -C "$REPO" \
-  --add-dir /Users/david/.agents/skills/pr-code-review-and-quality \
+  --add-dir "${HOME}/.agents/skills/pr-code-review-and-quality" \
   -s read-only \
   --ephemeral \
   -o "$OUT" \
@@ -142,7 +145,7 @@ fi
 3. Always unique `-o` via `mktemp`
 4. Always prefer `--ephemeral`
 5. Always pass skill name `pr-code-review-and-quality` in the prompt
-6. `--add-dir` only for the standards skill dir (`/Users/david/.agents/skills/pr-code-review-and-quality`)
+6. `--add-dir` only for the standards skill dir (`~/.agents/skills/pr-code-review-and-quality`)
 7. Read `$OUT` only after successful exit
 8. Clean up the temp file after relaying (success or handled failure)
 
@@ -161,7 +164,7 @@ For execution failures or timeouts, retry once unchanged, shorten an unusually l
 ```bash
 OUT="$(mktemp -t codex-pr-review.XXXXXX)"
 REPO="/path/to/repo"
-STANDARDS="/Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md"
+STANDARDS="${HOME}/.agents/skills/pr-code-review-and-quality/SKILL.md"
 PR="123" # e.g. 123, owner/repo#123, or https://github.com/owner/repo/pull/123
 
 if [ ! -f "$STANDARDS" ]; then
@@ -173,7 +176,7 @@ if codex exec \
   -m gpt-5.6-sol \
   -c model_reasoning_effort="high" \
   -C "$REPO" \
-  --add-dir /Users/david/.agents/skills/pr-code-review-and-quality \
+  --add-dir "${HOME}/.agents/skills/pr-code-review-and-quality" \
   -s read-only \
   --ephemeral \
   -o "$OUT" \
@@ -182,7 +185,7 @@ Do not make any code changes in the repository. Do not implement anything locall
 Do not search the general web. Network access is permitted ONLY for GitHub CLI (gh) and GitHub API calls.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
-Use the pr-code-review-and-quality skill at /Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md.
+Use the pr-code-review-and-quality skill.
 If the skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
 
 Target PR: $PR
@@ -225,7 +228,7 @@ fi
 ```bash
 OUT="$(mktemp -t codex-pr-review.XXXXXX)"
 REPO="/path/to/repo"
-STANDARDS="/Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md"
+STANDARDS="${HOME}/.agents/skills/pr-code-review-and-quality/SKILL.md"
 PR="123"
 
 if [ ! -f "$STANDARDS" ]; then
@@ -278,7 +281,7 @@ Do not search the general web. Network access is permitted ONLY for GitHub CLI (
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
 Standards skill name: pr-code-review-and-quality
-Standards file: /Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md
+Standards file: ~/.agents/skills/pr-code-review-and-quality/SKILL.md
 Use this skill. If it is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
 (or use the injected standards)
 
@@ -321,7 +324,7 @@ Before launch:
 
 - [ ] PR target is explicitly provided (if not, STOP and ask the user)
 - [ ] PR target resolved to OWNER, REPO, NUMBER
-- [ ] Standards file exists at canonical path `/Users/david/.agents/skills/pr-code-review-and-quality/SKILL.md` (or injected)
+- [ ] Standards file exists at canonical path `~/.agents/skills/pr-code-review-and-quality/SKILL.md` (or injected)
 - [ ] `pr-code-review-and-quality` skill name passed in prompt
 - [ ] `-s read-only` set
 - [ ] `-C` points at the repo under review

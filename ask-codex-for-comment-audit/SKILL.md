@@ -12,7 +12,7 @@ Delegate a read-only comment, documentation, and commit message audit to local C
 Always apply:
 
 - Skill: `comment-and-documentation-quality`
-- Path: `/Users/david/.agents/skills/comment-and-documentation-quality/SKILL.md`
+- Path: `~/.agents/skills/comment-and-documentation-quality/SKILL.md`
 
 Fail closed before launch if the file is missing. Every prompt must also require Codex to stop and name the missing skill and attempted path rather than inventing a substitute standard. Relay that failure to the user. Proceed without the standard only after an explicit user request, and state which standard was not applied.
 
@@ -42,7 +42,7 @@ Report any fallback used. Do not apply the ladder after a substantive audit resp
 ```bash
 OUT="$(mktemp -t codex-comment-audit.XXXXXX)"
 REPO="/path/to/repo"
-STANDARDS="/Users/david/.agents/skills/comment-and-documentation-quality/SKILL.md"
+STANDARDS="${HOME}/.agents/skills/comment-and-documentation-quality/SKILL.md"
 
 if [ ! -f "$STANDARDS" ]; then
   echo "comment-and-documentation-quality skill not found at $STANDARDS" >&2
@@ -52,14 +52,15 @@ fi
 if codex exec \
   -m gpt-5.6-sol \
   -c model_reasoning_effort="high" \
+  -c web_search="disabled" \
   -C "$REPO" \
-  --add-dir /Users/david/.agents/skills/comment-and-documentation-quality \
+  --add-dir "${HOME}/.agents/skills/comment-and-documentation-quality" \
   -s read-only \
   --ephemeral \
   -o "$OUT" \
   "This is a comment, documentation, and commit message audit only.
 Do not modify files, commits, or repository state. Do not access the network.
-Use the comment-and-documentation-quality skill at /Users/david/.agents/skills/comment-and-documentation-quality/SKILL.md.
+Use the comment-and-documentation-quality skill.
 If the skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
 
 Target: <files, directory, working tree, branch comparison, or commit range>

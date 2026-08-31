@@ -52,12 +52,14 @@ For execution failures or timeouts, retry once unchanged, shorten an unusually l
 
 ## How to Call Gemini
 
-### Standard Questions (default):
+### Standard Questions (default)
+
 ```bash
 agy --model "Gemini 3.7 Flash (Medium)" --print-timeout 10m -p "your prompt here"
 ```
 
-### Codebase Tasks:
+### Codebase Tasks
+
 ```bash
 agy --model "Gemini 3.7 Flash (Medium)" --add-dir /path/to/repo --print-timeout 10m -p "your prompt here"
 ```
@@ -69,7 +71,7 @@ agy --model "Gemini 3.7 Flash (Medium)" --add-dir /path/to/repo --print-timeout 
 - Pass `--add-dir` for **every path** Gemini needs to read or write.
 - Include the target repository, and any additional directories required for the task (e.g. skill folders if they live outside the repo).
 - Repeatable: pass multiple `--add-dir` flags when more than one path is needed.
-- Example: `agy --add-dir /Users/david/src/squads --print-timeout 10m ...`
+- Example: `agy --add-dir /path/to/repo --print-timeout 10m ...`
 
 ### Timeouts
 

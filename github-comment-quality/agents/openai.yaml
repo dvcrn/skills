@@ -1,0 +1,7 @@
+---
+interface:
+  display_name: "GitHub Comment Quality"
+  short_description: "Concise standards for GitHub communication"
+  default_prompt: >-
+    Use $github-comment-quality to draft or review concise, high-signal GitHub
+    comments, PR descriptions, and issue updates.

@@ -5,116 +5,72 @@ description: Delegates a combined code and comment review to Gemini 3.7 Flash (H
 
 # Ask Gemini for Dual Review
 
-This skill delegates a comprehensive code review to Gemini 3.7 Flash (High) using the `agy` CLI, judging the code and the prose written around it in a single pass. It combines Gemini's high reasoning capabilities with the `code-and-comment-quality` aggregate, which loads both `code-review-and-quality` and `comment-and-documentation-quality`.
-
-For code-only review, use `ask-gemini-for-review`. For a comment audit on its own, use `ask-gemini-for-comment-audit`.
+Delegate a combined five-axis code review and comment/documentation audit to Gemini 3.7 Flash (High) using the `agy` CLI, enforcing `code-and-comment-quality`.
 
 ## When to Use
 
-- You need a thorough review of a file, branch, or set of local changes that covers both the code and its comments, docstrings, and commit messages.
-- You want a second, highly capable AI perspective (Gemini) with high reasoning effort evaluating correctness, readability, architecture, security, performance, and comment quality together.
-- You would otherwise run `ask-gemini-for-review` and `ask-gemini-for-comment-audit` back to back and reconcile two reports by hand.
+- To audit both implementation quality (correctness, architecture, security, performance) and prose quality (docstrings, comments, commit messages) in a single pass.
+- To evaluate code changes alongside documentation and commit message history.
+- To produce one unified review report instead of two separate passes.
 
-## How it Works
+## Boundaries & Constraints
 
-Since Gemini is running as a separate process via `agy`, you need to give it the context of your review standards. You can achieve this by either:
-
-1. Instructing Gemini to read the `code-and-comment-quality` skill file itself, and the component skills it names.
-2. Reading those skill files locally and passing their contents in the prompt.
-
-**Location of the standards:**
-
-- `~/.agents/skills/code-and-comment-quality/SKILL.md` (the aggregate)
-- `~/.agents/skills/code-review-and-quality/SKILL.md` (component)
-- `~/.agents/skills/comment-and-documentation-quality/SKILL.md` (component)
-
-If a skill is **not** present in this directory, instruct Gemini to search the usual skill folders such as `~/.agents/skills/`.
-
-## Required: Report Missing Skills
-
-Every invocation must tell Gemini to stop and report rather than improvise a standard it cannot find.
-
-- The prompt must instruct Gemini to **STOP and state which skill is missing, and where it looked**, if the aggregate or either component cannot be resolved.
-- Relay that message to the user verbatim. Never present a review as complete when a standard was missing.
-- Never let Gemini substitute its own idea of the standard, and never let it continue with one component when both were required.
-- If the user has been told and still wants the review, rerun with the skills that do resolve and require Gemini to state in its output which standard was not applied.
-
-## How to Call Gemini for Review
-
-Always use the `agy` CLI. Be explicit that Gemini is _only_ reviewing and should not make any code changes.
-
-NOTE: ALWAYS RUN GEMINI WITH `--print-timeout 10m` AS GEMINI CAN TAKE QUITE A WHILE.
-
-## Failure fallback
-
-For execution failures or timeouts, retry once unchanged, shorten an unusually long prompt, then lower Gemini 3.7 Flash from high to medium to low. Stop after the low-effort attempt, report any fallback used, and do not apply the ladder after a substantive review response.
-
-### Workspace access (`--add-dir`)
-
-`agy` uses `--add-dir <path>` to add a repository (or other directory) as its workspace. It does **not** have a `--workdir` flag.
-
-- Pass `--add-dir` for **every path** Gemini needs to read or write.
-- Include the target repository, and any additional directories required for the review (e.g. skill folders if they live outside the repo).
-- Example: `agy --add-dir /Users/david/src/squads --print-timeout 10m ...`
-
-### Method 1: Tell Gemini to use the skill directly
-
-This requires no `--dangerously-skip-permissions`, so attempt this first.
-
-Always include `--add-dir <repo>` and `--print-timeout 10m`.
+- **Review only:** Gemini must not modify code, edit files, or execute mutating commands.
+- **No general web search:** Restrict review to local repository context and loaded standards.
+- **Read scope:** Do not inspect secrets, credentials, `.env` files, private keys, binaries, or unrelated paths.
+- **Fail closed:** Verify all required standards exist before launch:
 
 ```bash
-agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m -p "This is a combined code and comment review task. Do not make any code changes, just provide the review output. Use the code-and-comment-quality aggregate and its code-review-and-quality and comment-and-documentation-quality component skills. If any skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute or continue with one component. Then, review the code in ./src/my_file.ts against the five axes (Correctness, Readability, Architecture, Security, Performance) and against the comment, documentation, and commit message standards, in a single pass. Output one review using the severity labels (Critical, Nit, Optional, etc.), with comment findings anchored to the lines they concern. Do not implement the changes."
-```
-
-### Method 2: Tell Gemini to read the file (Recommended)
-
-Let Gemini use its tools to read the standard before reviewing the target file(s).
-
-```bash
-agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions -p "This is a combined code and comment review task. Do not make any code changes, just provide the review output. Use the code-and-comment-quality aggregate at /Users/david/.agents/skills/code-and-comment-quality/SKILL.md and its component skills at /Users/david/.agents/skills/code-review-and-quality/SKILL.md and /Users/david/.agents/skills/comment-and-documentation-quality/SKILL.md. If any skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute or continue with one component. Then, review the code in ./src/my_file.ts against the five axes (Correctness, Readability, Architecture, Security, Performance) and against the comment, documentation, and commit message standards, in a single pass. Output one review using the severity labels (Critical, Nit, Optional, etc.), with comment findings anchored to the lines they concern. Do not implement the changes."
-```
-
-### Method 3: Pass the context explicitly
-
-If you prefer to inject the context directly into the prompt without relying on Gemini's read tool:
-
-```bash
-# Read both standards, failing loudly if either is missing
-for f in code-review-and-quality comment-and-documentation-quality; do
-  [ -f "/Users/david/.agents/skills/$f/SKILL.md" ] || { echo "missing skill: $f" >&2; exit 1; }
+for f in code-and-comment-quality code-review-and-quality comment-and-documentation-quality; do
+  if [ ! -f "${HOME}/.agents/skills/$f/SKILL.md" ]; then
+    echo "Required skill not found: $f" >&2
+    exit 1
+  fi
 done
-REVIEW_STANDARDS=$(cat /Users/david/.agents/skills/code-review-and-quality/SKILL.md)
-COMMENT_STANDARDS=$(cat /Users/david/.agents/skills/comment-and-documentation-quality/SKILL.md)
-
-# Run agy with the injected standards
-agy --model "Gemini 3.7 Flash (High)" --add-dir /path/to/repo --print-timeout 10m -p "Perform a combined code and comment review on ./src/my_file.ts. Do not make any code changes. Use the code-and-comment-quality aggregate and its code-review-and-quality and comment-and-documentation-quality component skills. If any skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute or continue with one component. Here are the two standards you MUST follow.
-
-CODE REVIEW STANDARD:
-$REVIEW_STANDARDS
-
-COMMENT AND DOCUMENTATION STANDARD:
-$COMMENT_STANDARDS
-
-Review the target against the five axes and against the comment and documentation standard in a single pass. Use the severity labels and emit one review, not two. Output the review only."
 ```
 
-### Important Flags
+- **Report missing skills:** The prompt must instruct Gemini to stop immediately and report missing paths if any standard cannot be resolved. Do not invent substitute standards.
 
-- `--model "Gemini 3.7 Flash (High)"` — Always use the high reasoning effort model for code reviews.
-- `--add-dir <path>` — Add each directory Gemini needs to access. There is no `--workdir` flag; use `--add-dir` for the repo and any other required paths.
-- `--print-timeout 10m` — Always set a 10 minute print timeout; reviews can take a while.
-- `--dangerously-skip-permissions` — Required when using Method 2 so Gemini can read the standards file and the target code without getting blocked by permission prompts.
+## Canonical Invocation
 
-Always pass `--add-dir` for relevant paths and `--print-timeout 10m` on every delegated review.
+Local read-only reviews do not require permission bypass:
 
-## Enforced Review Axes
+```bash
+agy --model "Gemini 3.7 Flash (High)" \
+  --add-dir /path/to/repo \
+  --add-dir "${HOME}/.agents/skills/code-and-comment-quality" \
+  --add-dir "${HOME}/.agents/skills/code-review-and-quality" \
+  --add-dir "${HOME}/.agents/skills/comment-and-documentation-quality" \
+  --print-timeout 10m \
+  -p "This is a combined code and comment review task.
+Do not make code changes, edit files, or run mutating commands.
+Do not search the web. Do not inspect secrets, credentials, or unrelated paths.
+Read only the review target, the standards, and necessary repository context.
 
-By delegating to Gemini with this skill, you ensure it evaluates:
+Use the code-and-comment-quality aggregate and its component skills.
+If any skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
 
-1. **Correctness**: Bugs, edge cases, error handling, test validity.
-2. **Readability & Simplicity**: Naming, complexity, dead code artifacts.
-3. **Architecture**: Module boundaries, appropriate abstractions, coupling.
-4. **Security**: Vulnerabilities, input validation, external data handling.
-5. **Performance**: Bottlenecks, N+1 query patterns, memory usage.
-6. **Comments & Documentation**: Signal-free commentary, restated code, ghost commentary about what changed, narrative fluff, and the punctuation and tone rules from `comment-and-documentation-quality`.
+Target: <target files, working tree changes, or branch comparison>
+
+Review the target against the five code review axes (Correctness, Readability, Architecture, Security, Performance) and the comment, documentation, and commit message standards in a single pass.
+Format findings using standard severity prefixes: Critical:, Nit:, Optional: / Consider:, FYI:, or unprefixed for required changes."
+```
+
+*(For general `agy` CLI flags and options, see the `ask-gemini` skill).*
+
+## Target Prompt Guidance
+
+- **Specific Files:**
+  `Target: ./src/auth.ts and ./src/session.ts. Read the complete files and evaluate both implementation and docstrings/comments.`
+- **Working Tree (Uncommitted Changes):**
+  `Target: Uncommitted working tree changes. Inspect git status and git diff to identify modified files, then read the complete files in context.`
+- **Branch / PR Diff & Commit History:**
+  `Target: Current branch against main (or origin/main). Inspect modified files via git diff main...HEAD and commit messages via git log main..HEAD. Review code against the five axes and commit messages/comments against the documentation standard.`
+
+## Failure Fallback
+
+For execution failures or timeouts:
+
+1. Retry once unchanged.
+2. Shorten an unusually long prompt without altering standards, target, or review axes.
+3. Lower Gemini 3.7 Flash from High to Medium to Low. Stop after Low and report any fallback used.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Deslop Articles"
+  short_description: "Rewrite padded articles into useful prose"
+  default_prompt: "Use $deslop-articles to rewrite this article into concise, reader-focused prose."

@@ -60,6 +60,11 @@
       "source": "./plugins/ask-gemini-for-comment-audit"
     },
     {
+      "name": "ask-gemini-for-deslop-review",
+      "description": "Delegates article and technical documentation deslop reviews and rewrites to Gemini 3.7 Flash (Medium) via the Antigravity CLI (agy), enforcing the deslop-articles skill.",
+      "source": "./plugins/ask-gemini-for-deslop-review"
+    },
+    {
       "name": "ask-gemini-for-dual-pr-review",
       "description": "Delegates a combined GitHub PR code and comment review to Gemini 3.7 Flash (High) via the Antigravity CLI (`agy`), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass.",
       "source": "./plugins/ask-gemini-for-dual-pr-review"
@@ -100,6 +105,11 @@
       "source": "./plugins/comment-and-documentation-quality"
     },
     {
+      "name": "deslop-articles",
+      "description": "Use whenever creating, editing, or reviewing any public-facing article, guide, tutorial, or blog post. Eliminates AI padding, synthetic tropes, defensive bloat, and misplaced plumbing trivia while preserving technical depth, concrete constraints, tested commands, and authentic human voice.",
+      "source": "./plugins/deslop-articles"
+    },
+    {
       "name": "encrypt-for-cloud-agent",
       "description": "Encrypt a secret for cloud agents using the shared cloud age key, producing a value ready to paste into fnox.cloud.toml.",
       "source": "./plugins/encrypt-for-cloud-agent"
@@ -113,6 +123,11 @@
       "name": "gh",
       "description": "Create GitHub issues and pull requests using the GitHub CLI (gh). Always write the body to a file in .tmp/ and pass it via --body-file so descriptions are descriptive and consistent.",
       "source": "./plugins/gh"
+    },
+    {
+      "name": "github-comment-quality",
+      "description": "Use whenever creating, reviewing, or commenting on GitHub pull requests, issues, discussions, or review threads. Enforces high-signal technical brevity, provides concise templates, eliminates AI execution diaries, defensiveness, report bloat, and bot watermarks, and bans em dashes.",
+      "source": "./plugins/github-comment-quality"
     },
     {
       "name": "install-posthog-elixir",

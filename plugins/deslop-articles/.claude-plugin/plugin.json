@@ -1,0 +1,9 @@
+{
+  "name": "deslop-articles",
+  "description": "Use whenever creating, editing, or reviewing any public-facing article, guide, tutorial, or blog post. Eliminates AI padding, synthetic tropes, defensive bloat, and misplaced plumbing trivia while preserving technical depth, concrete constraints, tested commands, and authentic human voice.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

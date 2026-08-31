@@ -1,0 +1,7 @@
+---
+interface:
+  display_name: "Ask Gemini for Deslop Review"
+  short_description: "Delegate article deslop review and rewrite to Gemini"
+  default_prompt: >-
+    Use $ask-gemini-for-deslop-review to have Gemini review or rewrite this
+    article using the deslop-articles standard.

@@ -32,6 +32,7 @@
         "ask-gemini-for-pr-review",
         "ask-gemini-for-dual-pr-review",
         "ask-gemini-for-comment-audit",
+        "ask-gemini-for-deslop-review",
         "ask-codex",
         "ask-codex-for-review",
         "ask-codex-for-dual-review",
@@ -42,6 +43,8 @@
         "address-pr-review-comments",
         "triage-pr-review-comments",
         "loop-fix-github-review",
+        "deslop-articles",
+        "github-comment-quality",
         "comment-and-documentation-quality",
         "code-and-comment-quality"
       ]

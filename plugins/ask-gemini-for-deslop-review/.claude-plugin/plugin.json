@@ -1,0 +1,9 @@
+{
+  "name": "ask-gemini-for-deslop-review",
+  "description": "Delegates article and technical documentation deslop reviews and rewrites to Gemini 3.7 Flash (Medium) via the Antigravity CLI (agy), enforcing the deslop-articles skill.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

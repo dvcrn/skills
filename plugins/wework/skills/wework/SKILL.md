@@ -90,6 +90,6 @@ If authentication fails, re-check `WEWORK_USERNAME` and `WEWORK_PASSWORD` values
 
 ## Version Notes
 
-`/Users/david/src/wework-cli/README.md` includes older examples that use positional date arguments and a `me` command.
+`wework-cli/README.md` includes older examples that use positional date arguments and a `me` command.
 Current live CLI help (checked via `wework --help` and subcommand `--help`) uses `--date` flags for `book`/`desks` and does not expose `me`.
 Prefer live command help when the README and binary behavior differ.
