@@ -1,6 +1,6 @@
 ---
 name: ask-gemini-for-dual-review
-description: Delegates a combined code and comment review to Gemini 3.8 Flash (High) via the Antigravity CLI (agy), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass. Use this when a local review should judge both the code and the prose written around it.
+description: Delegate a local code and documentation review to Gemini without GitHub posting.
 ---
 
 # Ask Gemini for Dual Review

@@ -1,6 +1,6 @@
 {
   "name": "ask-codex",
-  "description": "Delegate questions or tasks to OpenAI Codex via `codex exec`.",
+  "description": "Delegate a question or coding task to local Codex when an independent perspective is requested or useful.",
   "version": "1.0.0",
   "author": {
     "name": "David Mohl",

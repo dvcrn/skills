@@ -1,13 +1,6 @@
 ---
 name: address-pr-review-comments
-description: >
-  Handle GitHub PR review comment autofix sessions - fetch unresolved threads,
-  triage, fix code, reply, and resolve threads via GraphQL. Use this skill
-  whenever you receive ci-monitor-event notifications with PR review comments,
-  when the user asks to fix or address PR review feedback, when running
-  /fix-github-review or /loop-fix-github-review, or when dealing with bot
-  review comments from Gemini, Codex, or similar. Also use when you need to
-  reply to, resolve, or manage GitHub pull request review threads.
+description: Fix GitHub PR review feedback and manage its threads when requested. Use triage-pr-review-comments for investigation only.
 ---
 
 # Address PR Review Comments

@@ -11,17 +11,17 @@
   "plugins": [
     {
       "name": "adapter-pattern",
-      "description": "Standard for Elixir adapter boundaries with a behaviour contract in the public module or a separate module. The public module owns domain helpers and the default implementation via Application.get_env/3; settings contain only explicit overrides.",
+      "description": "Define Elixir adapters for app-owned external-service boundaries and Mox-backed tests.",
       "source": "./plugins/adapter-pattern"
     },
     {
       "name": "address-pr-review-comments",
-      "description": "Handle GitHub PR review comment autofix sessions - fetch unresolved threads, triage, fix code, reply, and resolve threads via GraphQL.",
+      "description": "Fix GitHub PR review feedback and manage its threads when requested.",
       "source": "./plugins/address-pr-review-comments"
     },
     {
       "name": "ask-codex",
-      "description": "Delegate questions or tasks to OpenAI Codex via `codex exec`.",
+      "description": "Delegate a question or coding task to local Codex when an independent perspective is requested or useful.",
       "source": "./plugins/ask-codex"
     },
     {
@@ -41,7 +41,7 @@
     },
     {
       "name": "ask-codex-for-pr-review",
-      "description": "Delegates GitHub PR code review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the pr-code-review-and-quality skill and posting one structured review to GitHub.",
+      "description": "Delegate a GitHub PR code review to local Codex, with posting when authorized.",
       "source": "./plugins/ask-codex-for-pr-review"
     },
     {
@@ -66,22 +66,22 @@
     },
     {
       "name": "ask-gemini-for-dual-pr-review",
-      "description": "Delegates a combined GitHub PR code and comment review to Gemini 3.8 Flash (High) via the Antigravity CLI (`agy`), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass.",
+      "description": "Delegate a GitHub PR code and documentation review to Gemini, with posting when authorized.",
       "source": "./plugins/ask-gemini-for-dual-pr-review"
     },
     {
       "name": "ask-gemini-for-dual-review",
-      "description": "Delegates a combined code and comment review to Gemini 3.8 Flash (High) via the Antigravity CLI (agy), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass.",
+      "description": "Delegate a local code and documentation review to Gemini without GitHub posting.",
       "source": "./plugins/ask-gemini-for-dual-review"
     },
     {
       "name": "ask-gemini-for-pr-review",
-      "description": "Delegates GitHub PR code review to Gemini 3.8 Flash (High) via the Antigravity CLI (`agy`), enforcing the strict standards of the pr-code-review-and-quality skill.",
+      "description": "Delegate a GitHub PR code review to Gemini, with posting when authorized.",
       "source": "./plugins/ask-gemini-for-pr-review"
     },
     {
       "name": "ask-gemini-for-review",
-      "description": "Delegates code review to Gemini 3.8 Flash (High) via the Antigravity CLI (agy), enforcing the strict standards of the code-review-and-quality skill.",
+      "description": "Delegate a Gemini code review of local files, changes, or checked-out PRs without posting.",
       "source": "./plugins/ask-gemini-for-review"
     },
     {
@@ -136,12 +136,12 @@
     },
     {
       "name": "install-posthog-elixir",
-      "description": "Install and configure PostHog in an Elixir/Phoenix project, including backend SDK, runtime configuration, an app-owned analytics boundary, identity wiring, JS client assets, template wiring, Plug middleware, and verification.",
+      "description": "Install, update, or troubleshoot PostHog analytics in Elixir and Phoenix applications.",
       "source": "./plugins/install-posthog-elixir"
     },
     {
       "name": "install-sentry-elixir",
-      "description": "Install and configure Sentry in an Elixir or Phoenix project using official modern defaults, including runtime DSN configuration, Sentry.LoggerHandler with log message capture and rate limiting, Sentry.PlugContext placement, Cowboy/Bandit server detection, Oban error reporting, PII scrubbing, source code packaging for releases, and verification.",
+      "description": "Install, update, or troubleshoot Sentry error monitoring in Elixir and Phoenix applications.",
       "source": "./plugins/install-sentry-elixir"
     },
     {
@@ -151,12 +151,12 @@
     },
     {
       "name": "litestream-tigris-flyio",
-      "description": "Set up, configure, and troubleshoot Litestream replication to Tigris (Fly.io) for SQLite apps, including Fly.io deployments with Litestream-only or LiteFS+Litestream paths, required secrets/env vars, entrypoint scripts, and restore/validation checks.",
+      "description": "Set up or troubleshoot SQLite replication and restores with Litestream and Tigris on Fly.io.",
       "source": "./plugins/litestream-tigris-flyio"
     },
     {
       "name": "loop-fix-github-review",
-      "description": "Continuous agentic loop to automatically fetch, triage, fix, and resolve GitHub PR review comments. Runs an infinite loop of fixing high priority comments, pushing changes, re-requesting review, and sleeping for 8 minutes.",
+      "description": "Continuously monitor and address GitHub PR feedback when the user requests an ongoing review-fix loop.",
       "source": "./plugins/loop-fix-github-review"
     },
     {
@@ -166,7 +166,7 @@
     },
     {
       "name": "mise-tasks",
-      "description": "Guide to using mise task runner features efficiently.",
+      "description": "Define, debug, or optimize mise tasks, dependencies, and build caching.",
       "source": "./plugins/mise-tasks"
     },
     {
@@ -186,12 +186,12 @@
     },
     {
       "name": "pr-code-review-and-quality",
-      "description": "Conducts a multi-axis code review of a GitHub pull request and posts it back to the PR as inline review comments plus a summary assessment.",
+      "description": "Review GitHub pull requests for code quality and deliver inline findings when posting is authorized.",
       "source": "./plugins/pr-code-review-and-quality"
     },
     {
       "name": "swiftui-stores",
-      "description": "SwiftUI state management using @Observable Store containers (Observation framework, iOS 17+), @Environment injection, store composition, derived state, and async mutation patterns.",
+      "description": "Design, review, or migrate SwiftUI shared state using Observation-based Stores.",
       "source": "./plugins/swiftui-stores"
     },
     {

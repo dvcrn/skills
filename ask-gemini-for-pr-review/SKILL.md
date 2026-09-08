@@ -1,11 +1,16 @@
 ---
 name: ask-gemini-for-pr-review
-description: Delegates GitHub PR code review to Gemini 3.8 Flash (High) via the Antigravity CLI (`agy`), enforcing the strict standards of the pr-code-review-and-quality skill. Use this when you want Gemini to review a GitHub pull request, evaluate it against the five-axis standard, and post comments/reviews directly to GitHub.
+description: Delegate a GitHub PR code review to Gemini, with posting when authorized.
 ---
 
 # Ask Gemini for PR Review
 
 Delegate a GitHub pull request review to Gemini 3.8 Flash (High) using the `agy` CLI, enforcing `pr-code-review-and-quality` and posting inline review comments and summary assessment directly to GitHub.
+
+
+**PR target:** Require a PR number, `owner/repo#number`, or URL supplied by the user, including an unambiguous prior mention. Do not infer it from the current branch or choose an open PR. If no target was provided, ask.
+
+**Output rule:** When the user explicitly invokes this skill's GitHub posting workflow, that request authorizes one `COMMENT` review. Do not ask again. Post it, then report the review URL and a one-paragraph summary. Automatic skill selection or a general request to inspect a PR does not authorize posting; honor explicit local-only or read-only requests. Pass the established delivery choice to any delegate.
 
 ## When to Use
 
@@ -14,7 +19,7 @@ Delegate a GitHub pull request review to Gemini 3.8 Flash (High) using the `agy`
 
 ## Step 0: PR Target Resolution & Normalization
 
-The PR target must be supplied (number, `owner/repo#123`, or GitHub URL). If omitted, **STOP** and ask the user which PR to review.
+Resolve the PR from a number, URL, established conversation context, or an explicit PR named earlier in the conversation. Ask only if the target remains ambiguous. A review request authorizes inspection; posting requires user authorization, including authorization already established in the conversation.
 
 Normalize and verify before delegating:
 
@@ -45,6 +50,8 @@ fi
 
 ## Canonical Invocation
 
+State the delivery choice in the prompt: `Posting is authorized` or `Return findings locally; do not post`. Use the authorization already established by the user's request.
+
 ```bash
 agy --model "Gemini 3.8 Flash (High)" \
   --add-dir /path/to/repo \
@@ -60,8 +67,8 @@ Use the pr-code-review-and-quality skill. If the skill is not available, immedia
 
 Target PR: OWNER/REPO#NUMBER
 
-Fetch PR metadata and diff using gh, read full changed files in context, review against the five axes (Correctness, Readability, Architecture, Security, Performance), and submit a single GitHub review with inline comments anchored to diff hunks and a summary body.
-Submit with event: COMMENT. Open the summary body with dynamic model attribution: '_Reviewed by Gemini 3.8 Flash (High) (reasoning effort: high)._'
+Fetch PR metadata and diff using gh, read full changed files in context, review against the five axes (Correctness, Readability, Architecture, Security, Performance), and report findings locally unless the caller includes existing posting authorization in this prompt. With authorization, submit a single GitHub review with inline comments anchored to diff hunks and a summary body.
+Submit with event: COMMENT. Unless user or repository policy prohibits attribution, open the summary body with dynamic model attribution: '_Reviewed by Gemini 3.8 Flash (High) (reasoning effort: high)._'
 Report the review URL and summary once posted."
 ```
 

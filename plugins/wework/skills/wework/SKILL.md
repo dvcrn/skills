@@ -1,6 +1,6 @@
 ---
 name: wework
-description: Operate the WeWork CLI for workspace booking workflows, including authentication setup with `WEWORK_USERNAME` / `WEWORK_PASSWORD`, location and desk discovery, booking creation, booking listing, and calendar export. Use when requests mention `wework` commands or the npm package `wework-cli`, especially for command construction, flag troubleshooting, and safe pre-book checks.
+description: Use the WeWork CLI to find desks, manage bookings, or export booking calendars.
 ---
 
 # WeWork
@@ -13,14 +13,14 @@ Prefer read-only commands first and only run booking once location and date are 
 Read `references/commands.md` when you need full command and flag coverage.
 Read `references/example-output.md` when you need concrete output shapes for desks, locations, and bookings.
 
-## Runbook
+## Choose the requested operation
 
-1. Confirm installation and command availability.
-2. Confirm authentication source (env vars or flags).
-3. Resolve location candidates (`locations`).
-4. Check availability for the target date (`desks`).
-5. Run booking (`book`).
-6. Verify final state (`bookings`) and optionally export calendar (`calendar`).
+- Discovery: use `locations` or `desks` for the requested city/date. Do not create a booking.
+- Booking: resolve the requested location, check availability for the same date, then book within the user's authorization and verify with `bookings`.
+- Listing: use `bookings`; this does not require repeating discovery or creating a booking.
+- Calendar export: use `calendar` with the requested output path.
+
+Check installation and authentication when unavailable or failing. Reuse an established working setup.
 
 ## Installation And Auth
 

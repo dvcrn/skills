@@ -1,6 +1,6 @@
 {
   "name": "ask-gemini-for-dual-pr-review",
-  "description": "Delegates a combined GitHub PR code and comment review to Gemini 3.8 Flash (High) via the Antigravity CLI (`agy`), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass.",
+  "description": "Delegate a GitHub PR code and documentation review to Gemini, with posting when authorized.",
   "version": "1.0.0",
   "author": {
     "name": "David Mohl",

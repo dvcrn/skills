@@ -1,6 +1,6 @@
 {
   "name": "pr-code-review-and-quality",
-  "description": "Conducts a multi-axis code review of a GitHub pull request and posts it back to the PR as inline review comments plus a summary assessment.",
+  "description": "Review GitHub pull requests for code quality and deliver inline findings when posting is authorized.",
   "version": "1.0.0",
   "author": {
     "name": "David Mohl",

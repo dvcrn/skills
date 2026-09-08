@@ -90,7 +90,7 @@ cat docs/requirements.md docs/architecture.md | jules remote new --repo "$REPO"
 
 Jules is a very capable model. Give it strong context, constraints, and acceptance criteria, but do **not** spoon-feed every edit in a line-by-line way.
 
-More detail is generally better, as long as the detail is about:
+Include relevant context about:
 - the problem to solve
 - why it matters
 - what success looks like

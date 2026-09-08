@@ -1,6 +1,6 @@
 ---
 name: swiftui-stores
-description: SwiftUI state management using @Observable Store containers (Observation framework, iOS 17+), @Environment injection, store composition, derived state, and async mutation patterns. Use when designing or reviewing Store architecture, migrating from ObservableObject/Combine, translating React hooks or React Query patterns to SwiftUI, or implementing shared app-wide state containers.
+description: Design, review, or migrate SwiftUI shared state using Observation-based Stores.
 ---
 
 # SwiftUI Stores

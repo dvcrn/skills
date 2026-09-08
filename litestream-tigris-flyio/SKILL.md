@@ -1,6 +1,6 @@
 ---
 name: litestream-tigris-flyio
-description: Set up, configure, and troubleshoot Litestream replication to Tigris (Fly.io) for SQLite apps, including Fly.io deployments with Litestream-only or LiteFS+Litestream paths, required secrets/env vars, entrypoint scripts, and restore/validation checks. Use when adding or auditing Litestream+Tigris on Fly.io, migrating from LiteFS, or verifying replication and restores.
+description: Set up or troubleshoot SQLite replication and restores with Litestream and Tigris on Fly.io.
 ---
 
 # Litestream + Tigris on Fly.io

@@ -1,6 +1,6 @@
 ---
 name: ask-gemini-for-review
-description: Delegates code review to Gemini 3.8 Flash (High) via the Antigravity CLI (agy), enforcing the strict standards of the code-review-and-quality skill. Use this when you want a highly capable model to review code, PRs, or files against the five-axis standard.
+description: Delegate a Gemini code review of local files, changes, or checked-out PRs without posting.
 ---
 
 # Ask Gemini for Review

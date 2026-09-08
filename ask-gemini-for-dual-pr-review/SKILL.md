@@ -1,11 +1,16 @@
 ---
 name: ask-gemini-for-dual-pr-review
-description: Delegates a combined GitHub PR code and comment review to Gemini 3.8 Flash (High) via the Antigravity CLI (`agy`), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass. Use this when a PR review should judge both the code and the prose written around it, and post the result to GitHub.
+description: Delegate a GitHub PR code and documentation review to Gemini, with posting when authorized.
 ---
 
 # Ask Gemini for Dual PR Review
 
 Delegate a combined GitHub pull request code and comment/documentation review to Gemini 3.8 Flash (High) using the `agy` CLI, enforcing `code-and-comment-quality` and `pr-code-review-and-quality` and posting directly to GitHub.
+
+
+**PR target:** Require a PR number, `owner/repo#number`, or URL supplied by the user, including an unambiguous prior mention. Do not infer it from the current branch or choose an open PR. If no target was provided, ask.
+
+**Output rule:** When the user explicitly invokes this skill's GitHub posting workflow, that request authorizes one `COMMENT` review. Do not ask again. Post it, then report the review URL and a one-paragraph summary. Automatic skill selection or a general request to inspect a PR does not authorize posting; honor explicit local-only or read-only requests. Pass the established delivery choice to any delegate.
 
 ## When to Use
 
@@ -14,7 +19,7 @@ Delegate a combined GitHub pull request code and comment/documentation review to
 
 ## Step 0: PR Target Resolution & Normalization
 
-The PR target must be supplied (number, `owner/repo#123`, or GitHub URL). If omitted, **STOP** and ask the user which PR to review.
+Resolve the PR from a number, URL, established conversation context, or an explicit PR named earlier in the conversation. Ask only if the target remains ambiguous. A review request authorizes inspection; posting requires user authorization, including authorization already established in the conversation.
 
 Normalize and verify before delegating:
 
@@ -46,6 +51,8 @@ done
 
 ## Canonical Invocation
 
+State the delivery choice in the prompt: `Posting is authorized` or `Return findings locally; do not post`. Use the authorization already established by the user's request.
+
 ```bash
 agy --model "Gemini 3.8 Flash (High)" \
   --add-dir /path/to/repo \
@@ -65,8 +72,8 @@ If any skill is not available, immediately STOP and report that back with the sk
 Target PR: OWNER/REPO#NUMBER
 
 Fetch the PR metadata, diff, and commit messages using gh, read full changed files in context, review code against the five axes and audit comments/docstrings/commits against documentation standards in a single pass.
-Submit a single GitHub review with inline comments anchored to diff hunks and a summary body.
-Submit with event: COMMENT. Open the summary body with dynamic model attribution: '_Reviewed by Gemini 3.8 Flash (High) (reasoning effort: high)._'
+If the caller includes existing posting authorization in this prompt, submit a single GitHub review with inline comments anchored to diff hunks and a summary body; otherwise report findings locally.
+Submit with event: COMMENT. Unless user or repository policy prohibits attribution, open the summary body with dynamic model attribution: '_Reviewed by Gemini 3.8 Flash (High) (reasoning effort: high)._'
 Report the review URL and summary once posted."
 ```
 

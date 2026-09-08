@@ -1,6 +1,6 @@
 ---
 name: mise-tasks
-description: Guide to using mise task runner features efficiently. Use when you need to automate workflows, manage build dependencies, or optimize execution with caching.
+description: Define, debug, or optimize mise tasks, dependencies, and build caching.
 ---
 
 # Mise Tasks

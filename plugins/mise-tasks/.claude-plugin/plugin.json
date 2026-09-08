@@ -1,6 +1,6 @@
 {
   "name": "mise-tasks",
-  "description": "Guide to using mise task runner features efficiently.",
+  "description": "Define, debug, or optimize mise tasks, dependencies, and build caching.",
   "version": "1.0.0",
   "author": {
     "name": "David Mohl",

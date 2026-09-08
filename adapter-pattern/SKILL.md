@@ -1,6 +1,6 @@
 ---
 name: adapter-pattern
-description: Standard for Elixir adapter boundaries with a behaviour contract in the public module or a separate module. The public module owns domain helpers and the default implementation via Application.get_env/3; settings contain only explicit overrides. Use for external services and side effects that need provider isolation and Mox-backed tests.
+description: Define Elixir adapters for app-owned external-service boundaries and Mox-backed tests.
 ---
 
 # Adapter Pattern

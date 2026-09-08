@@ -17,7 +17,7 @@ All three files are required:
 | `code-review-and-quality` | `~/.agents/skills/code-review-and-quality/SKILL.md` |
 | `comment-and-documentation-quality` | `~/.agents/skills/comment-and-documentation-quality/SKILL.md` |
 
-Resolve every file before launch. If any file is missing, stop and report the skill and attempted path. Do not search broader trees, invent a substitute standard, or silently run only one component. Proceed with a partial review only after the user explicitly requests it, and identify the omitted standard in the output.
+Resolve each file from the session catalog, canonical location, or a known repository skill directory before launch. Use the resolved paths in the invocation. If bounded lookup fails, report the missing standard and attempted paths; do not invent a substitute or silently run only one component. Proceed with a partial review only after the user explicitly requests it, and identify the omitted standard in the output.
 
 ## Boundaries
 

@@ -1,6 +1,6 @@
 {
   "name": "install-posthog-elixir",
-  "description": "Install and configure PostHog in an Elixir/Phoenix project, including backend SDK, runtime configuration, an app-owned analytics boundary, identity wiring, JS client assets, template wiring, Plug middleware, and verification.",
+  "description": "Install, update, or troubleshoot PostHog analytics in Elixir and Phoenix applications.",
   "version": "1.0.0",
   "author": {
     "name": "David Mohl",

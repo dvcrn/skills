@@ -1,6 +1,6 @@
 {
   "name": "swiftui-stores",
-  "description": "SwiftUI state management using @Observable Store containers (Observation framework, iOS 17+), @Environment injection, store composition, derived state, and async mutation patterns.",
+  "description": "Design, review, or migrate SwiftUI shared state using Observation-based Stores.",
   "version": "1.0.0",
   "author": {
     "name": "David Mohl",

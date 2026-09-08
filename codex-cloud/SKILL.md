@@ -47,7 +47,8 @@ Then use that custom ENV_ID instead of the default repo name.
 1. **Check AGENTS.md or CLAUDE.md** for `- Codex Cloud ENV: <ENV_ID>`
 2. **If not found:** Use default repo name as ENV_ID
 3. **If task fails due to invalid ENV_ID:**
-   - Ask user to run `codex cloud` (TUI) to browse available environments
+   - Check `codex cloud --help` for an environment-listing command.
+   - If the environment remains unresolved, ask the user for its identifier or have them browse `codex cloud` (TUI).
    - Once user provides correct ENV_ID, add it to the top of AGENTS.md (or CLAUDE.md if AGENTS.md doesn't exist):
    ```markdown
    - Repo: owner/repo
@@ -90,7 +91,7 @@ cat requirements.md architecture.md | codex cloud exec --env "$REPO"
 
 ## Writing Effective Tasks
 
-**Important:** Tasks should be **exhaustive and detailed**, not one-liners.
+**Important:** Tasks should be **detailed and self-contained**, not one-liners. Include the requested outcome, constraints, and acceptance criteria.
 
 Include:
 
@@ -98,7 +99,7 @@ Include:
 - **Acceptance criteria**
 - **Files to touch**
 - **Goal/Context**
-- **Implementation details**
+- **Implementation constraints**, when they affect the result
 
 **Bad example:**
 

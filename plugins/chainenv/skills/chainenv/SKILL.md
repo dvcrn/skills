@@ -1,6 +1,6 @@
 ---
 name: chainenv
-description: Operate the `chainenv` CLI for local secret workflows across macOS Keychain, Linux keyring, and optional 1Password integration. Use when requests mention `chainenv`, `.chainenv.toml`, `chainenv.toml`, keychain vs 1Password, shell export generation, copying secrets between backends, or troubleshooting backend availability and `op` token loading.
+description: Use chainenv to manage local secrets, copy between backends, or troubleshoot its configuration.
 ---
 
 # Chainenv
