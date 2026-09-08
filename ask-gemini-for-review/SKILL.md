@@ -1,11 +1,11 @@
 ---
 name: ask-gemini-for-review
-description: Delegates code review to Gemini 3.7 Flash (High) via the Antigravity CLI (agy), enforcing the strict standards of the code-review-and-quality skill. Use this when you want a highly capable model to review code, PRs, or files against the five-axis standard.
+description: Delegates code review to Gemini 3.8 Flash (High) via the Antigravity CLI (agy), enforcing the strict standards of the code-review-and-quality skill. Use this when you want a highly capable model to review code, PRs, or files against the five-axis standard.
 ---
 
 # Ask Gemini for Review
 
-Delegate a comprehensive five-axis code review to Gemini 3.7 Flash (High) using the `agy` CLI, enforcing the standards in `code-review-and-quality`.
+Delegate a comprehensive five-axis code review to Gemini 3.8 Flash (High) using the `agy` CLI, enforcing the standards in `code-review-and-quality`.
 
 ## When to Use
 
@@ -35,7 +35,7 @@ fi
 Local read-only reviews do not require permission bypass:
 
 ```bash
-agy --model "Gemini 3.7 Flash (High)" \
+agy --model "Gemini 3.8 Flash (High)" \
   --add-dir /path/to/repo \
   --add-dir "${HOME}/.agents/skills/code-review-and-quality" \
   --print-timeout 10m \
@@ -69,4 +69,4 @@ For execution failures or timeouts:
 
 1. Retry once unchanged.
 2. Shorten an unusually long prompt without altering the standard, target, or review axes.
-3. Lower Gemini 3.7 Flash from High to Medium to Low. Stop after Low and report any fallback used.
+3. Lower Gemini 3.8 Flash from High to Medium to Low. Stop after Low and report any fallback used.

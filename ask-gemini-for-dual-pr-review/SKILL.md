@@ -1,11 +1,11 @@
 ---
 name: ask-gemini-for-dual-pr-review
-description: Delegates a combined GitHub PR code and comment review to Gemini 3.7 Flash (High) via the Antigravity CLI (`agy`), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass. Use this when a PR review should judge both the code and the prose written around it, and post the result to GitHub.
+description: Delegates a combined GitHub PR code and comment review to Gemini 3.8 Flash (High) via the Antigravity CLI (`agy`), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass. Use this when a PR review should judge both the code and the prose written around it, and post the result to GitHub.
 ---
 
 # Ask Gemini for Dual PR Review
 
-Delegate a combined GitHub pull request code and comment/documentation review to Gemini 3.7 Flash (High) using the `agy` CLI, enforcing `code-and-comment-quality` and `pr-code-review-and-quality` and posting directly to GitHub.
+Delegate a combined GitHub pull request code and comment/documentation review to Gemini 3.8 Flash (High) using the `agy` CLI, enforcing `code-and-comment-quality` and `pr-code-review-and-quality` and posting directly to GitHub.
 
 ## When to Use
 
@@ -47,7 +47,7 @@ done
 ## Canonical Invocation
 
 ```bash
-agy --model "Gemini 3.7 Flash (High)" \
+agy --model "Gemini 3.8 Flash (High)" \
   --add-dir /path/to/repo \
   --add-dir "${HOME}/.agents/skills/code-and-comment-quality" \
   --add-dir "${HOME}/.agents/skills/pr-code-review-and-quality" \
@@ -66,7 +66,7 @@ Target PR: OWNER/REPO#NUMBER
 
 Fetch the PR metadata, diff, and commit messages using gh, read full changed files in context, review code against the five axes and audit comments/docstrings/commits against documentation standards in a single pass.
 Submit a single GitHub review with inline comments anchored to diff hunks and a summary body.
-Submit with event: COMMENT. Open the summary body with dynamic model attribution: '_Reviewed by Gemini 3.7 Flash (High) (reasoning effort: high)._'
+Submit with event: COMMENT. Open the summary body with dynamic model attribution: '_Reviewed by Gemini 3.8 Flash (High) (reasoning effort: high)._'
 Report the review URL and summary once posted."
 ```
 
@@ -78,4 +78,4 @@ For execution failures or timeouts:
 
 1. **Check before retrying:** Query existing PR reviews via `gh api repos/OWNER/REPO/pulls/NUMBER/reviews` to verify if a review was already submitted for the current head commit. Never retry if a review has already landed.
 2. Shorten an unusually long prompt without altering standards or PR target.
-3. Lower Gemini 3.7 Flash from High to Medium to Low. Stop after Low and report any fallback used.
+3. Lower Gemini 3.8 Flash from High to Medium to Low. Stop after Low and report any fallback used.

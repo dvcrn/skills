@@ -44,6 +44,7 @@
         "triage-pr-review-comments",
         "loop-fix-github-review",
         "deslop-articles",
+        "git-commit-quality",
         "github-comment-quality",
         "comment-and-documentation-quality",
         "code-and-comment-quality"

@@ -1,11 +1,11 @@
 ---
 name: ask-gemini-for-pr-review
-description: Delegates GitHub PR code review to Gemini 3.7 Flash (High) via the Antigravity CLI (`agy`), enforcing the strict standards of the pr-code-review-and-quality skill. Use this when you want Gemini to review a GitHub pull request, evaluate it against the five-axis standard, and post comments/reviews directly to GitHub.
+description: Delegates GitHub PR code review to Gemini 3.8 Flash (High) via the Antigravity CLI (`agy`), enforcing the strict standards of the pr-code-review-and-quality skill. Use this when you want Gemini to review a GitHub pull request, evaluate it against the five-axis standard, and post comments/reviews directly to GitHub.
 ---
 
 # Ask Gemini for PR Review
 
-Delegate a GitHub pull request review to Gemini 3.7 Flash (High) using the `agy` CLI, enforcing `pr-code-review-and-quality` and posting inline review comments and summary assessment directly to GitHub.
+Delegate a GitHub pull request review to Gemini 3.8 Flash (High) using the `agy` CLI, enforcing `pr-code-review-and-quality` and posting inline review comments and summary assessment directly to GitHub.
 
 ## When to Use
 
@@ -46,7 +46,7 @@ fi
 ## Canonical Invocation
 
 ```bash
-agy --model "Gemini 3.7 Flash (High)" \
+agy --model "Gemini 3.8 Flash (High)" \
   --add-dir /path/to/repo \
   --add-dir "${HOME}/.agents/skills/pr-code-review-and-quality" \
   --print-timeout 10m \
@@ -61,7 +61,7 @@ Use the pr-code-review-and-quality skill. If the skill is not available, immedia
 Target PR: OWNER/REPO#NUMBER
 
 Fetch PR metadata and diff using gh, read full changed files in context, review against the five axes (Correctness, Readability, Architecture, Security, Performance), and submit a single GitHub review with inline comments anchored to diff hunks and a summary body.
-Submit with event: COMMENT. Open the summary body with dynamic model attribution: '_Reviewed by Gemini 3.7 Flash (High) (reasoning effort: high)._'
+Submit with event: COMMENT. Open the summary body with dynamic model attribution: '_Reviewed by Gemini 3.8 Flash (High) (reasoning effort: high)._'
 Report the review URL and summary once posted."
 ```
 
@@ -73,4 +73,4 @@ For execution failures or timeouts:
 
 1. **Check before retrying:** Query existing PR reviews via `gh api repos/OWNER/REPO/pulls/NUMBER/reviews` to verify if a review was already submitted for the current head commit. Never retry if a review has already landed.
 2. Shorten an unusually long prompt without altering the standard or PR target.
-3. Lower Gemini 3.7 Flash from High to Medium to Low. Stop after Low and report any fallback used.
+3. Lower Gemini 3.8 Flash from High to Medium to Low. Stop after Low and report any fallback used.

@@ -1,6 +1,6 @@
 ---
 name: github-comment-quality
-description: Use whenever creating, reviewing, or commenting on GitHub pull requests, issues, discussions, or review threads. Enforces high-signal technical brevity, provides concise templates, eliminates AI execution diaries, defensiveness, report bloat, and bot watermarks, and bans em dashes.
+description: MUST be used whenever writing or replying to anything on GitHub - issues, pull requests, discussions, review threads. Enforces technical brevity, bans AI execution diaries, report bloat, bot watermarks, and em dashes.
 ---
 
 # GitHub Comment & Communication Quality Standards
@@ -28,22 +28,25 @@ Write for the human reader: deliver the outcome, essential technical rationale, 
   - **Key Changes:** Concrete implementation details (only if non-obvious).
   - **Verification:** Specific tests added/passed and manual checks (no raw terminal dumps).
   - **Fixes:** Issue references.
-  - *(For small, 1-3 line changes, a 1-2 sentence description without section headings is preferred).*
-- ❌ *(500-word essay explaining rejected library dependencies, how test harnesses were configured, and pasting 40 lines of terminal output)*
+  - _(For small, 1-3 line changes, a 1-2 sentence description without section headings is preferred)._
+- ❌ _(500-word essay explaining rejected library dependencies, how test harnesses were configured, and pasting 40 lines of terminal output)_
 - ✅
 
   ```markdown
   Fixes #72
 
   ## Summary
+
   - Initialize upstream MCP servers concurrently during startup rather than serially.
   - Bounds startup latency to the slowest single upstream server.
 
   ## Changes
+
   - Launch each configured upstream in its own goroutine and merge results deterministically by sorted server name.
   - Retain child process handles to ensure clean process termination on shutdown.
 
   ## Verification
+
   - Added unit tests for concurrent launch timing and deterministic tool ordering.
   - Local benchmark: 9 upstreams initialize in 9.7s (down from 31.1s serial).
   - `go test -race ./...` passes.
@@ -78,10 +81,10 @@ Write for the human reader: deliver the outcome, essential technical rationale, 
 ### 4. Emotional & Meta-Commentary (Self-Evaluation)
 
 - **Anti-Pattern:** Self-evaluating performance or narrating intent:
-  - *"Fair hit on all three."*
-  - *"I can name how it got there."*
-  - *"That is not a bot failing to converge."*
-  - *"Deliberately minimal..."*
+  - _"Fair hit on all three."_
+  - _"I can name how it got there."_
+  - _"That is not a bot failing to converge."_
+  - _"Deliberately minimal..."_
 - **Rule:** Delete performative self-evaluation, defensive remarks, and emotional framing. Keep comments technical, neutral, and direct. (Brief professional courtesy when acknowledging a mistake is acceptable).
 - ❌ `Fair hit on all three. You are right that I argued the point instead of doing it, and that citing other guides was the wrong move.`
 - ✅ `Updated in 74f9283. Removed all em dashes across the guides and tightened the setup instructions.`
@@ -105,7 +108,7 @@ Write for the human reader: deliver the outcome, essential technical rationale, 
   ok github.com/dvcrn/mcpnest/internal/app 7.846s
   ```
 
-- ✅ *(Include in PR body or relevant review response instead: `Verified locally with go test -race ./...`)*
+- ✅ _(Include in PR body or relevant review response instead: `Verified locally with go test -race ./...`)_
 
 ### 7. Tangential Findings & Scope Creep
 
@@ -116,10 +119,10 @@ Write for the human reader: deliver the outcome, essential technical rationale, 
 
 ### 8. Describing What You Deliberately Did Not Do
 
-- **Anti-Pattern:** Listing hypothetical tasks that were not done (*"One thing I did not do...", "I did not touch older files...", "I left that open..."*).
+- **Anti-Pattern:** Listing hypothetical tasks that were not done (_"One thing I did not do...", "I did not touch older files...", "I left that open..."_).
 - **Rule:** Only mention an omission if it represents a genuine pending decision or known limitation the reviewer must evaluate.
 - ❌ `I did not touch the older guides beyond the dashes because antigravity-sync-macos is 162 words and reads thin.`
-- ✅ *(Preserving a real technical limitation)* `This change kills direct child processes on cancellation. Process-group cleanup for grandchildren is not yet handled and should be addressed in a follow-up.`
+- ✅ _(Preserving a real technical limitation)_ `This change kills direct child processes on cancellation. Process-group cleanup for grandchildren is not yet handled and should be addressed in a follow-up.`
 
 ---
 
@@ -128,7 +131,7 @@ Write for the human reader: deliver the outcome, essential technical rationale, 
 1. **Never fabricate claims or evidence:** Do not invent test passes, benchmarks, commits, issue numbers, or verification steps. Do not claim a fix was applied unless it was committed and pushed.
 2. **Preserve technical uncertainty:** Do not turn `may` into `will`, `typically` into `always`, or an experimental observation into a universal guarantee.
 3. **Give each fact one home:** Do not duplicate the same investigation across the PR body, review thread, status comment, and final summary.
-4. **Preserve technical jargon:** Use precise technical vocabulary (e.g. *race condition, mutex contention, atomic swap, WAL mode*); do not over-explain basic language semantics.
+4. **Preserve technical jargon:** Use precise technical vocabulary (e.g. _race condition, mutex contention, atomic swap, WAL mode_); do not over-explain basic language semantics.
 
 ---
 
@@ -137,7 +140,7 @@ Write for the human reader: deliver the outcome, essential technical rationale, 
 1. **Zero em dashes (`—`), en dashes (`–`), and pause double-hyphens (`--`):** Use colons, parentheses, or separate sentences. (Preserve literal CLI flags such as `--verbose`).
 2. **No bold-spam or decorative emojis:** Avoid bolding every second phrase or prefixing headings with `🚀`, `💡`, `✅`.
 3. **No raw terminal dump logs:** Summarize test and benchmark results cleanly in a single line or concise table, rather than dumping 40 lines of test output.
-4. **No throat-clearing / sycophancy:** Cut *"Great suggestion!", "You're absolutely right!", "Let's dive in"*.
+4. **No throat-clearing / sycophancy:** Cut _"Great suggestion!", "You're absolutely right!", "Let's dive in"_.
 5. **Use clean titles:** Keep PR and issue titles specific, concise, and free of conversational fluff. PR titles should be imperative (e.g. `Fix dirty state warning in AI dialog`). Issue titles should clearly describe the problem or goal (e.g. `AI dialog shows stale warning after save` or `Support concurrent upstream initialization`). Avoid conventional commit prefixes (`feat:`, `fix:`) unless required by the repo.
 
 ---
@@ -150,12 +153,15 @@ Write for the human reader: deliver the outcome, essential technical rationale, 
 [Optional: Fixes #<issue-number>]
 
 ## Summary
+
 - <1-2 bullet points on the user-visible or architectural change>
 
 ## Changes
+
 - <Key technical implementation details if non-obvious>
 
 ## Verification
+
 - <Specific tests added/run, benchmarks, manual checks>
 ```
 
@@ -191,12 +197,15 @@ Fixed in `<commit-sha>`. <1 short sentence stating what was changed if not immed
 
 ```markdown
 ## Problem
+
 <Clear description of the unexpected behavior or limitation>
 
 ## Reproduction
+
 <Minimal reproduction steps, error message, or log excerpt>
 
 ## Expected Behavior
+
 <What should happen instead>
 ```
 
@@ -204,8 +213,10 @@ Fixed in `<commit-sha>`. <1 short sentence stating what was changed if not immed
 
 ```markdown
 ## Context & Goal
+
 <Description of the need, motivation, or target behavior>
 
 ## Proposed Solution
+
 <Key architectural changes or concrete tasks>
 ```

@@ -24,13 +24,13 @@ npx skills add dvcrn/skills
 
 ### Multi-Agent Delegation & Review Loop
 
-- `ask-gemini`: Delegate questions or tasks to Gemini 3.7 Flash via the Antigravity CLI (agy).
-- `ask-gemini-for-review`: Delegates code review to Gemini 3.7 Flash (High) via the Antigravity CLI (agy), enforcing the strict standards of the code-review-and-quality skill.
-- `ask-gemini-for-dual-review`: Delegates a combined code and comment review to Gemini 3.7 Flash (High) via the Antigravity CLI (agy), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass.
-- `ask-gemini-for-pr-review`: Delegates GitHub PR code review to Gemini 3.7 Flash (High) via the Antigravity CLI (`agy`), enforcing the strict standards of the pr-code-review-and-quality skill.
-- `ask-gemini-for-dual-pr-review`: Delegates a combined GitHub PR code and comment review to Gemini 3.7 Flash (High) via the Antigravity CLI (`agy`), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass.
-- `ask-gemini-for-comment-audit`: Delegates code comment, documentation, and commit message audits to Gemini 3.7 Flash (Medium) via the Antigravity CLI (agy), enforcing the comment-and-documentation-quality skill.
-- `ask-gemini-for-deslop-review`: Delegates article and technical documentation deslop reviews and rewrites to Gemini 3.7 Flash (Medium) via the Antigravity CLI (agy), enforcing the deslop-articles skill.
+- `ask-gemini`: Delegate questions or tasks to Gemini 3.8 Flash via the Antigravity CLI (agy).
+- `ask-gemini-for-review`: Delegates code review to Gemini 3.8 Flash (High) via the Antigravity CLI (agy), enforcing the strict standards of the code-review-and-quality skill.
+- `ask-gemini-for-dual-review`: Delegates a combined code and comment review to Gemini 3.8 Flash (High) via the Antigravity CLI (agy), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass.
+- `ask-gemini-for-pr-review`: Delegates GitHub PR code review to Gemini 3.8 Flash (High) via the Antigravity CLI (`agy`), enforcing the strict standards of the pr-code-review-and-quality skill.
+- `ask-gemini-for-dual-pr-review`: Delegates a combined GitHub PR code and comment review to Gemini 3.8 Flash (High) via the Antigravity CLI (`agy`), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass.
+- `ask-gemini-for-comment-audit`: Delegates code comment, documentation, and commit message audits to Gemini 3.8 Flash (Medium) via the Antigravity CLI (agy), enforcing the comment-and-documentation-quality skill.
+- `ask-gemini-for-deslop-review`: Delegates article and technical documentation deslop reviews and rewrites to Gemini 3.8 Flash (Medium) via the Antigravity CLI (agy), enforcing the deslop-articles skill.
 - `ask-codex`: Delegate questions or tasks to OpenAI Codex via `codex exec`.
 - `ask-codex-for-review`: Delegates code review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-review-and-quality skill.
 - `ask-codex-for-dual-review`: Delegates a combined code and comment review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-and-comment-quality aggregate for local targets without GitHub posting.
@@ -42,13 +42,14 @@ npx skills add dvcrn/skills
 - `triage-pr-review-comments`: Analyzes GitHub PR review comments, investigates the relevant codebase context, and provides a verdict on whether each comment should be fixed or ignored. Does not make code changes.
 - `loop-fix-github-review`: Continuous agentic loop to automatically fetch, triage, fix, and resolve GitHub PR review comments. Runs an infinite loop of fixing high priority comments, pushing changes, re-requesting review, and sleeping for 8 minutes.
 - `deslop-articles`: Use whenever creating, editing, or reviewing any public-facing article, guide, tutorial, or blog post. Eliminates AI padding, synthetic tropes, defensive bloat, and misplaced plumbing trivia while preserving technical depth, concrete constraints, tested commands, and authentic human voice.
-- `github-comment-quality`: Use whenever creating, reviewing, or commenting on GitHub pull requests, issues, discussions, or review threads. Enforces high-signal technical brevity, provides concise templates, eliminates AI execution diaries, defensiveness, report bloat, and bot watermarks, and bans em dashes.
+- `git-commit-quality`: MUST be used whenever writing, amending, squashing, or auditing any Git commit message. Enforces subject-only defaults, bans AI attribution trailers and development diaries.
+- `github-comment-quality`: MUST be used whenever writing or replying to anything on GitHub - issues, pull requests, discussions, review threads. Enforces technical brevity, bans AI execution diaries, report bloat, bot watermarks, and em dashes.
 - `comment-and-documentation-quality`: Standards and quality gates for code comments, JSDoc/docstrings, technical documentation, and git commit messages.
 - `code-and-comment-quality`: Aggregate review standard that combines the code review axes with the comment, documentation, and commit message audit into a single pass.
 
 ### Elixir & Phoenix
 
-- `adapter-pattern`: Standard for Elixir adapter boundaries using a repo-owned behaviour, a thin public wrapper that selects the default implementation with Application.get_env/3, concrete implementation modules under the same namespace, and Mox mocks wired through test/test_helper.exs with Application.put_env/3 overrides.
+- `adapter-pattern`: Standard for Elixir adapter boundaries with a behaviour contract in the public module or a separate module. The public module owns domain helpers and the default implementation via Application.get_env/3; settings contain only explicit overrides.
 - `install-posthog-elixir`: Install and configure PostHog in an Elixir/Phoenix project, including backend SDK, runtime configuration, an app-owned analytics boundary, identity wiring, JS client assets, template wiring, Plug middleware, and verification.
 - `install-sentry-elixir`: Install and configure Sentry in an Elixir or Phoenix project using official modern defaults, including runtime DSN configuration, Sentry.LoggerHandler with log message capture and rate limiting, Sentry.PlugContext placement, Cowboy/Bandit server detection, Oban error reporting, PII scrubbing, source code packaging for releases, and verification.
 - `phoenix-hooks`: Use when we need an explanation of standard Phoenix LiveView client hooks (phx-hook) and when to use colocated vs regular hooks.

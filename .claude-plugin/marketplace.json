@@ -11,7 +11,7 @@
   "plugins": [
     {
       "name": "adapter-pattern",
-      "description": "Standard for Elixir adapter boundaries using a repo-owned behaviour, a thin public wrapper that selects the default implementation with Application.get_env/3, concrete implementation modules under the same namespace, and Mox mocks wired through test/test_helper.exs with Application.put_env/3 overrides.",
+      "description": "Standard for Elixir adapter boundaries with a behaviour contract in the public module or a separate module. The public module owns domain helpers and the default implementation via Application.get_env/3; settings contain only explicit overrides.",
       "source": "./plugins/adapter-pattern"
     },
     {
@@ -51,37 +51,37 @@
     },
     {
       "name": "ask-gemini",
-      "description": "Delegate questions or tasks to Gemini 3.7 Flash via the Antigravity CLI (agy).",
+      "description": "Delegate questions or tasks to Gemini 3.8 Flash via the Antigravity CLI (agy).",
       "source": "./plugins/ask-gemini"
     },
     {
       "name": "ask-gemini-for-comment-audit",
-      "description": "Delegates code comment, documentation, and commit message audits to Gemini 3.7 Flash (Medium) via the Antigravity CLI (agy), enforcing the comment-and-documentation-quality skill.",
+      "description": "Delegates code comment, documentation, and commit message audits to Gemini 3.8 Flash (Medium) via the Antigravity CLI (agy), enforcing the comment-and-documentation-quality skill.",
       "source": "./plugins/ask-gemini-for-comment-audit"
     },
     {
       "name": "ask-gemini-for-deslop-review",
-      "description": "Delegates article and technical documentation deslop reviews and rewrites to Gemini 3.7 Flash (Medium) via the Antigravity CLI (agy), enforcing the deslop-articles skill.",
+      "description": "Delegates article and technical documentation deslop reviews and rewrites to Gemini 3.8 Flash (Medium) via the Antigravity CLI (agy), enforcing the deslop-articles skill.",
       "source": "./plugins/ask-gemini-for-deslop-review"
     },
     {
       "name": "ask-gemini-for-dual-pr-review",
-      "description": "Delegates a combined GitHub PR code and comment review to Gemini 3.7 Flash (High) via the Antigravity CLI (`agy`), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass.",
+      "description": "Delegates a combined GitHub PR code and comment review to Gemini 3.8 Flash (High) via the Antigravity CLI (`agy`), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass.",
       "source": "./plugins/ask-gemini-for-dual-pr-review"
     },
     {
       "name": "ask-gemini-for-dual-review",
-      "description": "Delegates a combined code and comment review to Gemini 3.7 Flash (High) via the Antigravity CLI (agy), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass.",
+      "description": "Delegates a combined code and comment review to Gemini 3.8 Flash (High) via the Antigravity CLI (agy), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass.",
       "source": "./plugins/ask-gemini-for-dual-review"
     },
     {
       "name": "ask-gemini-for-pr-review",
-      "description": "Delegates GitHub PR code review to Gemini 3.7 Flash (High) via the Antigravity CLI (`agy`), enforcing the strict standards of the pr-code-review-and-quality skill.",
+      "description": "Delegates GitHub PR code review to Gemini 3.8 Flash (High) via the Antigravity CLI (`agy`), enforcing the strict standards of the pr-code-review-and-quality skill.",
       "source": "./plugins/ask-gemini-for-pr-review"
     },
     {
       "name": "ask-gemini-for-review",
-      "description": "Delegates code review to Gemini 3.7 Flash (High) via the Antigravity CLI (agy), enforcing the strict standards of the code-review-and-quality skill.",
+      "description": "Delegates code review to Gemini 3.8 Flash (High) via the Antigravity CLI (agy), enforcing the strict standards of the code-review-and-quality skill.",
       "source": "./plugins/ask-gemini-for-review"
     },
     {
@@ -125,8 +125,13 @@
       "source": "./plugins/gh"
     },
     {
+      "name": "git-commit-quality",
+      "description": "MUST be used whenever writing, amending, squashing, or auditing any Git commit message. Enforces subject-only defaults, bans AI attribution trailers and development diaries.",
+      "source": "./plugins/git-commit-quality"
+    },
+    {
       "name": "github-comment-quality",
-      "description": "Use whenever creating, reviewing, or commenting on GitHub pull requests, issues, discussions, or review threads. Enforces high-signal technical brevity, provides concise templates, eliminates AI execution diaries, defensiveness, report bloat, and bot watermarks, and bans em dashes.",
+      "description": "MUST be used whenever writing or replying to anything on GitHub - issues, pull requests, discussions, review threads. Enforces technical brevity, bans AI execution diaries, report bloat, bot watermarks, and em dashes.",
       "source": "./plugins/github-comment-quality"
     },
     {

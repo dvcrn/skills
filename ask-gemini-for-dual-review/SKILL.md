@@ -1,11 +1,11 @@
 ---
 name: ask-gemini-for-dual-review
-description: Delegates a combined code and comment review to Gemini 3.7 Flash (High) via the Antigravity CLI (agy), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass. Use this when a local review should judge both the code and the prose written around it.
+description: Delegates a combined code and comment review to Gemini 3.8 Flash (High) via the Antigravity CLI (agy), enforcing the code-and-comment-quality aggregate so the five review axes and the comment, documentation, and commit message audit run in one pass. Use this when a local review should judge both the code and the prose written around it.
 ---
 
 # Ask Gemini for Dual Review
 
-Delegate a combined five-axis code review and comment/documentation audit to Gemini 3.7 Flash (High) using the `agy` CLI, enforcing `code-and-comment-quality`.
+Delegate a combined five-axis code review and comment/documentation audit to Gemini 3.8 Flash (High) using the `agy` CLI, enforcing `code-and-comment-quality`.
 
 ## When to Use
 
@@ -36,7 +36,7 @@ done
 Local read-only reviews do not require permission bypass:
 
 ```bash
-agy --model "Gemini 3.7 Flash (High)" \
+agy --model "Gemini 3.8 Flash (High)" \
   --add-dir /path/to/repo \
   --add-dir "${HOME}/.agents/skills/code-and-comment-quality" \
   --add-dir "${HOME}/.agents/skills/code-review-and-quality" \
@@ -73,4 +73,4 @@ For execution failures or timeouts:
 
 1. Retry once unchanged.
 2. Shorten an unusually long prompt without altering standards, target, or review axes.
-3. Lower Gemini 3.7 Flash from High to Medium to Low. Stop after Low and report any fallback used.
+3. Lower Gemini 3.8 Flash from High to Medium to Low. Stop after Low and report any fallback used.

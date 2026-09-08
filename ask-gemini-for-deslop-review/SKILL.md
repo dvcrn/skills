@@ -1,11 +1,11 @@
 ---
 name: ask-gemini-for-deslop-review
-description: Delegates article and technical documentation deslop reviews and rewrites to Gemini 3.7 Flash (Medium) via the Antigravity CLI (agy), enforcing the deslop-articles skill. Use for articles, guides, tutorials, or public documentation.
+description: Delegates article and technical documentation deslop reviews and rewrites to Gemini 3.8 Flash (Medium) via the Antigravity CLI (agy), enforcing the deslop-articles skill. Use for articles, guides, tutorials, or public documentation.
 ---
 
 # Ask Gemini for Deslop Review & Rewrite
 
-Delegate an article deslop review (audit) or in-place rewrite to Gemini 3.7 Flash (Medium) using the `agy` CLI. Gemini must load `deslop-articles` by skill name and apply it to the requested targets.
+Delegate an article deslop review (audit) or in-place rewrite to Gemini 3.8 Flash (Medium) using the `agy` CLI. Gemini must load `deslop-articles` by skill name and apply it to the requested targets.
 
 Do not extract or pipe raw article contents or `git diff` output into the prompt. Gemini runs in the workspace, identifies the target files, and reads each complete article in context.
 
@@ -54,15 +54,37 @@ Relay a missing-skill report to the user verbatim. Never present the review or r
 
 ## How to Call Gemini
 
+Both modes need `--dangerously-skip-permissions --sandbox`.
+
+`agy` runs headless here, so it cannot prompt for tool permission and auto-denies instead. Without the flag even audit mode fails, because reading a file and running `git diff` are themselves permissioned tool calls. The failure is silent in a way that is easy to misread:
+
+```
+jetski: no output produced - a tool required the "command" permission that
+headless mode cannot prompt for, so it was auto-denied.
+```
+
+Always pair it with `--sandbox`, which keeps terminal restrictions on while the permission prompts are skipped. Auto-approving every tool call without a sandbox is a wider grant than either mode needs.
+
+Skipping permissions is not a substitute for the audit-only instruction in the prompt. In audit mode, checksum the target files before and after the run and compare, because the flag is what makes an unwanted edit possible:
+
+```bash
+find <target-dir> -name '*.md' | sort | xargs shasum -a 256 > /tmp/before.sha
+# run the audit
+find <target-dir> -name '*.md' | sort | xargs shasum -a 256 > /tmp/after.sha
+diff /tmp/before.sha /tmp/after.sha && echo "no file modified during the audit"
+```
+
+
 ### 1. Audit / Review Mode (Findings Only)
 
 Use for reviewing articles, PRs, or working tree drafts without modifying files:
 
 ```bash
-agy --model "Gemini 3.7 Flash (Medium)" \
+agy --model "Gemini 3.8 Flash (Medium)" \
   --add-dir /path/to/repo \
   --add-dir "${HOME}/.agents/skills/deslop-articles" \
   --print-timeout 10m \
+  --dangerously-skip-permissions --sandbox \
   -p "This is an audit-only task. Do not modify repository state.
 Load and use the deslop-articles skill by name. If deslop-articles is unavailable, immediately STOP and report that it is missing and every path you checked. Do not invent a substitute standard.
 
@@ -78,11 +100,11 @@ Output structured findings with line numbers, the identified anti-pattern, the i
 Use when in-place editing of the target files is explicitly requested:
 
 ```bash
-agy --model "Gemini 3.7 Flash (Medium)" \
+agy --model "Gemini 3.8 Flash (Medium)" \
   --add-dir /path/to/repo \
   --add-dir "${HOME}/.agents/skills/deslop-articles" \
   --print-timeout 10m \
-  --dangerously-skip-permissions \
+  --dangerously-skip-permissions --sandbox \
   -p "This is an in-place article editing task.
 Load and use the deslop-articles skill by name. If deslop-articles is unavailable, immediately STOP and report that it is missing and every path you checked. Do not invent a substitute standard.
 
@@ -105,7 +127,7 @@ For an execution failure or timeout:
 
 1. Retry once unchanged.
 2. Shorten an unusually long prompt without removing the named skill, target, or boundaries.
-3. Lower Gemini 3.7 Flash from Medium to Low.
+3. Lower Gemini 3.8 Flash from Medium to Low.
 4. Stop after the Low attempt and report every fallback used.
 
 Do not apply the fallback ladder after Gemini returns a substantive review or missing-skill report.

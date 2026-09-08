@@ -1,11 +1,11 @@
 ---
 name: ask-gemini-for-comment-audit
-description: Delegates code comment, documentation, and commit message audits to Gemini 3.7 Flash (Medium) via the Antigravity CLI (agy), enforcing the comment-and-documentation-quality skill. Use for repositories, branches, working tree changes, files, or commit ranges.
+description: Delegates code comment, documentation, and commit message audits to Gemini 3.8 Flash (Medium) via the Antigravity CLI (agy), enforcing the comment-and-documentation-quality skill. Use for repositories, branches, working tree changes, files, or commit ranges.
 ---
 
 # Ask Gemini for Comment & Documentation Audit
 
-Delegate a code comment, docstring, technical documentation, and commit message audit to Gemini 3.7 Flash (Medium) using the `agy` CLI, enforcing `comment-and-documentation-quality`.
+Delegate a code comment, docstring, technical documentation, and commit message audit to Gemini 3.8 Flash (Medium) using the `agy` CLI, enforcing `comment-and-documentation-quality`.
 
 ## When to Use
 
@@ -35,7 +35,7 @@ fi
 Local read-only audits do not require permission bypass:
 
 ```bash
-agy --model "Gemini 3.7 Flash (Medium)" \
+agy --model "Gemini 3.8 Flash (Medium)" \
   --add-dir /path/to/repo \
   --add-dir "${HOME}/.agents/skills/comment-and-documentation-quality" \
   --print-timeout 10m \
@@ -72,4 +72,4 @@ For execution failures or timeouts:
 
 1. Retry once unchanged.
 2. Shorten an unusually long prompt without altering standards or target.
-3. Lower Gemini 3.7 Flash from Medium to Low. Stop after Low and report any fallback used.
+3. Lower Gemini 3.8 Flash from Medium to Low. Stop after Low and report any fallback used.
