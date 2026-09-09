@@ -1,0 +1,9 @@
+{
+  "name": "astra-ify",
+  "description": "Audit and rewrite agent instructions for Astra when asked to reduce rigid prompting in a file or pasted text.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

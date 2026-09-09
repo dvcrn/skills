@@ -85,6 +85,11 @@
       "source": "./plugins/ask-gemini-for-review"
     },
     {
+      "name": "astra-ify",
+      "description": "Audit and rewrite agent instructions for Astra when asked to reduce rigid prompting in a file or pasted text.",
+      "source": "./plugins/astra-ify"
+    },
+    {
       "name": "chainenv",
       "description": "Operate chainenv for local secret workflows, including backend diagnostics, config-aware key lookup, shell export generation, secret writes, and backend copy operations",
       "source": "./plugins/chainenv"

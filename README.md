@@ -21,6 +21,7 @@ npx skills add dvcrn/skills
 - `litestream-tigris-flyio`: Set up or troubleshoot SQLite replication and restores with Litestream and Tigris on Fly.io.
 - `encrypt-for-cloud-agent`: Encrypt a secret for cloud agents using the shared cloud age key, producing a value ready to paste into fnox.cloud.toml.
 - `codex-cloud`: Run Codex tasks in cloud environments.
+- `astra-ify`: Audit and rewrite agent instructions for Astra when asked to reduce rigid prompting in a file or pasted text.
 
 ### Multi-Agent Delegation & Review Loop
 
