@@ -32,13 +32,14 @@ fi
 
 ## Canonical Invocation
 
-Local read-only audits do not require permission bypass:
+Run with `--dangerously-skip-permissions --sandbox` so headless execution auto-approves inspection tool requests without stalling while keeping terminal restrictions enabled:
 
 ```bash
 agy --model "Gemini 3.8 Flash (Medium)" \
   --add-dir /path/to/repo \
   --add-dir "${HOME}/.agents/skills/comment-and-documentation-quality" \
   --print-timeout 10m \
+  --dangerously-skip-permissions --sandbox \
   -p "This is an audit-only task.
 Do not make any file changes or run commands that modify the repository.
 Do not search the web. Do not inspect secrets, credentials, or unrelated paths.
@@ -53,7 +54,7 @@ Audit only the artifact types requested by the target; inspect commit messages o
 Output findings strictly using the structured report format with exact line numbers and clean replacements."
 ```
 
-*(For general `agy` CLI flags and options, see the `ask-gemini` skill).*
+_(For general `agy` CLI flags and options, see the `ask-gemini` skill)._
 
 ## Target Prompt Guidance
 

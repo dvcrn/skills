@@ -7,7 +7,6 @@ description: Delegate a GitHub PR code review to Gemini, with posting when autho
 
 Delegate a GitHub pull request review to Gemini 3.8 Flash (High) using the `agy` CLI, enforcing `pr-code-review-and-quality` and posting inline review comments and summary assessment directly to GitHub.
 
-
 **PR target:** Require a PR number, `owner/repo#number`, or URL supplied by the user, including an unambiguous prior mention. Do not infer it from the current branch or choose an open PR. If no target was provided, ask.
 
 **Output rule:** When the user explicitly invokes this skill's GitHub posting workflow, that request authorizes one `COMMENT` review. Do not ask again. Post it, then report the review URL and a one-paragraph summary. Automatic skill selection or a general request to inspect a PR does not authorize posting; honor explicit local-only or read-only requests. Pass the established delivery choice to any delegate.
@@ -57,7 +56,7 @@ agy --model "Gemini 3.8 Flash (High)" \
   --add-dir /path/to/repo \
   --add-dir "${HOME}/.agents/skills/pr-code-review-and-quality" \
   --print-timeout 10m \
-  --dangerously-skip-permissions \
+  --dangerously-skip-permissions --sandbox \
   -p "This is a GitHub PR review task.
 Do not make any code changes in the local repository. Do not implement anything locally.
 Do not search the general web. Network access is permitted ONLY for GitHub CLI (gh) and GitHub API calls for this PR.
@@ -72,7 +71,7 @@ Submit with event: COMMENT. Unless user or repository policy prohibits attributi
 Report the review URL and summary once posted."
 ```
 
-*(For general `agy` CLI flags and options, see the `ask-gemini` skill).*
+_(For general `agy` CLI flags and options, see the `ask-gemini` skill)._
 
 ## Failure Fallback & Idempotent Retries
 

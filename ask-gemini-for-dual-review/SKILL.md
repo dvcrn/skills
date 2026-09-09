@@ -33,7 +33,7 @@ done
 
 ## Canonical Invocation
 
-Local read-only reviews do not require permission bypass:
+Run with `--dangerously-skip-permissions --sandbox` so headless execution auto-approves inspection tool requests without stalling while keeping terminal restrictions enabled:
 
 ```bash
 agy --model "Gemini 3.8 Flash (High)" \
@@ -42,6 +42,7 @@ agy --model "Gemini 3.8 Flash (High)" \
   --add-dir "${HOME}/.agents/skills/code-review-and-quality" \
   --add-dir "${HOME}/.agents/skills/comment-and-documentation-quality" \
   --print-timeout 10m \
+  --dangerously-skip-permissions --sandbox \
   -p "This is a combined code and comment review task.
 Do not make code changes, edit files, or run mutating commands.
 Do not search the web. Do not inspect secrets, credentials, or unrelated paths.
@@ -56,7 +57,7 @@ Review the target against the five code review axes (Correctness, Readability, A
 Format findings using standard severity prefixes: Critical:, Nit:, Optional: / Consider:, FYI:, or unprefixed for required changes."
 ```
 
-*(For general `agy` CLI flags and options, see the `ask-gemini` skill).*
+_(For general `agy` CLI flags and options, see the `ask-gemini` skill)._
 
 ## Target Prompt Guidance
 

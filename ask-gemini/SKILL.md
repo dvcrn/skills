@@ -55,13 +55,13 @@ For execution failures or timeouts, retry once unchanged, shorten an unusually l
 ### Standard Questions (default)
 
 ```bash
-agy --model "Gemini 3.8 Flash (Medium)" --print-timeout 10m -p "your prompt here"
+agy --model "Gemini 3.8 Flash (Medium)" --print-timeout 10m --dangerously-skip-permissions --sandbox -p "your prompt here"
 ```
 
 ### Codebase Tasks
 
 ```bash
-agy --model "Gemini 3.8 Flash (Medium)" --add-dir /path/to/repo --print-timeout 10m -p "your prompt here"
+agy --model "Gemini 3.8 Flash (Medium)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions --sandbox -p "your prompt here"
 ```
 
 ### Workspace access (`--add-dir`)
@@ -85,7 +85,8 @@ NOTE: ALWAYS RUN GEMINI WITH `--print-timeout 10m` AS GEMINI CAN TAKE QUITE A WH
 - `--add-dir <path>` — Add each directory Gemini needs to access. There is no `--workdir` flag; use `--add-dir` for the repo and any other required paths.
 - `--print-timeout 10m` — Always set a 10 minute print timeout; Gemini can take a while.
 - `--prompt` / `-p` — Run a single prompt non-interactively and print the response
-- `--dangerously-skip-permissions` — Required when delegating tasks that may need to run commands, edit files, or take actions (auto-approves all tool permission requests)
+- `--dangerously-skip-permissions` — Required when delegating tasks non-interactively (`-p`) so tool permission requests are auto-approved without stalling headless execution
+- `--sandbox` — Run in a sandbox with terminal restrictions enabled. Always pair with `--dangerously-skip-permissions`
 
 ### Full agy Help Text
 
@@ -122,14 +123,14 @@ Available subcommands:
 
 ```bash
 # Simple question
-agy --model "Gemini 3.8 Flash (Medium)" --print-timeout 10m -p "This is just a question. Do not make any code changes or run commands. Explain how Cloudflare Durable Objects work"
+agy --model "Gemini 3.8 Flash (Medium)" --print-timeout 10m --dangerously-skip-permissions --sandbox -p "This is just a question. Do not make any code changes or run commands. Explain how Cloudflare Durable Objects work"
 
 # Code research - explore a directory (no changes)
-agy --model "Gemini 3.8 Flash (Medium)" --add-dir /path/to/repo --print-timeout 10m -p "This is just research. Do not make any code changes. Explore the ./server directory and explain the authentication flow. Read whatever files you need."
+agy --model "Gemini 3.8 Flash (Medium)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions --sandbox -p "This is just research. Do not make any code changes. Explore the ./server directory and explain the authentication flow. Read whatever files you need."
 
 # Task delegation: code review only (explicit boundaries)
-agy --model "Gemini 3.8 Flash (Medium)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions -p "This is a code review only. Do not make any code changes. Review the code in ./src, identify improvements, and only output the suggested improvements. Do not implement anything."
+agy --model "Gemini 3.8 Flash (Medium)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions --sandbox -p "This is a code review only. Do not make any code changes. Review the code in ./src, identify improvements, and only output the suggested improvements. Do not implement anything."
 
 # Continue a conversation
-agy --model "Gemini 3.8 Flash (Medium)" --add-dir /path/to/repo --print-timeout 10m --continue -p "Now refactor it using the adapter pattern"
+agy --model "Gemini 3.8 Flash (Medium)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions --sandbox --continue -p "Now refactor it using the adapter pattern"
 ```
