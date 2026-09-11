@@ -51,6 +51,7 @@ npx skills add dvcrn/skills
 ### Elixir & Phoenix
 
 - `adapter-pattern`: Define Elixir adapters for app-owned external-service boundaries and Mox-backed tests.
+- `install-newrelic-elixir`: Install, upgrade, configure, provision, or troubleshoot New Relic APM and logs for Elixir and Phoenix applications, including NerdGraph keys, runtime secrets, logs in context, release metadata, and deployment markers.
 - `install-posthog-elixir`: Install, update, or troubleshoot PostHog analytics in Elixir and Phoenix applications.
 - `install-sentry-elixir`: Install, update, or troubleshoot Sentry error monitoring in Elixir and Phoenix applications.
 - `phoenix-hooks`: Use when we need an explanation of standard Phoenix LiveView client hooks (phx-hook) and when to use colocated vs regular hooks.

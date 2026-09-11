@@ -140,6 +140,11 @@
       "source": "./plugins/github-comment-quality"
     },
     {
+      "name": "install-newrelic-elixir",
+      "description": "Install, upgrade, configure, provision, or troubleshoot New Relic APM and logs for Elixir and Phoenix applications, including NerdGraph keys, runtime secrets, logs in context, release metadata, and deployment markers.",
+      "source": "./plugins/install-newrelic-elixir"
+    },
+    {
       "name": "install-posthog-elixir",
       "description": "Install, update, or troubleshoot PostHog analytics in Elixir and Phoenix applications.",
       "source": "./plugins/install-posthog-elixir"

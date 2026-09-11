@@ -55,6 +55,7 @@
       "title": "Elixir & Phoenix",
       "skills": [
         "adapter-pattern",
+        "install-newrelic-elixir",
         "install-posthog-elixir",
         "install-sentry-elixir",
         "phoenix-hooks",
