@@ -14,7 +14,7 @@ Configure the requested server or browser integration. Discover relevant configu
 - Server and browser events use the same stringified database user ID. Verify the auth assign used by templates.
 - Drop empty properties, bound cardinality, and exclude credentials.
 - Use `person_profiles: "identified_only"` and keep error tracking disabled; Sentry owns exception reporting.
-- Deployed ingestion uses `POSTHOG_API_HOST=https://px.d.sh` unless the project has its own proxy. The fallback is `https://eu.i.posthog.com`; `ui_host` stays `https://eu.posthog.com`. Determine the project's configured host before changing it.
+- Use the project's configured reverse proxy when one exists. Otherwise select the official regional ingestion host, `https://us.i.posthog.com` or `https://eu.i.posthog.com`, and keep `ui_host` on the matching PostHog application host.
 
 ## Choose relevant references
 

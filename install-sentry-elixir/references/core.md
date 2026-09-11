@@ -23,11 +23,11 @@ Do not add `:hackney` unless you deliberately want the Hackney transport instead
 For a new installation, run the project's normal dependency fetch command. For an existing installation, update Sentry explicitly and inspect resolver changes before accepting them:
 
 ```bash
-mise x -- mix deps.update sentry
-mise x -- mix deps.get
+mix deps.update sentry
+mix deps.get
 ```
 
-Keep required transitive updates and avoid unrelated dependency churn.
+Keep required transitive updates and avoid unrelated dependency churn. If the repository wraps Mix with a toolchain manager or task runner, use that established wrapper instead of introducing one.
 
 ### 2) Runtime Configuration (`config/runtime.exs`)
 

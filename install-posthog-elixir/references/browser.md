@@ -4,54 +4,56 @@ Use for Phoenix applications that need browser analytics. Consult current [JS SD
 
 ### 5) JS SDK Setup in Assets
 
-- Check for `assets/package.json`.
-- If it exists: run `bun add posthog-js` inside `assets/`.
-- If it does not exist:
-  - Run `bun init -y` in `assets/`
-  - Run `bun add posthog-js`
-  - Keep `package.json` and `bun.lock`; remove unrelated scaffolding files if not needed.
+- Inspect the repository for an existing package manager and lockfile in `assets/` or the project root.
+- Add `posthog-js` with that package manager, for example `npm install posthog-js`, `pnpm add posthog-js`, `yarn add posthog-js`, or `bun add posthog-js`.
+- If no JavaScript package manifest exists, confirm that introducing one fits the project's asset pipeline before initializing it. Use the package manager already selected by repository instructions or ask the user when no convention can be inferred.
+- Keep the generated manifest and matching lockfile; remove unrelated scaffolding files if the initializer created any.
+
 ### 9) Client Initialization (Default: Bundled JS)
 
 In `assets/js/app.js` (or discovered entrypoint):
 
 ```javascript
-import posthog from "posthog-js"
+import posthog from "posthog-js";
 
 // Exposed so server-rendered components and LiveView hooks can capture events.
-window.posthog = posthog
+window.posthog = posthog;
 
-const meta = name =>
-  document.querySelector(`meta[name='${name}']`)?.getAttribute("content")?.trim()
+const meta = (name) =>
+  document
+    .querySelector(`meta[name='${name}']`)
+    ?.getAttribute("content")
+    ?.trim();
 
 const initPostHog = () => {
-  const apiKey = meta("posthog-api-key")
+  const apiKey = meta("posthog-api-key");
 
-  if (!apiKey) return
+  if (!apiKey) return;
 
   posthog.init(apiKey, {
     api_host: meta("posthog-api-host") || "https://eu.i.posthog.com",
     ui_host: meta("posthog-ui-host") || "https://eu.posthog.com",
     defaults: "2026-01-30",
     person_profiles: "identified_only",
-  })
+  });
 
-  const distinctId = meta("posthog-distinct-id")
+  const distinctId = meta("posthog-distinct-id");
 
   if (distinctId) {
     const traits = {
       email: meta("posthog-user-email"),
       name: meta("posthog-user-name"),
       created_at: meta("posthog-user-created-at"),
-    }
+    };
 
-    posthog.identify(distinctId, traits)
+    posthog.identify(distinctId, traits);
   }
-}
+};
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initPostHog)
+  document.addEventListener("DOMContentLoaded", initPostHog);
 } else {
-  initPostHog()
+  initPostHog();
 }
 ```
 

@@ -26,21 +26,14 @@ Notes:
 
 ### 10) Secrets and Deployment
 
-Store the DSN in the repo's secret manager, never in committed config.
+Store the DSN in the project's established secret manager, never in committed config. Expose it to the application as `SENTRY_DSN` at runtime.
 
-With `fnox`:
+Possible destinations include Fly secrets, Kubernetes Secrets, AWS Secrets Manager or Systems Manager Parameter Store, ECS task secrets, Heroku config vars, and encrypted project stores such as fnox. Discover the project's provider and environment/profile conventions rather than selecting one by default.
 
-```bash
-fnox set --profile production SENTRY_DSN "<your-dsn>" --provider age
-```
-
-Inject it into the hosting platform. For Fly.io:
+For a local one-process check, an environment variable is sufficient:
 
 ```bash
-flyctl secrets set SENTRY_DSN="$(fnox get --profile production SENTRY_DSN)"
+SENTRY_DSN="<your-dsn>" MIX_ENV=dev mix sentry.send_test_event
 ```
 
-Set `SENTRY_ENVIRONMENT` alongside it, and `SENTRY_RELEASE` if the deploy pipeline has a
-version or commit to tag with. For any other platform the rule is the same: the secret
-lives in the secret store, and `SENTRY_DSN` is exposed as an environment variable at
-runtime.
+Set `SENTRY_ENVIRONMENT` alongside the DSN in deployed environments, and set `SENTRY_RELEASE` when the deploy pipeline has a version or commit to tag. The secret remains in the configured store while the runtime receives it as an environment variable.

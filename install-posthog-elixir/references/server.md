@@ -5,7 +5,7 @@
 - Add `:posthog` to `mix.exs` using current version guidance from fetched docs/Hex.
 - Run:
   ```bash
-  mise x -- mix deps.get
+  mix deps.get
   ```
 
 ### 2) Static Defaults (`config/config.exs`)
@@ -36,8 +36,8 @@ posthog_enabled? =
 
 config :posthog,
   enable: posthog_enabled?,
-  # Deployed environments set POSTHOG_API_HOST=https://px.d.sh, the reverse proxy
-  # that keeps browser ingestion alive past ad blockers. The fallback is direct.
+  # Set POSTHOG_API_HOST to an existing reverse proxy when the project has one.
+  # Otherwise use the official host for the selected PostHog region.
   api_host: System.get_env("POSTHOG_API_HOST") || "https://eu.i.posthog.com",
   api_key: posthog_api_key,
   in_app_otp_apps: [:my_app],
@@ -58,6 +58,7 @@ Minimum, in all cases:
 ```elixir
 config :posthog, test_mode: true
 ```
+
 ### 7) Analytics Boundary Module (Required)
 
 Domain code must never call `PostHog` directly. Create one app-owned module that every call site goes through, so that identity, property hygiene, and failure tolerance are enforced in one place.
@@ -145,6 +146,7 @@ If the repo already follows a behaviour plus Mox adapter pattern, declare
 `Application.get_env(:my_app, :analytics_adapter, MyApp.Analytics.Api)`.
 
 **Property rules, enforced at every call site:**
+
 - **No secrets.** Report whether a credential exists, never its value. Report the host of a URL, not the URL carrying a token.
 - **Bounded cardinality.** Bucket errors into an `error_type`; a raw error message is one distinct value per occurrence and is useless for grouping.
 
@@ -165,9 +167,11 @@ The contract:
 Identify traits to pass, when present: `email`, `name`, `created_at` (as a string).
 
 For stitching pre-signup anonymous activity onto the account, see [advanced-recipes.md](advanced-recipes.md).
+
 ### 12) Middleware
 
 Add `PostHog.Integrations.Plug`:
+
 - Phoenix: in the endpoint, after `Plug.RequestId` and `Plug.Telemetry`, before the router.
 - Plug app: in the router plug chain.
 
