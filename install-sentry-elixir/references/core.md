@@ -1,14 +1,16 @@
 # Core Sentry setup
 
-Consult the current [Elixir setup](https://docs.sentry.io/platforms/elixir/) and [LoggerHandler reference](https://hexdocs.pm/sentry/Sentry.LoggerHandler.html) for the installed version when configuring these components.
+Consult the current [Elixir setup](https://docs.sentry.io/platforms/elixir/) and [LoggerHandler reference](https://hexdocs.pm/sentry/Sentry.LoggerHandler.html) when configuring these components.
 
-### 1) Add Dependencies
+### 1) Add or Update Dependencies
 
-Add `:sentry` using the current version from fetched docs or Hex, and declare the HTTP
+Always query [Hex package metadata](https://hex.pm/api/packages/sentry) and the official changelog before changing the integration. Compare the latest stable release with both `mix.exs` and `mix.lock`. If the project is behind, upgrade to the latest stable version compatible with its existing Elixir, OTP, and framework versions. Do not silently raise those baselines to take an incompatible Sentry release.
+
+Add or update `:sentry` using the verified current compatible version, and declare the HTTP
 client explicitly:
 
 ```elixir
-{:sentry, "~> 12.0"},
+{:sentry, "~> 13.5"},
 {:finch, "~> 0.21"},
 ```
 
@@ -18,11 +20,14 @@ happens to pull Finch in, and it breaks when that dependency changes. Declare it
 
 Do not add `:hackney` unless you deliberately want the Hackney transport instead of Finch.
 
-Run:
+For a new installation, run the project's normal dependency fetch command. For an existing installation, update Sentry explicitly and inspect resolver changes before accepting them:
 
 ```bash
+mise x -- mix deps.update sentry
 mise x -- mix deps.get
 ```
+
+Keep required transitive updates and avoid unrelated dependency churn.
 
 ### 2) Runtime Configuration (`config/runtime.exs`)
 
@@ -145,9 +150,11 @@ filterable in the Sentry UI must be promoted to tags instead:
 tags_from_metadata: [:user_id, :tenant_id]
 ```
 
-**Cowboy note.** The default `excluded_domains: [:cowboy]` exists so Cowboy crashes are
-not reported twice when `Sentry.PlugCapture` is in use. Keep the default unless there is
-a concrete reason to change it.
+**HTTP server domain exclusions.** Current Sentry versions exclude Cowboy and Bandit
+logger domains so request crashes are not reported twice when `Sentry.PlugCapture` is in
+use. Keep the installed version's defaults unless there is a concrete reason to change
+them. `PlugCapture` must own Phoenix request exceptions while the logger handler owns
+other crashes and error logs.
 
 **Guard the handler on DSN presence.** Register the handler only when Sentry is actually
 configured, so nothing is attached in dev and test:
@@ -196,6 +203,7 @@ When the handler is not declared in application config, add it programmatically 
 ```
 
 Use one approach or the other, not both.
+
 ### 8) Manual Capture
 
 The logger handler is the reporting path. With `capture_log_messages: true`, a

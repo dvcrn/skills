@@ -32,20 +32,21 @@ If events are not showing up in Sentry, investigate the relevant reporting path:
 
 1. `SENTRY_DSN` exists in the deployment environment.
 2. `config/runtime.exs` actually reads `SENTRY_DSN`, and the guard around it is satisfied.
-3. `Sentry.PlugContext` is still in the endpoint pipeline, after `Plug.Parsers` and before
+3. The Phoenix endpoint uses `Sentry.PlugCapture` above `Phoenix.Endpoint`.
+4. `Sentry.PlugContext` is still in the endpoint pipeline, after `Plug.Parsers` and before
    the router.
-4. The handler activation call still runs during application startup.
-5. The logger handler config is present for the running environment.
-6. `mix sentry.package_source_code` still runs before `mix release`.
-7. `:finch` is still a direct dependency.
-8. The app is not silently running without a DSN.
+5. The handler activation call still runs during application startup.
+6. The logger handler config is present for the running environment.
+7. `mix sentry.package_source_code` still runs before `mix release`.
+8. `:finch` is still a direct dependency.
+9. The app is not silently running without a DSN.
 
 If events arrive without request context, check the `Sentry.PlugContext` position and
 whether the failing entrypoint has its own pipeline.
 
-If events are duplicated, check whether `Sentry.PlugCapture` is in use on Bandit, or
-whether explicit capture calls sit next to `Logger.error` calls while
-`capture_log_messages: true` is set.
+If HTTP exceptions are duplicated, confirm the logger handler retains the installed
+Sentry version's default Cowboy and Bandit domain exclusions. Also check whether explicit
+capture calls sit next to `Logger.error` calls while `capture_log_messages: true` is set.
 
 If background job failures never appear, check the Oban integration.
 
@@ -54,7 +55,8 @@ If background job failures never appear, check the Oban integration.
 - Using `Sentry.LoggerBackend` instead of `Sentry.LoggerHandler`.
 - Using `root_source_code_path` singular instead of `root_source_code_paths`.
 - Overriding `root_source_code_paths` at runtime to point at the app's `priv` directory.
-- Using `use Sentry.PlugCapture` on Bandit.
+- Omitting `Sentry.PlugCapture` from a Phoenix endpoint on either Bandit or Cowboy.
+- Removing the logger handler's HTTP server domain exclusions while `PlugCapture` is active.
 - Placing `Sentry.PlugContext` after the router, or omitting it from secondary entrypoints.
 - Hardcoding the DSN in `config/config.exs` or `config/prod.exs`.
 - Setting a global `tags: %{env: ...}` that duplicates `environment_name`.

@@ -4,6 +4,11 @@ Load only the section matching the app. Consult current [Plug/Phoenix setup](htt
 
 ### 5) Plug and Phoenix Integration
 
+Phoenix endpoints on both Bandit and Cowboy require two complementary pieces:
+
+- `use Sentry.PlugCapture` immediately above `use Phoenix.Endpoint` captures request exceptions as Sentry issues and reraises them for the server's normal response handling.
+- `Sentry.PlugContext` enriches those events with request data.
+
 **Placement is not optional.** `Sentry.PlugContext` must run after `Plug.Parsers` and
 before the router:
 
@@ -13,10 +18,11 @@ before the router:
   `Sentry.PlugContext` placed after the router never runs in either case, and every event
   loses its URL, params, headers, and request ID.
 
-#### Phoenix on Bandit
+#### Phoenix on Bandit or Cowboy
 
 ```elixir
 defmodule MyAppWeb.Endpoint do
+  use Sentry.PlugCapture
   use Phoenix.Endpoint, otp_app: :my_app
 
   # ...
@@ -31,20 +37,14 @@ defmodule MyAppWeb.Endpoint do
 end
 ```
 
-Do not add `Sentry.PlugCapture` on Bandit. Sentry's own docs state it is recommended for
-Cowboy only and may produce duplicate errors on Bandit. The mechanism is
-`excluded_domains: [:cowboy]`: Cowboy crashes are filtered from the logger handler so
-`PlugCapture` owns them, but Bandit logs crashes under standard OTP domains, so nothing
-filters the second report.
-
-#### Phoenix on Cowboy
-
-Add `use Sentry.PlugCapture` above `use Phoenix.Endpoint`, and `plug Sentry.PlugContext`
-in the same position as above.
+Keep the logger handler's default HTTP server domain exclusions. Current Sentry versions
+exclude both `:cowboy` and `:bandit`, allowing `PlugCapture` to own request exceptions
+without duplicate logger-originated events. Verify the defaults in the installed version
+rather than overriding them from an older example.
 
 #### Plain Plug App
 
-Add `plug Sentry.PlugContext`. If it runs on Cowboy, also use `Sentry.PlugCapture`.
+Add `plug Sentry.PlugContext`. If the app's endpoint is a module that can `use Sentry.PlugCapture`, add the capture wrapper as well and preserve the installed Sentry version's HTTP server domain exclusions.
 
 #### Every Plug entrypoint
 
@@ -70,6 +70,7 @@ end
 ```
 
 Do not add this if the project does not use LiveView.
+
 ### 7) Oban Integration
 
 Failed background jobs do not reach Sentry through the Plug or logger paths. If the app

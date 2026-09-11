@@ -11,6 +11,8 @@ Configure the reporting paths the requested app uses. For an existing installati
 
 Discover the app's configuration, server, entrypoints, and release workflow from relevant files. Follow repository tooling and secret rules. Check current official documentation for the component being changed; prefer it over stale examples and report material differences.
 
+- Query Hex and the official changelog for the latest stable compatible Sentry version. Upgrade `:sentry` when the project is behind, without silently raising the project's Elixir, OTP, or framework baseline.
+- In Phoenix endpoints, use `Sentry.PlugCapture` above `Phoenix.Endpoint` and place `Sentry.PlugContext` after `Plug.Parsers` and before the router. This applies to both Bandit and Cowboy.
 - Keep the DSN in runtime configuration and the secret manager.
 - Use `Sentry.LoggerHandler`, with log capture and rate limiting. Register it at boot only when configured.
 - Declare the HTTP client directly, and identify application frames with `in_app_otp_apps`.
