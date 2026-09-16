@@ -195,6 +195,11 @@
       "source": "./plugins/phoenix-hooks"
     },
     {
+      "name": "phoenix-live-islands",
+      "description": "Use when embedding a small, self-contained LiveView into an otherwise dead (controller-rendered) Phoenix page with live_render/3, when a controller page needs one dynamic card or widget without converting the whole route to a LiveView, or when debugging an embedded LiveView that renders statically but never connects.",
+      "source": "./plugins/phoenix-live-islands"
+    },
+    {
       "name": "pr-code-review-and-quality",
       "description": "Review GitHub pull requests for code quality and deliver inline findings when posting is authorized.",
       "source": "./plugins/pr-code-review-and-quality"

@@ -60,7 +60,8 @@
         "install-sentry-elixir",
         "phoenix-hooks",
         "phoenix-colocated-hooks",
-        "phoenix-colocated-js"
+        "phoenix-colocated-js",
+        "phoenix-live-islands"
       ]
     },
     {

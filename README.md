@@ -57,6 +57,7 @@ npx skills add dvcrn/skills
 - `phoenix-hooks`: Use when we need an explanation of standard Phoenix LiveView client hooks (phx-hook) and when to use colocated vs regular hooks.
 - `phoenix-colocated-hooks`: Use when we need an explanation of phoenix colocated hooks.
 - `phoenix-colocated-js`: Use when we need an explanation of Phoenix.LiveView.ColocatedJS and how colocated JS is compiled and imported.
+- `phoenix-live-islands`: Use when embedding a small, self-contained LiveView into an otherwise dead (controller-rendered) Phoenix page with live_render/3, when a controller page needs one dynamic card or widget without converting the whole route to a LiveView, or when debugging an embedded LiveView that renders statically but never connects.
 
 ### Swift & SwiftUI
 
