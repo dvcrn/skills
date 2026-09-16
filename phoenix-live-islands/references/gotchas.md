@@ -64,17 +64,21 @@ instead.
 
 ## Session handoff
 
-The plug session is already there. From `live_render/3`'s docs:
+From `live_render/3`'s docs:
 
 > All session data currently in the connection is automatically available in
 > LiveViews. You can use this option to provide extra data.
 
-So `%{"user_token" => ...}` set by your auth plug reaches `mount/3` without being
-listed in `:session`. The `:session` option adds to that map, and its keys must be
-binaries.
+The existing Plug session is recovered through the session configuration shared by
+`Plug.Session` and the endpoint's LiveView socket. For example,
+`%{"user_token" => ...}` set by the authentication plug reaches `mount/3` without
+being repeated in the `:session` option.
 
-Everything in it is serialized and signed into the HTML, so keep it to ids. Pass
-`%{"user_id" => user.id}` and load the user in `mount/3`, never the `%User{}`.
+The explicit `session:` option adds data to that session map. Its keys must be
+binaries, and its values are serialized into a signed token exposed in the page.
+Signing protects integrity but does not encrypt the contents. Pass resource ids,
+never structs, secrets, or sensitive data, and load the authorized resource in
+`mount/3`.
 
 The conn's flash is copied into the island's socket for the static render
 (`flash = Map.get(conn.assigns, :flash) || Map.get(conn.private, :phoenix_flash, %{})`),
@@ -82,30 +86,34 @@ but `put_flash/3` inside the island afterwards only affects the island's own
 render. If the island needs to surface a message, render a flash group inside its
 own template.
 
-## Auth is not inherited
+## Authentication and authorization are not inherited
 
 Router pipelines run for the dead page's HTTP request. The websocket connection is
-a separate request through the endpoint's `socket/3` and its `connect_info`, and
-`live_session`'s `on_mount` hooks only attach for router-mounted LiveViews
-(`Static.lifecycle/2` reads them from the matched live session).
+a separate request through the endpoint's `socket/3` and its `connect_info`.
+Router `live_session` hooks attach only to router-mounted LiveViews because
+`Static.lifecycle/2` reads them from the matched live session. Hooks declared
+inside the LiveView module still run.
 
-Re-check authorization in `mount/3`:
+Recover the actor from the existing authentication session and authorize the
+requested resource in `mount/3`:
 
 ```elixir
-def mount(_params, %{"user_id" => user_id}, socket) do
-  user = Accounts.get_user!(user_id)
+def mount(
+      _params,
+      %{"user_token" => token, "account_id" => account_id},
+      socket
+    ) do
+  current_user = Accounts.get_user_by_session_token(token)
+  account = Accounts.get_account_for_user!(current_user, account_id)
 
-  if Accounts.can_view_stats?(user) do
-    {:ok, assign(socket, :user, user)}
-  else
-    {:ok, redirect(socket, to: ~p"/")}
-  end
+  {:ok, assign(socket, current_user: current_user, account: account), layout: false}
 end
 ```
 
-The session is signed, so a client cannot forge the `user_id`. It can still replay
-its own, which is why the check belongs in `mount/3` rather than being assumed from
-the page that embedded it.
+A client cannot alter signed session data without invalidating it, but valid data
+can still identify a resource the current actor should not access. Repeat
+resource-level authorization in `mount/3` and in every event that performs a
+mutation.
 
 ## Navigation
 
@@ -127,8 +135,8 @@ LiveView, so live navigation into it has nothing to match. Leave it off.
 ## Containers and layout impact
 
 Every island is wrapped in a container tag, a `div` by default. In a CSS grid or
-flex parent that extra element is a grid item, which is usually what you want (the
-mcpnest account page relies on it to place the card in a two-column grid).
+flex parent that extra element becomes a grid or flex item, which is often the
+intended layout.
 
 When it must not affect layout:
 
@@ -145,57 +153,117 @@ live_render(@conn, MyAppWeb.RowLive, container: {:tr, class: "hover"})
 Never use `:body`. Anything injected into the body, live reload included, is
 discarded when the island connects.
 
+## Subscriptions and initial async reads
+
+Subscribe before starting the initial read so an update cannot occur in the gap
+between reading and subscribing. Subscription order alone does not prevent an
+in-flight query from completing after a newer pushed value and overwriting it.
+Cancel the initial async operation when the pushed value supersedes its snapshot:
+
+```elixir
+def handle_info({:stats_updated, stats}, socket) do
+  async_result = socket.assigns.stats
+
+  socket =
+    socket
+    |> cancel_async(async_result)
+    |> assign(:stats, Phoenix.LiveView.AsyncResult.ok(async_result, stats))
+
+  {:noreply, socket}
+end
+```
+
+An application-owned subscribe-and-snapshot operation with defined ordering is
+another valid solution.
+
 ## Several islands on one page
 
 Each island is a root LiveView: its own process, its own channel, its own crash
 boundary. One island raising does not take down the others or the page.
 
-They share nothing. No parent assigns, no `send_update`, no shared socket. To
-coordinate, publish on PubSub and have each island subscribe in its connected
-mount. If you find yourself doing that for UI state rather than domain events,
-that is the signal to convert the route to a single LiveView.
+They have no parent assigns or shared socket, and parent-scoped component
+coordination does not apply. Prefer PubSub or another application-owned boundary
+for domain events. If coordination is primarily presentation state, convert the
+route to a single LiveView.
 
-Two instances of the same module on one page need distinct ids:
+Root islands rendered from a `%Plug.Conn{}` receive generated unique ids. Provide
+explicit, distinct ids when stable DOM selectors or predictable ids are useful:
 
 ```heex
 {live_render(@conn, MyAppWeb.ChartLive, id: "chart-daily", session: %{"range" => "day"})}
 {live_render(@conn, MyAppWeb.ChartLive, id: "chart-weekly", session: %{"range" => "week"})}
 ```
 
-## Client wiring
+## Endpoint and client wiring
 
-The island connects only if the dead page's layout loads the LiveView JS and calls
-`liveSocket.connect()`. Two things to check when an island renders but never
-becomes interactive:
+Use one session-options definition for both `Plug.Session` and the LiveView socket:
 
-1. The root layout used by the controller includes the app JS bundle and
-   `<meta name="csrf-token" content={get_csrf_token()} />`.
-2. `app.js` calls `liveSocket.connect()` unconditionally, not behind a check for a
-   LiveView-only page.
+```elixir
+@session_options [
+  store: :cookie,
+  key: "_my_app_key",
+  signing_salt: "..."
+]
 
-Marketing or docs layouts trimmed for page weight are the usual culprit.
+socket "/live", Phoenix.LiveView.Socket,
+  websocket: [connect_info: [session: @session_options]],
+  longpoll: [connect_info: [session: @session_options]]
+
+plug Plug.Session, @session_options
+```
+
+The route must pass through a browser pipeline that fetches the session and
+protects against CSRF. The island connects only if the dead page's root layout
+loads the LiveView JavaScript and renders
+`<meta name="csrf-token" content={get_csrf_token()} />`. The `LiveSocket`
+constructor must receive that token as `_csrf_token`, and `app.js` must call
+`liveSocket.connect()` on the dead page.
+
+When static HTML renders but the island never becomes interactive, check the
+endpoint session configuration, browser pipeline, layout, and LiveSocket setup as
+one chain. Minimal marketing or documentation layouts commonly omit part of it.
 
 ## Testing
 
-`live_isolated/3` exists for exactly this case. It builds a conn, renders the
-LiveView through `Phoenix.LiveView.Controller.live_render/3`, then connects from
-the static token, which is the same sequence a dead page triggers:
+`live_isolated/3` exists for this case. It builds a conn, renders the LiveView
+through `Phoenix.LiveView.Controller.live_render/3`, then connects from the static
+token, which is the same sequence a dead page triggers:
 
 ```elixir
 {:ok, view, html} =
-  live_isolated(conn, MyAppWeb.AccountStatsLive, session: %{"user_id" => user.id})
+  live_isolated(conn, MyAppWeb.AccountStatsLive,
+    session: %{"account_id" => account.id}
+  )
+
+assert html =~ "Loading statistics"
+assert render_async(view) =~ "42"
 ```
 
+Use deterministic fixtures or a test adapter for the async result. Do not manually
+start work that the connected mount already starts. `render_async/2` waits for
+`assign_async/3` and `start_async/3` tasks.
+
 `live/2` cannot be used because there is no live route to navigate to. In the
-controller test, assert the static contract only:
+controller test, assert the intended container rather than any LiveView token:
 
 ```elixir
 test "account page embeds the stats island", %{conn: conn} do
-  html = conn |> get(~p"/account") |> html_response(200)
+  user = user_fixture()
+  account = account_fixture(user)
+  conn = log_in_user(conn, user)
+
+  html =
+    conn
+    |> get(~p"/accounts/#{account}")
+    |> html_response(200)
+
+  assert html =~ ~s(id="account-stats")
   assert html =~ "data-phx-session"
+  assert html =~ "Loading statistics"
 end
 ```
 
-Driving events needs `live_isolated/3`; in a nested (socket-parent) island it would
-need `find_live_child/2`, which does not apply here since dead-page islands are
-roots.
+Driving events needs `live_isolated/3`. A nested LiveView rendered from a parent
+socket would use `find_live_child/2`, which does not apply because dead-page
+islands are roots. Add a browser-level smoke test when the real endpoint,
+JavaScript, CSRF, and connection wiring require end-to-end coverage.

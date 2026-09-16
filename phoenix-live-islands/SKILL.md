@@ -5,169 +5,130 @@ description: Use when embedding a small, self-contained LiveView into an otherwi
 
 # Phoenix Live Islands
 
-A "live island" is a single LiveView embedded into a controller-rendered page with
-`live_render/3`. The page itself stays a dead view: no socket, no diffs, no
-lifecycle. Only the island's DOM subtree opens a websocket and re-renders.
+A "live island" embeds an independent LiveView into a controller-rendered page
+with `live_render(@conn, Module, ...)`. The host page remains static HTML. The
+shared `LiveSocket` joins a channel and starts a process for each island, updating
+only that island's DOM subtree.
 
-This is not a Phoenix API name. It is the islands-architecture term applied to
-`live_render(@conn, Module, ...)`, which Phoenix has always supported.
-
-## When to reach for it
+## When to use it
 
 Use an island when:
 
-- One widget on a mostly static page needs push updates, polling, or async loading.
-- The expensive query should not block the HTTP response.
-- Converting the whole route to a LiveView would mean re-plumbing auth, layout, or
-  navigation for no benefit.
+- One widget on a mostly static page needs async data, push updates, or polling.
+- An expensive query should not block the initial HTTP response.
+- Converting the route to LiveView would add unnecessary routing, layout, or auth
+  work.
 
 Do not use one when:
 
-- The page has several interacting dynamic regions. Each island is a separate
-  process with no shared assigns; they can only talk through PubSub. Convert the
-  route to a LiveView instead.
-- The dynamic part needs live navigation (`push_patch`, `push_navigate`, URL-driven
-  state). Islands are not mounted at the router, so this does not work.
-- The state is purely client-side. Use a function component with JS commands or a
-  hook.
+- Several dynamic regions need shared UI state. Use one LiveView instead.
+- The widget needs `push_patch`, `push_navigate`, or URL-driven state.
+- The state is purely client-side. Use a function component with
+  `Phoenix.LiveView.JS` or a hook.
 
-## Minimal example
+## Core pattern
 
-Controller: pass only ids in `:session`.
-
-```elixir
-def account(conn, _params) do
-  user = conn.assigns.current_user
-
-  render(conn, :account,
-    user: user,
-    page_title: "Account Settings",
-    session: %{"user_id" => user.id}
-  )
-end
-```
-
-Dead template: drop the island where the widget goes.
+Embed the island in the dead template. Pass only identifiers through `:session`.
+Use an explicit `:id` when tests or diagnostics need a stable selector.
 
 ```heex
 <div class="grid gap-6 lg:grid-cols-2">
-  <div class="card">...static profile...</div>
+  <div class="card">...dead controller content...</div>
 
-  {live_render(@conn, MyAppWeb.AccountStatsLive, session: @session)}
+  {live_render(@conn, MyAppWeb.AccountStatsLive,
+    id: "account-stats",
+    session: %{"account_id" => @account.id}
+  )}
 </div>
 ```
 
-The LiveView: cheap static mount, real work after connect.
+Disable the layout, authenticate from the session, and defer expensive reads:
 
 ```elixir
 defmodule MyAppWeb.AccountStatsLive do
   use MyAppWeb, :live_view
 
   @impl true
-  def mount(_params, %{"user_id" => user_id}, socket) do
+  def mount(_params, %{"user_token" => token, "account_id" => account_id}, socket) do
+    current_user = Accounts.get_user_by_session_token(token)
+    account = Accounts.get_account_for_user!(current_user, account_id)
+
     socket =
-      socket
-      |> assign(user_id: user_id, loading: true, stats: %{})
+      assign_async(socket, :stats, fn ->
+        {:ok, %{stats: Stats.for_account(account.id)}}
+      end)
 
-    if connected?(socket), do: send(self(), :load_stats)
-
-    {:ok, socket}
-  end
-
-  @impl true
-  def handle_info(:load_stats, socket) do
-    stats = Stats.for_user(socket.assigns.user_id)
-    Stats.subscribe(socket.assigns.user_id)
-
-    {:noreply, assign(socket, stats: stats, loading: false)}
-  end
-
-  @impl true
-  def handle_info({:stats_updated, stats}, socket) do
-    {:noreply, assign(socket, :stats, stats)}
+    {:ok, socket, layout: false}
   end
 
   @impl true
   def render(assigns) do
     ~H"""
     <div class="card">
-      <%= if @loading do %>
-        <span class="loading loading-spinner" />
-      <% else %>
-        <div class="text-2xl font-bold">{@stats.total}</div>
-      <% end %>
+      <.async_result :let={stats} assign={@stats}>
+        <:loading>Loading statistics...</:loading>
+        <:failed :let={_reason}>Statistics temporarily unavailable.</:failed>
+        <div class="text-2xl font-bold">{stats.total}</div>
+      </.async_result>
     </div>
     """
   end
 end
 ```
 
-## How it actually works
+Adapt the authentication functions and session key to the application.
 
-1. `live_render/3` with a `%Plug.Conn{}` calls `Phoenix.LiveView.Static.render/3`.
-   It runs `mount/3` inline during the HTTP request, renders the result, and wraps
-   it in a container tag carrying `data-phx-session` and `data-phx-static` (signed
-   tokens) plus an `id`.
-2. The response is ordinary HTML. Everything outside the container has no LiveView
-   involvement at all.
-3. On the client, `phoenix_live_view` scans for those containers and opens a
-   channel per island over the `/live` socket, re-running `mount/3` with
-   `connected?(socket) == true`.
-4. From then on, only that subtree receives diffs.
+## Critical rules
 
-The two-pass mount is the whole point: guard expensive work with
-`if connected?(socket)` so the static pass ships a skeleton and the connected pass
-loads the data.
-
-## Checklist for a new island
-
-- [ ] `socket "/live", Phoenix.LiveView.Socket` is in the endpoint.
-- [ ] The dead page's root layout loads `app.js` and renders the CSRF meta tag.
-      Without both, the island renders once and never connects.
-- [ ] `:session` carries ids only, never structs. It is serialized and signed into
-      the page.
-- [ ] `mount/3` ignores its params argument (see gotchas).
-- [ ] Expensive work is behind `if connected?(socket)`.
-- [ ] The static branch renders a skeleton that does not shift layout when real
-      data arrives.
-- [ ] Auth is re-checked inside `mount/3`. Router pipelines guard the dead page,
-      not the socket.
-- [ ] Multiple islands of the same module on one page each get a distinct `:id`.
-
-## Gotchas
-
-Each of these is verified against LiveView 1.1 source. Details and the code paths
-are in `references/gotchas.md`.
-
-| Symptom | Cause | Fix |
-| --- | --- | --- |
-| Island renders wrapped in the app layout | `use MyAppWeb, :live_view` sets `layout:`, and a dead render falls back to it | Return `{:ok, socket, layout: false}` from `mount/3`, or add a `:live_island` macro to `web.ex` without a layout |
-| `FunctionClauseError` on `mount/3` params | Params are `:not_mounted_at_router`, not a map, unless you pass `:router` | Match `_params` |
-| `push_patch` raises "not mounted nor accessed through the router" | `socket.router` is `nil` | Use `redirect(socket, to: ~p"/...")` |
-| `on_mount` hook never runs | `live_session` hooks only apply to router-mounted LiveViews | Do the check in `mount/3` |
-| Island stays on the spinner forever | The dead layout does not load `app.js`, or `liveSocket.connect()` is not called on that page | Fix the layout |
-| Flash set in the island does not appear | The island renders only its own subtree | Render a flash group inside the island, or push to a hook |
+- **Layout:** Return `layout: false` from `mount/3`, or define a layout-free
+  `:live_island` macro in `web.ex`.
+- **Mount params:** An unrouted island receives `:not_mounted_at_router` as the
+  first argument to `mount/3`, not a params map. Match `_params`.
+- **Authentication and authorization:** Router pipelines protect the dead request,
+  but router `live_session` hooks do not protect the island's connected mount.
+  Authenticate from the Plug session and authorize resource ids in `mount/3` and
+  again in mutating `handle_event/3` callbacks.
+- **Session data:** Values passed through the explicit `:session` option are signed,
+  not encrypted. Pass serializable identifiers, never structs, credentials, or
+  sensitive values.
+- **Navigation:** `socket.router` is `nil`, so `push_patch` and `push_navigate` do
+  not work. Use `redirect(socket, to: ~p"/path")` for a full-page navigation.
+- **Container:** `live_render/3` adds a `div` by default. Use `:container` when that
+  wrapper would disrupt grid, flex, table, or list layout.
+- **Connected work:** The dead render runs `mount/3` synchronously. Use
+  `assign_async/3` for expensive reads, and guard subscriptions or other
+  connected-only setup with `connected?(socket)`.
+- **Client wiring:** The endpoint must share its session options with
+  `Plug.Session`, and the dead layout must include the CSRF token and JavaScript
+  that calls `liveSocket.connect()`.
 
 ## Testing
 
-Test the island in isolation, not through the controller:
+Use `live_isolated/3` for the static-to-connected lifecycle. Use `render_async/2`
+to wait for `assign_async/3` or `start_async/3` tasks.
 
 ```elixir
-test "loads stats after connect", %{conn: conn} do
-  {:ok, view, _html} =
-    live_isolated(conn, MyAppWeb.AccountStatsLive, session: %{"user_id" => user.id})
+test "loads stats after connection", %{conn: conn} do
+  user = user_fixture()
+  account = account_fixture(user, stats_total: 42)
+  conn = log_in_user(conn, user)
 
-  assert render(view) =~ "Loading"
-  send(view.pid, :load_stats)
-  assert render(view) =~ "42"
+  {:ok, view, html} =
+    live_isolated(conn, MyAppWeb.AccountStatsLive,
+      session: %{"account_id" => account.id}
+    )
+
+  assert html =~ "Loading statistics..."
+  assert render_async(view) =~ "42"
 end
 ```
 
-The controller test only needs to assert the container is present in
-`html_response(conn, 200)`. `live/2` does not work: there is no live route.
+In controller tests, assert the dead response contains the island's container id,
+`data-phx-session`, and loading state. `live/2` does not apply because there is no
+live route.
 
 ## Reference
 
-- `references/gotchas.md` covers layout resolution, session and flash handoff,
-  navigation limits, and multi-island coordination, with the LiveView source paths
-  behind each claim.
+Read `references/gotchas.md` for endpoint configuration, layout resolution,
+session and flash behavior, navigation limits, container options, PubSub and async
+ordering, multi-island coordination, and detailed testing guidance.
