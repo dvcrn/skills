@@ -1,0 +1,9 @@
+{
+  "name": "setup-goreleaser",
+  "description": "Set up GoReleaser for a Go repository so a semver git tag builds cross-platform release binaries and a GitHub release through GitHub Actions.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

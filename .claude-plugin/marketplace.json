@@ -140,6 +140,11 @@
       "source": "./plugins/github-comment-quality"
     },
     {
+      "name": "go-mcp-server-conventions",
+      "description": "Conventions for building MCP servers in Go with the official modelcontextprotocol/go-sdk, covering package layout, tool naming, input and output design, safety for mutating tools, and testing.",
+      "source": "./plugins/go-mcp-server-conventions"
+    },
+    {
       "name": "install-newrelic-elixir",
       "description": "Install, upgrade, configure, provision, or troubleshoot New Relic APM and logs for Elixir and Phoenix applications, including NerdGraph keys, runtime secrets, logs in context, release metadata, and deployment markers.",
       "source": "./plugins/install-newrelic-elixir"
@@ -203,6 +208,21 @@
       "name": "pr-code-review-and-quality",
       "description": "Review GitHub pull requests for code quality and deliver inline findings when posting is authorized.",
       "source": "./plugins/pr-code-review-and-quality"
+    },
+    {
+      "name": "setup-github-npm-publish",
+      "description": "Publish an npm package automatically from GitHub Actions when a semver tag is pushed, using npm trusted publishing (OIDC) instead of an NPM_TOKEN.",
+      "source": "./plugins/setup-github-npm-publish"
+    },
+    {
+      "name": "setup-golang-npm-publish",
+      "description": "Distribute a Go binary through npm with a thin wrapper package in npm/ that downloads the matching GoReleaser release archive on install.",
+      "source": "./plugins/setup-golang-npm-publish"
+    },
+    {
+      "name": "setup-goreleaser",
+      "description": "Set up GoReleaser for a Go repository so a semver git tag builds cross-platform release binaries and a GitHub release through GitHub Actions.",
+      "source": "./plugins/setup-goreleaser"
     },
     {
       "name": "swiftui-stores",

@@ -1,0 +1,27 @@
+{
+  "name": "__PACKAGE__",
+  "version": "0.0.0",
+  "description": "__DESCRIPTION__",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/__OWNER__/__REPO__.git",
+    "directory": "npm"
+  },
+  "files": [
+    "index.js",
+    "postinstall.js",
+    "update_check.js"
+  ],
+  "scripts": {
+    "postinstall": "node postinstall.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "__BINARY__": "index.js"
+  },
+  "dependencies": {
+    "semver": "^7.7.4"
+  }
+}

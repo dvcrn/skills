@@ -59,6 +59,16 @@ npx skills add dvcrn/skills
 - `phoenix-colocated-js`: Use when we need an explanation of Phoenix.LiveView.ColocatedJS and how colocated JS is compiled and imported.
 - `phoenix-live-islands`: Use when embedding a small, self-contained LiveView into an otherwise dead (controller-rendered) Phoenix page with live_render/3, when a controller page needs one dynamic card or widget without converting the whole route to a LiveView, or when debugging an embedded LiveView that renders statically but never connects.
 
+### Go
+
+- `go-mcp-server-conventions`: Conventions for building MCP servers in Go with the official modelcontextprotocol/go-sdk, covering package layout, tool naming, input and output design, safety for mutating tools, and testing.
+
+### Release & Publishing
+
+- `setup-goreleaser`: Set up GoReleaser for a Go repository so a semver git tag builds cross-platform release binaries and a GitHub release through GitHub Actions.
+- `setup-golang-npm-publish`: Distribute a Go binary through npm with a thin wrapper package in npm/ that downloads the matching GoReleaser release archive on install.
+- `setup-github-npm-publish`: Publish an npm package automatically from GitHub Actions when a semver tag is pushed, using npm trusted publishing (OIDC) instead of an NPM_TOKEN.
+
 ### Swift & SwiftUI
 
 - `swiftui-stores`: Design, review, or migrate SwiftUI shared state using Observation-based Stores.

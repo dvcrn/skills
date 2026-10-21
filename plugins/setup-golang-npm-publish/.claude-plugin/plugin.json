@@ -1,0 +1,9 @@
+{
+  "name": "setup-golang-npm-publish",
+  "description": "Distribute a Go binary through npm with a thin wrapper package in npm/ that downloads the matching GoReleaser release archive on install.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

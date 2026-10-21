@@ -65,6 +65,20 @@
       ]
     },
     {
+      "title": "Go",
+      "skills": [
+        "go-mcp-server-conventions"
+      ]
+    },
+    {
+      "title": "Release & Publishing",
+      "skills": [
+        "setup-goreleaser",
+        "setup-golang-npm-publish",
+        "setup-github-npm-publish"
+      ]
+    },
+    {
       "title": "Swift & SwiftUI",
       "skills": [
         "swiftui-stores"
