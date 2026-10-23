@@ -51,7 +51,7 @@
     },
     {
       "name": "ask-gemini",
-      "description": "Delegate questions or tasks to Gemini 3.8 Flash via the Antigravity CLI (agy).",
+      "description": "Delegate questions or tasks to Gemini via the Antigravity CLI (agy).",
       "source": "./plugins/ask-gemini"
     },
     {
@@ -121,7 +121,7 @@
     },
     {
       "name": "fnox",
-      "description": "Manage secrets with fnox.",
+      "description": "Manage secrets with fnox, including 1Password-backed secrets (op:// references) cached locally with fnox sync.",
       "source": "./plugins/fnox"
     },
     {
@@ -208,6 +208,11 @@
       "name": "pr-code-review-and-quality",
       "description": "Review GitHub pull requests for code quality and deliver inline findings when posting is authorized.",
       "source": "./plugins/pr-code-review-and-quality"
+    },
+    {
+      "name": "setup-cloudflare-workers-builds-go",
+      "description": "Set up Cloudflare Workers Builds (deploy on git push) for a Go Worker built with syumai/workers-go, using the cf CLI and mise-pinned Go.",
+      "source": "./plugins/setup-cloudflare-workers-builds-go"
     },
     {
       "name": "setup-github-npm-publish",

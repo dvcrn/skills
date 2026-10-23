@@ -1,94 +1,58 @@
 # 1Password provider
 
-## Using 1Password
+1Password is the source of truth for a project's secrets. Reading from it is slow and asks for Touch ID, so `fnox sync` caches every value age-encrypted in a gitignored `fnox.local.toml`. Day-to-day `fnox get` and `fnox exec` read that cache and never call 1Password. `wrangler dev` reads `.dev.vars`, exported from the cache (see Use).
 
-- Vault requirement: all items referenced by `fnox` must live in the 1Password vault configured for the `onepass` provider in `fnox.toml` (e.g., `vault = "Fnox"` or `vault = "Development"`). Items outside this vault will not resolve.
-- Naming and tagging policy (ALWAYS):
-  - Prefix every 1Password item title with your project name in UPPER_SNAKE_CASE. Do NOT prefix keys in `fnox.toml`.
-    - Example (fnox key → 1Password item title): `OPENAI_API_KEY` → `MYPROJECT_OPENAI_API_KEY`
-  - Tag every item with the lowercase project tag.
-    - Example: tag `myproject` (optionally also tag environment: `dev`, `staging`, `prod`)
-  - This prevents collisions across projects and simplifies auditing/rotation.
-- Creation/editing policy: `fnox` cannot create or update 1Password items. Always use the 1Password CLI (`op`) to create/update items, and only reference them from `fnox`.
+## Auth
 
-### Setup (per session)
+`op` authenticates through the 1Password desktop app (Touch ID). There is no service account.
 
-```
-export OP_SERVICE_ACCOUNT_TOKEN=$(fnox get OP_SERVICE_ACCOUNT_TOKEN)
-```
+If `OP_SERVICE_ACCOUNT_TOKEN` is set in the environment, `op` uses it instead of the desktop app and fails with `Service Account Deleted`. Run the command with the variable removed (`env -u OP_SERVICE_ACCOUNT_TOKEN fnox sync ...`) and tell the user where it is still exported.
 
-### Create items with `op`
+## Items
 
-Create a password item (API key style):
+- One vault per environment, e.g. `cloud-dev`.
+- One item per project, titled with the project or repo name, e.g. `tailscale-nextdns-sync`.
+- One field per secret, named exactly like the env var, e.g. `NEXTDNS_API_KEY`.
 
-```
-op item create --category=password \
-  --title="MYPROJECT_OPENAI_API_KEY" \
-  --vault="Fnox" \
-  password="sk_live_..." \
-  --tags "myproject dev"
-```
+The user creates the item and enters secret values in the 1Password app, so values never land in shell history or the transcript. Non-secret fields can be changed with `op item edit <item> --vault <vault> 'FIELD=value'`.
 
-Create a login item (username/password style):
+## fnox.toml
 
-```
-op item create --category=login \
-  --title="MYPROJECT_DATABASE" \
-  --vault="Fnox" \
-  username="db_user" \
-  password="super-secret" \
-  --tags "myproject dev"
-```
+```toml
+[providers.1password]
+type = "1password"
 
-Update tags or fields later:
-
-```
-op item edit "MYPROJECT_OPENAI_API_KEY" --vault "Fnox" --tags "myproject prod"
-op item edit "MYPROJECT_DATABASE" --vault "Fnox" password="new-secret"
-```
-
-### Reference items in `fnox.toml`
-
-Use any of the supported formats — item name (password field), item+field, or full `op://` URI. Ensure the `provider` matches your 1Password provider key and the item resides in the configured `vault`.
-
-```
 [secrets]
-# Item name → resolves the default 'password'/'credential' field
-OPENAI_API_KEY = { provider = "onepass", value = "MYPROJECT_OPENAI_API_KEY" }
-
-# Item + specific field
-DB_USERNAME = { provider = "onepass", value = "MYPROJECT_DATABASE/username" }
-DB_PASSWORD = { provider = "onepass", value = "MYPROJECT_DATABASE/password" }
-
-# Full op:// URI (explicit vault/item/field)
-OPENAI_API_KEY_URI = { provider = "onepass", value = "op://Fnox/MYPROJECT_OPENAI_API_KEY/credential" }
+NEXTDNS_API_KEY = { provider = "1password", value = "op://cloud-dev/tailscale-nextdns-sync/NEXTDNS_API_KEY" }
+NEXTDNS_PROFILE_ID = { provider = "1password", value = "op://cloud-dev/tailscale-nextdns-sync/NEXTDNS_PROFILE_ID" }
 ```
 
-Correct vs Incorrect naming:
+`fnox.toml` only holds references, so commit it. The `age` provider used for the cache usually comes from the global `~/.config/fnox/config.toml`; check with `fnox provider list` and add it to the project only if it is missing.
+
+`.gitignore` needs:
 
 ```
-# Correct: fnox key is NOT prefixed; 1Password item IS prefixed
-[secrets.GOOGLE_AI_API_KEY]
-provider = "onepass"
-value = "MYPROJECT_GOOGLE_AI_API_KEY"
-
-# Incorrect: both sides prefixed (do not do this)
-[secrets.MYPROJECT_GOOGLE_AI_API_KEY]
-provider = "onepass"
-value = "MYPROJECT_GOOGLE_AI_API_KEY"
+fnox.local.toml
+.dev.vars
 ```
 
-Common fields: `username`, `password`, `credential`, `url`, `notes`.
+## Sync
 
-### Use with `fnox`
+From the project root:
 
+```sh
+fnox sync --provider age --local-file --source 1password -n   # preview
+fnox sync --provider age --local-file --source 1password
+fnox get <KEY> >/dev/null && echo resolved                   # sanity check without printing the value
 ```
-export OP_SERVICE_ACCOUNT_TOKEN=$(fnox get OP_SERVICE_ACCOUNT_TOKEN)
 
-# Fetch values
-fnox get OPENAI_API_KEY
-fnox get DB_USERNAME
+Re-run the sync whenever a value changes in 1Password.
 
-# Run a command with secrets loaded
-fnox x -- <command>
+Keep `--source 1password`. With the default `-c fnox.toml`, fnox also loads `fnox.toml` from every parent directory (e.g. `~/fnox.toml`), and sync caches every secret whose provider differs from the target. Without `--source`, keychain secrets from the home config get copied into the project's `fnox.local.toml`. `-c ./fnox.toml` avoids the parent configs but cannot be combined with `--local-file`. `fnox config-files` lists what is loaded; `--filter '<regex>'` or explicit key names narrow the sync further.
+
+## Use
+
+```sh
+fnox exec -- <command>                         # run with secrets loaded
+fnox export --format env > .dev.vars           # for wrangler dev
 ```

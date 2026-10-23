@@ -1,6 +1,6 @@
 {
   "name": "fnox",
-  "description": "Manage secrets with fnox.",
+  "description": "Manage secrets with fnox, including 1Password-backed secrets (op:// references) cached locally with fnox sync.",
   "version": "1.0.0",
   "author": {
     "name": "David Mohl",

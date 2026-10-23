@@ -18,18 +18,8 @@ Delegate a combined five-axis code review and comment/documentation audit to Gem
 - **Review only:** Gemini must not modify code, edit files, or execute mutating commands.
 - **No general web search:** Restrict review to local repository context and loaded standards.
 - **Read scope:** Do not inspect secrets, credentials, `.env` files, private keys, binaries, or unrelated paths.
-- **Fail closed:** Verify all required standards exist before launch:
-
-```bash
-for f in code-and-comment-quality code-review-and-quality comment-and-documentation-quality; do
-  if [ ! -f "${HOME}/.agents/skills/$f/SKILL.md" ]; then
-    echo "Required skill not found: $f" >&2
-    exit 1
-  fi
-done
-```
-
-- **Report missing skills:** The prompt must instruct Gemini to stop immediately and report missing paths if any standard cannot be resolved. Do not invent substitute standards.
+- **Skills by name:** agy loads installed skills itself. Name `code-and-comment-quality`, `code-review-and-quality`, and `comment-and-documentation-quality` in the prompt; do not pass skill directories with `--add-dir`.
+- **Report missing skills:** The prompt must tell Gemini to stop and reply to the user if any skill is not available. Do not invent substitute standards.
 
 ## Canonical Invocation
 
@@ -38,9 +28,6 @@ Run with `--dangerously-skip-permissions --sandbox` so headless execution auto-a
 ```bash
 agy --model "Gemini 3.8 Flash (High)" \
   --add-dir /path/to/repo \
-  --add-dir "${HOME}/.agents/skills/code-and-comment-quality" \
-  --add-dir "${HOME}/.agents/skills/code-review-and-quality" \
-  --add-dir "${HOME}/.agents/skills/comment-and-documentation-quality" \
   --print-timeout 10m \
   --dangerously-skip-permissions --sandbox \
   -p "This is a combined code and comment review task.
@@ -48,8 +35,8 @@ Do not make code changes, edit files, or run mutating commands.
 Do not search the web. Do not inspect secrets, credentials, or unrelated paths.
 Read only the review target, the standards, and necessary repository context.
 
-Use the code-and-comment-quality aggregate and its component skills.
-If any skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
+Use the code-and-comment-quality skill and its component skills, code-review-and-quality and comment-and-documentation-quality.
+If the skill 'code-and-comment-quality', 'code-review-and-quality', or 'comment-and-documentation-quality' is not available, stop and reply to the user naming the missing skill. Do not invent a substitute standard.
 
 Target: <target files, working tree changes, or branch comparison>
 

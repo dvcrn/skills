@@ -14,7 +14,7 @@ npx skills add dvcrn/skills
 
 ### Tools & Automation
 
-- `fnox`: Manage secrets with fnox.
+- `fnox`: Manage secrets with fnox, including 1Password-backed secrets (op:// references) cached locally with fnox sync.
 - `mise-tasks`: Define, debug, or optimize mise tasks, dependencies, and build caching.
 - `gh`: Create GitHub issues and pull requests using the GitHub CLI (gh). Always write the body to a file in .tmp/ and pass it via --body-file so descriptions are descriptive and consistent.
 - `jules`: Interact with Jules, Google's asynchronous coding agent.
@@ -25,7 +25,7 @@ npx skills add dvcrn/skills
 
 ### Multi-Agent Delegation & Review Loop
 
-- `ask-gemini`: Delegate questions or tasks to Gemini 3.8 Flash via the Antigravity CLI (agy).
+- `ask-gemini`: Delegate questions or tasks to Gemini via the Antigravity CLI (agy).
 - `ask-gemini-for-review`: Delegate a Gemini code review of local files, changes, or checked-out PRs without posting.
 - `ask-gemini-for-dual-review`: Delegate a local code and documentation review to Gemini without GitHub posting.
 - `ask-gemini-for-pr-review`: Delegate a GitHub PR code review to Gemini, with posting when authorized.
@@ -68,6 +68,7 @@ npx skills add dvcrn/skills
 - `setup-goreleaser`: Set up GoReleaser for a Go repository so a semver git tag builds cross-platform release binaries and a GitHub release through GitHub Actions.
 - `setup-golang-npm-publish`: Distribute a Go binary through npm with a thin wrapper package in npm/ that downloads the matching GoReleaser release archive on install.
 - `setup-github-npm-publish`: Publish an npm package automatically from GitHub Actions when a semver tag is pushed, using npm trusted publishing (OIDC) instead of an NPM_TOKEN.
+- `setup-cloudflare-workers-builds-go`: Set up Cloudflare Workers Builds (deploy on git push) for a Go Worker built with syumai/workers-go, using the cf CLI and mise-pinned Go.
 
 ### Swift & SwiftUI
 

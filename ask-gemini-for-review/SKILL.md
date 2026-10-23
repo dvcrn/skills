@@ -18,17 +18,8 @@ Delegate a comprehensive five-axis code review to Gemini 3.8 Flash (High) using 
 - **Review only:** Gemini must not modify code, edit files, or execute mutating commands.
 - **No general web search:** Restrict review to local repository context and loaded standards.
 - **Read scope:** Do not inspect secrets, credentials, `.env` files, private keys, binaries, or unrelated paths.
-- **Fail closed:** Verify the standard exists before launch:
-
-```bash
-STANDARDS="${HOME}/.agents/skills/code-review-and-quality/SKILL.md"
-if [ ! -f "$STANDARDS" ]; then
-  echo "code-review-and-quality skill not found at $STANDARDS" >&2
-  exit 1
-fi
-```
-
-- **Report missing skills:** The prompt must instruct Gemini to stop immediately and report missing paths if the standard cannot be resolved. Do not invent a substitute standard.
+- **Skills by name:** agy loads installed skills itself. Name `code-review-and-quality` in the prompt; do not pass skill directories with `--add-dir`.
+- **Report missing skills:** The prompt must tell Gemini to stop and reply to the user if the skill is not available. Do not invent a substitute standard.
 
 ## Canonical Invocation
 
@@ -37,7 +28,6 @@ Run with `--dangerously-skip-permissions --sandbox` so headless execution auto-a
 ```bash
 agy --model "Gemini 3.8 Flash (High)" \
   --add-dir /path/to/repo \
-  --add-dir "${HOME}/.agents/skills/code-review-and-quality" \
   --print-timeout 10m \
   --dangerously-skip-permissions --sandbox \
   -p "This is a code review task.
@@ -45,7 +35,7 @@ Do not make code changes, edit files, or run mutating commands.
 Do not search the web. Do not inspect secrets, credentials, or unrelated paths.
 Read only the review target, the standard, and necessary repository context.
 
-Use the code-review-and-quality skill. If the skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
+Use the code-review-and-quality skill. If the skill 'code-review-and-quality' is not available, stop and reply to the user that it is missing. Do not invent a substitute standard.
 
 Target: <target files, working tree changes, or branch comparison>
 

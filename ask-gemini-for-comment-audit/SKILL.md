@@ -18,17 +18,8 @@ Delegate a code comment, docstring, technical documentation, and commit message 
 - **Audit & Report only:** Gemini must not modify files on disk, amend commits, or run mutating commands.
 - **No general web search:** Restrict audit to local repository context and loaded standards.
 - **Read scope:** Do not inspect secrets, credentials, `.env` files, private keys, binaries, or unrelated paths.
-- **Fail closed:** Verify the standard exists before launch:
-
-```bash
-STANDARDS="${HOME}/.agents/skills/comment-and-documentation-quality/SKILL.md"
-if [ ! -f "$STANDARDS" ]; then
-  echo "comment-and-documentation-quality skill not found at $STANDARDS" >&2
-  exit 1
-fi
-```
-
-- **Report missing skills:** The prompt must instruct Gemini to stop immediately and report missing paths if `comment-and-documentation-quality` cannot be resolved. Do not invent a substitute standard.
+- **Skills by name:** agy loads installed skills itself. Name `comment-and-documentation-quality` in the prompt; do not pass skill directories with `--add-dir`.
+- **Report missing skills:** The prompt must tell Gemini to stop and reply to the user if the skill is not available. Do not invent a substitute standard.
 
 ## Canonical Invocation
 
@@ -37,7 +28,6 @@ Run with `--dangerously-skip-permissions --sandbox` so headless execution auto-a
 ```bash
 agy --model "Gemini 3.8 Flash (Medium)" \
   --add-dir /path/to/repo \
-  --add-dir "${HOME}/.agents/skills/comment-and-documentation-quality" \
   --print-timeout 10m \
   --dangerously-skip-permissions --sandbox \
   -p "This is an audit-only task.
@@ -45,7 +35,7 @@ Do not make any file changes or run commands that modify the repository.
 Do not search the web. Do not inspect secrets, credentials, or unrelated paths.
 
 Use the comment-and-documentation-quality skill.
-If the skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
+If the skill 'comment-and-documentation-quality' is not available, stop and reply to the user that it is missing. Do not invent a substitute standard.
 
 Target: <target files, working tree changes, branch comparison, or commit range>
 

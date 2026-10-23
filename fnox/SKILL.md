@@ -1,6 +1,6 @@
 ---
 name: fnox
-description: Manage secrets with fnox. Use when you need to use fnox, need to manage secrets or store something sensitive for a project.
+description: Manage secrets with fnox, including 1Password-backed secrets (op:// references) cached locally with fnox sync. Use when you need to use fnox, manage secrets, store something sensitive for a project, or wire 1Password items into a project.
 ---
 
 # fnox Secret Management
@@ -41,7 +41,7 @@ Caveats:
 - `age` is stored in fnox.toml itself: Use for all secrets we need locally. This will get checked into github
   - use for deployment secrets you need locally, or production settings that you need locally
 - `keychain` is not stored in any file, but is only local for this machine. Use for secrets that we need on the entire OS level, but consider that we need a backup somewhere else. keychain is VERY fast
-- `1password` is persisted across different machines on 1password servers. We should use this for all production secrets. Caveats: It's very slow to read, so not good for local development. `fnox` can also not directly set 1password secrets
+- `1password` is persisted across different machines on 1password servers. We should use this for all production secrets. Caveats: It's very slow to read, so cache it locally with `fnox sync --local-file` (see [onepassword.md](references/onepassword.md)). `fnox` can also not directly set 1password secrets
   - production secrets we need to persist and have stored
 
 By default we will put everything into `age`
@@ -84,7 +84,7 @@ fnox x -- <command>
 ## Using together with mise
 
 - Environment variables go into `mise.toml` (you are allowed to write this file)
-- Secrets go into `fnox.toml` (you are **not** allowed to write this file directly. Use `fnox get` `fnox set` `fnox remove` to manipulate)
+- Secrets go into `fnox.toml` (you are **not** allowed to write secret values into this file directly. Use `fnox get` `fnox set` `fnox remove` to manipulate. Adding `[providers.*]` blocks and 1Password `op://` references by hand is fine because they contain no secret values)
 
 If unsure whether something is sensitive or not, ask the user. Do not make assumptions.
 
@@ -96,4 +96,4 @@ If unsure whether something is sensitive or not, ask the user. Do not make assum
 
 ## 1Password provider
 
-When using 1Password, read [onepassword.md](references/onepassword.md) for vault selection, item naming, tags, and provider references.
+When using 1Password, read [onepassword.md](references/onepassword.md) for auth, item layout, `op://` references, and syncing to a local age cache.

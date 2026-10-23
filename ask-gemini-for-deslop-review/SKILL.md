@@ -32,22 +32,14 @@ After Gemini finishes, inspect the working tree and verify that only the intende
 
 ## Standards Source
 
-Always use the named `deslop-articles` skill as the review standard. Fail closed before launch:
-
-```bash
-DESLOP_STANDARD="${HOME}/.agents/skills/deslop-articles/SKILL.md"
-if [ ! -f "$DESLOP_STANDARD" ]; then
-  echo "deslop-articles skill not found at $DESLOP_STANDARD" >&2
-  exit 1
-fi
-```
+Always use the named `deslop-articles` skill as the review standard. agy loads installed skills itself, so name the skill in the prompt and do not pass its directory with `--add-dir`.
 
 Do not inject the skill contents into the prompt. Do not ask Gemini to invent rules from the skill name.
 
 Every prompt must say:
 
 - Load and use `deslop-articles` by skill name.
-- If `deslop-articles` cannot be resolved, immediately stop and state that it is missing and every path checked.
+- If the skill `deslop-articles` is not available, stop and reply to the user that it is missing.
 - Do not substitute Gemini's own writing standard.
 
 Relay a missing-skill report to the user verbatim. Never present the review or rewrite as complete when a required standard was unavailable.
@@ -82,11 +74,10 @@ Use for reviewing articles, PRs, or working tree drafts without modifying files:
 ```bash
 agy --model "Gemini 3.8 Flash (Medium)" \
   --add-dir /path/to/repo \
-  --add-dir "${HOME}/.agents/skills/deslop-articles" \
   --print-timeout 10m \
   --dangerously-skip-permissions --sandbox \
   -p "This is an audit-only task. Do not modify repository state.
-Load and use the deslop-articles skill by name. If deslop-articles is unavailable, immediately STOP and report that it is missing and every path you checked. Do not invent a substitute standard.
+Load and use the deslop-articles skill by name. If the skill 'deslop-articles' is not available, stop and reply to the user that it is missing. Do not invent a substitute standard.
 
 Target: <specific files, directory, working tree article changes, or branch comparison>
 
@@ -102,11 +93,10 @@ Use when in-place editing of the target files is explicitly requested:
 ```bash
 agy --model "Gemini 3.8 Flash (Medium)" \
   --add-dir /path/to/repo \
-  --add-dir "${HOME}/.agents/skills/deslop-articles" \
   --print-timeout 10m \
   --dangerously-skip-permissions --sandbox \
   -p "This is an in-place article editing task.
-Load and use the deslop-articles skill by name. If deslop-articles is unavailable, immediately STOP and report that it is missing and every path you checked. Do not invent a substitute standard.
+Load and use the deslop-articles skill by name. If the skill 'deslop-articles' is not available, stop and reply to the user that it is missing. Do not invent a substitute standard.
 
 Target: <specific files, directory, working tree article changes, or branch comparison>
 

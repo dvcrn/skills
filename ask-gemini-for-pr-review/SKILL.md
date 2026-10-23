@@ -35,17 +35,8 @@ gh pr view NUMBER --repo OWNER/REPO --json number,title,state,headRefOid,baseRef
 - **Review and GitHub posting only:** Gemini must not edit local repository files or run mutating build commands.
 - **Restricted network access:** Network access is permitted exclusively for GitHub CLI (`gh`) and GitHub API requests targeting the specific PR. General web search is forbidden.
 - **Read scope:** Do not inspect secrets, credentials, `.env` files, private keys, binaries, or unrelated paths.
-- **Fail closed:** Verify the standard exists before launch:
-
-```bash
-STANDARDS="${HOME}/.agents/skills/pr-code-review-and-quality/SKILL.md"
-if [ ! -f "$STANDARDS" ]; then
-  echo "pr-code-review-and-quality skill not found at $STANDARDS" >&2
-  exit 1
-fi
-```
-
-- **Report missing skills:** The prompt must instruct Gemini to stop immediately and report missing paths if `pr-code-review-and-quality` cannot be resolved. Do not invent a substitute standard.
+- **Skills by name:** agy loads installed skills itself. Name `pr-code-review-and-quality` in the prompt; do not pass skill directories with `--add-dir`.
+- **Report missing skills:** The prompt must tell Gemini to stop and reply to the user if the skill is not available. Do not invent a substitute standard.
 
 ## Canonical Invocation
 
@@ -54,7 +45,6 @@ State the delivery choice in the prompt: `Posting is authorized` or `Return find
 ```bash
 agy --model "Gemini 3.8 Flash (High)" \
   --add-dir /path/to/repo \
-  --add-dir "${HOME}/.agents/skills/pr-code-review-and-quality" \
   --print-timeout 10m \
   --dangerously-skip-permissions --sandbox \
   -p "This is a GitHub PR review task.
@@ -62,7 +52,7 @@ Do not make any code changes in the local repository. Do not implement anything 
 Do not search the general web. Network access is permitted ONLY for GitHub CLI (gh) and GitHub API calls for this PR.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
-Use the pr-code-review-and-quality skill. If the skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
+Use the pr-code-review-and-quality skill. If the skill 'pr-code-review-and-quality' is not available, stop and reply to the user that it is missing. Do not invent a substitute standard.
 
 Target PR: OWNER/REPO#NUMBER
 

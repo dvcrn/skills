@@ -35,18 +35,8 @@ gh pr view NUMBER --repo OWNER/REPO --json number,title,state,headRefOid,baseRef
 - **Review and GitHub posting only:** Gemini must not edit local repository files or run mutating build commands.
 - **Restricted network access:** Network access is permitted exclusively for GitHub CLI (`gh`) and GitHub API requests targeting the specific PR. General web search is forbidden.
 - **Read scope:** Do not inspect secrets, credentials, `.env` files, private keys, binaries, or unrelated paths.
-- **Fail closed:** Verify all required standards exist before launch:
-
-```bash
-for f in code-and-comment-quality pr-code-review-and-quality comment-and-documentation-quality; do
-  if [ ! -f "${HOME}/.agents/skills/$f/SKILL.md" ]; then
-    echo "Required skill not found: $f" >&2
-    exit 1
-  fi
-done
-```
-
-- **Report missing skills:** The prompt must instruct Gemini to stop immediately and report missing paths if any standard cannot be resolved. Do not invent substitute standards.
+- **Skills by name:** agy loads installed skills itself. Name `code-and-comment-quality`, `pr-code-review-and-quality`, and `comment-and-documentation-quality` in the prompt; do not pass skill directories with `--add-dir`.
+- **Report missing skills:** The prompt must tell Gemini to stop and reply to the user if any skill is not available. Do not invent substitute standards.
 
 ## Canonical Invocation
 
@@ -55,9 +45,6 @@ State the delivery choice in the prompt: `Posting is authorized` or `Return find
 ```bash
 agy --model "Gemini 3.8 Flash (High)" \
   --add-dir /path/to/repo \
-  --add-dir "${HOME}/.agents/skills/code-and-comment-quality" \
-  --add-dir "${HOME}/.agents/skills/pr-code-review-and-quality" \
-  --add-dir "${HOME}/.agents/skills/comment-and-documentation-quality" \
   --print-timeout 10m \
   --dangerously-skip-permissions --sandbox \
   -p "This is a combined GitHub PR code and documentation review task.
@@ -66,7 +53,7 @@ Do not search the general web. Network access is permitted ONLY for GitHub CLI (
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
 Use the code-and-comment-quality aggregate and its pr-code-review-and-quality and comment-and-documentation-quality component skills.
-If any skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
+If the skill 'code-and-comment-quality', 'pr-code-review-and-quality', or 'comment-and-documentation-quality' is not available, stop and reply to the user naming the missing skill. Do not invent a substitute standard.
 
 Target PR: OWNER/REPO#NUMBER
 
