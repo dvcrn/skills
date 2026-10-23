@@ -4,20 +4,23 @@
 
 Use the Tigris guide to verify names and values before setting secrets. Do not assume env vars exist.
 
-Typical secrets for Litestream S3 replica:
+Required configuration for the starter template (only the access keys are secrets):
 
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
 - `AWS_ENDPOINT_URL_S3` (include scheme, example `https://fly.storage.tigris.dev`)
 - `AWS_REGION` (Litestream guide uses `auto`; some setups override to a concrete region)
 - `BUCKET_NAME`
+- `DATABASE_PATH`
+- `LITESTREAM_REPLICA_PATH` (stable and unique to this database)
 
 Optional or Litestream-specific:
 
 - `LITESTREAM_ACCESS_KEY_ID`
 - `LITESTREAM_SECRET_ACCESS_KEY`
 - `AWS_S3_FORCE_PATH_STYLE` (often `true` for Tigris)
-- `ENABLE_LITESTREAM` and `FORCE_RESTORE` when using a custom entrypoint script
+- `LITESTREAM_CONFIG` (defaults to `/app/litestream.yml`, writable by the runtime user)
+- `ALLOW_EMPTY_REPLICA` (defaults to `false`; enable only for initial bootstrap)
 
 ## Endpoints
 
@@ -31,30 +34,33 @@ Optional or Litestream-specific:
 
 ## Litestream Config Example (YAML)
 
-Use runtime-generated config so secrets are read from env at startup.
+This example targets Litestream v0.5. Verify it against the latest stable release selected for installation. Credentials are read from the environment at startup.
 
 ```yaml
-# /etc/litestream.yml
+# /app/litestream.yml
+
+snapshot:
+  retention: 168h
 
 dbs:
   - path: /app/data/esimdb.db
     meta-path: /app/data/.litestream-meta
-    replicas:
-      - type: s3
-        bucket: "${BUCKET_NAME}"
-        path: "esimdb.db"
-        endpoint: "${AWS_ENDPOINT_URL_S3}"
-        region: "${AWS_REGION}"
-        force-path-style: true
+    replica:
+      type: s3
+      bucket: "${BUCKET_NAME}"
+      path: "${LITESTREAM_REPLICA_PATH}"
+      endpoint: "${AWS_ENDPOINT_URL_S3}"
+      region: "${AWS_REGION}"
+      force-path-style: true
 ```
 
 ## Fly.io Runtime Pattern
 
 Litestream-only startup sequence:
 
-- Write `/etc/litestream.yml` from env.
+- Write `/app/litestream.yml` from env.
 - Restore if the DB file is missing.
-- Run `litestream replicate -config /etc/litestream.yml -exec "/app/bin/server"`.
+- Run `litestream replicate -config /app/litestream.yml -exec "/app/bin/server"`.
 
 LiteFS + Litestream sequence:
 
@@ -65,8 +71,8 @@ LiteFS + Litestream sequence:
 ## Validation
 
 - Logs: `fly logs -a <app> | rg -i 'replicating to|Running Litestream'`
-- Restore check: `litestream restore -o ./esimdb_check.db s3://$BUCKET_NAME/esimdb.db`
-- DB sanity: `sqlite3 ./esimdb_check.db '.tables'`
+- Restore check: `litestream restore -config /app/litestream.yml -o ./esimdb_check.db "$DATABASE_PATH"`
+- DB sanity: `sqlite3 -readonly ./esimdb_check.db 'PRAGMA integrity_check;'`
 
 ## Common Gotchas
 
