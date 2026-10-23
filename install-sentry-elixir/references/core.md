@@ -31,7 +31,7 @@ Keep required transitive updates and avoid unrelated dependency churn. If the re
 
 ### 2) Runtime Configuration (`config/runtime.exs`)
 
-Read the DSN from `SENTRY_DSN` and keep secrets out of committed config.
+Read the DSN from `SENTRY_DSN`. The DSN is not a secret and can be stored in committed environment configuration such as `fly.toml` or `mise.toml`. Keep Sentry API/auth tokens in the secret manager.
 
 ```elixir
 sentry_dsn = System.get_env("SENTRY_DSN")

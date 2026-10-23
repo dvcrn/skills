@@ -13,7 +13,7 @@ Discover the app's configuration, server, entrypoints, and release workflow from
 
 - Query Hex and the official changelog for the latest stable compatible Sentry version. Upgrade `:sentry` when the project is behind, without silently raising the project's Elixir, OTP, or framework baseline.
 - In Phoenix endpoints, use `Sentry.PlugCapture` above `Phoenix.Endpoint` and place `Sentry.PlugContext` after `Plug.Parsers` and before the router. This applies to both Bandit and Cowboy.
-- Keep the DSN in runtime configuration and the secret manager.
+- Read the DSN from `SENTRY_DSN` at runtime. A Sentry DSN is a public ingestion identifier, not a secret; plain environment configuration such as `fly.toml` is fine. Sentry API/auth tokens still belong in the secret manager.
 - Use `Sentry.LoggerHandler`, with log capture and rate limiting. Register it at boot only when configured.
 - Declare the HTTP client directly, and identify application frames with `in_app_otp_apps`.
 - Keep delivery disabled in tests unless using Sentry's test helpers.

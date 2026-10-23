@@ -24,11 +24,11 @@ Notes:
   runtime to find the map. Overriding it in `runtime.exs` is an obsolete pattern.
 - Use `:source_code_map_path` if the map genuinely needs to live somewhere non-default.
 
-### 10) Secrets and Deployment
+### 10) Environment Configuration and Deployment
 
-Store the DSN in the project's established secret manager, never in committed config. Expose it to the application as `SENTRY_DSN` at runtime.
+Expose the DSN to the application as `SENTRY_DSN` at runtime. A Sentry DSN is a public ingestion identifier, not a secret, so it can be committed in plain environment configuration. It does not require encryption or a secret-manager entry.
 
-Possible destinations include Fly secrets, Kubernetes Secrets, AWS Secrets Manager or Systems Manager Parameter Store, ECS task secrets, Heroku config vars, and encrypted project stores such as fnox. Discover the project's provider and environment/profile conventions rather than selecting one by default.
+Use the project's deployment configuration, such as `[env]` in `fly.toml`, or `[env]` in `mise.toml` for local use. Sentry API/auth tokens, including tokens used for release uploads, are secrets and must remain in the project's secret manager.
 
 For a local one-process check, an environment variable is sufficient:
 
@@ -36,4 +36,4 @@ For a local one-process check, an environment variable is sufficient:
 SENTRY_DSN="<your-dsn>" MIX_ENV=dev mix sentry.send_test_event
 ```
 
-Set `SENTRY_ENVIRONMENT` alongside the DSN in deployed environments, and set `SENTRY_RELEASE` when the deploy pipeline has a version or commit to tag. The secret remains in the configured store while the runtime receives it as an environment variable.
+Set `SENTRY_ENVIRONMENT` alongside the DSN in deployed environments, and set `SENTRY_RELEASE` when the deploy pipeline has a version or commit to tag.

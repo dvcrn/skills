@@ -12,13 +12,13 @@ MIX_ENV=dev mix sentry.send_test_event
 
 Expected result: the task reports that the event was not sent because `:dsn` is not set.
 
-Verify that a real event can be delivered by injecting the DSN for one command through the project's configured secret manager or environment:
+Verify that a real event can be delivered by setting the DSN in the environment for one command:
 
 ```bash
-SENTRY_DSN="<dsn-from-secret-manager>" MIX_ENV=dev mix sentry.send_test_event
+SENTRY_DSN="<your-dsn>" MIX_ENV=dev mix sentry.send_test_event
 ```
 
-Prefer a dedicated test project when available. Avoid repeating this against shared or production projects because it creates real issues, and never print the DSN while retrieving it.
+Prefer a dedicated test project when available. Avoid repeating this against shared or production projects because it creates real issues.
 
 Confirm the logger handler is actually registered:
 
