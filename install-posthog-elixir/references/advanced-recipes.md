@@ -66,6 +66,10 @@ window.addEventListener("phx:track_event", e => {
 })
 ```
 
+This is the default for user-driven LiveView events. A LiveView process does not
+receive new tracing headers for each socket event, and an ID copied into socket
+assigns at mount can become stale when PostHog JS rotates the browser session.
+
 Declarative click tracking for links and buttons, avoiding a hook per element:
 
 ```javascript
@@ -83,6 +87,18 @@ document.addEventListener("click", e => {
   })
 })
 ```
+
+## Asynchronous server capture
+
+Plug and Logger context do not cross process boundaries. If a user-triggered
+event must be captured from a Task, Oban job, or event listener, snapshot the
+browser-provided `distinct_id` and `$session_id` at the originating boundary and
+carry both as analytics-only job data. The worker passes them explicitly through
+the app-owned analytics boundary.
+
+Do not substitute a payment, event, job, or other domain-object ID when browser
+context is unavailable. Either capture without person/session attribution using
+an intentionally designed system-event convention, or omit the product event.
 
 ## Event-driven capture
 

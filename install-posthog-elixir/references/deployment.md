@@ -19,15 +19,21 @@ Include only the command for the project's selected package manager and ensure t
 
 - Store `POSTHOG_API_KEY` in the project's runtime secret manager and expose it as an environment variable. Do not assume it already exists.
 - Set `POSTHOG_API_HOST` to the project's existing reverse proxy when available. Otherwise use the official host for the selected region: `https://us.i.posthog.com` or `https://eu.i.posthog.com`.
-- `POSTHOG_API_KEY` is the only secret here. `POSTHOG_API_HOST` is not sensitive and may live in committed deployment configuration.
+- Set `POSTHOG_UI_HOST` to the user-confirmed PostHog application host for the same project region: `https://us.posthog.com` or `https://eu.posthog.com`.
+- `POSTHOG_API_KEY` is the only secret here. The API and UI hosts are not sensitive and may live in committed deployment configuration.
 - Never commit the API key. Use the deployment platform's secret facility, such as Fly secrets, Kubernetes Secrets, AWS Secrets Manager, or another established provider.
 
 ```bash
 export POSTHOG_API_KEY="phc_..."
-export POSTHOG_API_HOST="https://eu.i.posthog.com"
+export POSTHOG_API_HOST="https://<confirmed-ingestion-or-proxy-host>"
+export POSTHOG_UI_HOST="https://<confirmed-posthog-app-host>"
 ```
 
 Treat these exports as illustrative. Persist them with the project's actual runtime secret and configuration mechanism.
+
+Distinguish staged configuration from a live deployment. Do not report the
+integration as live until the running production workload has the key and both
+hosts, and a production event has been verified in the confirmed PostHog project.
 
 ### 14) Privacy Disclosure
 

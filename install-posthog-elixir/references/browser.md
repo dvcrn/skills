@@ -31,10 +31,11 @@ const initPostHog = () => {
   if (!apiKey) return;
 
   posthog.init(apiKey, {
-    api_host: meta("posthog-api-host") || "https://eu.i.posthog.com",
-    ui_host: meta("posthog-ui-host") || "https://eu.posthog.com",
-    defaults: "2026-01-30",
+    api_host: meta("posthog-api-host"),
+    ui_host: meta("posthog-ui-host"),
+    defaults: "2026-05-30",
     person_profiles: "identified_only",
+    tracing_headers: [window.location.host],
   });
 
   const distinctId = meta("posthog-distinct-id");
@@ -59,6 +60,12 @@ if (document.readyState === "loading") {
 
 `person_profiles` is always `"identified_only"`. `"always"` creates a person profile for every anonymous visitor, which inflates cost without improving the funnel.
 
+`tracing_headers` is required when server events captured during browser requests
+must stay attached to PostHog's browser-generated anonymous person and session.
+Limit it to the Phoenix or Plug backend host. The headers are client-controlled
+analytics correlation data and must never be used for authentication or
+authorization.
+
 ### 10) Root Template Wiring
 
 In the root layout, expose config and identity for the client. HEEx escapes attribute values, so meta tags need no manual escaping.
@@ -67,9 +74,9 @@ In the root layout, expose config and identity for the client. HEEx escapes attr
 <meta name="posthog-api-key" content={Application.get_env(:posthog, :api_key) || ""} />
 <meta
   name="posthog-api-host"
-  content={Application.get_env(:posthog, :api_host) || "https://eu.i.posthog.com"}
+  content={Application.get_env(:posthog, :api_host) || ""}
 />
-<meta name="posthog-ui-host" content="https://eu.posthog.com" />
+<meta name="posthog-ui-host" content={Application.get_env(:my_app, :posthog_ui_host) || ""} />
 <meta name="posthog-distinct-id" content={assigns[:posthog_distinct_id] || ""} />
 <%= if user = assigns[:current_user] do %>
   <meta name="posthog-user-email" content={user.email} />
@@ -79,3 +86,13 @@ In the root layout, expose config and identity for the client. HEEx escapes attr
 ```
 
 Use whichever assign the auth plug actually sets. Resolve it using the identity guidance in [server.md](server.md).
+
+For accountless apps, omit the identity and user-trait meta tags by default. Let
+PostHog JS create both anonymous IDs and propagate them through `tracing_headers`.
+Do not generate an independent server identity.
+
+App-owned signed-session identity is an advanced fallback, not the default. When
+the selected architecture requires it, expose both the distinct ID and a UUIDv7
+session ID and pass them to `bootstrap.distinctID` and `bootstrap.sessionID` with
+`bootstrap.isIdentifiedID: false`. Follow the lifecycle requirements in
+[server.md](server.md#accountless-or-anonymous-applications).

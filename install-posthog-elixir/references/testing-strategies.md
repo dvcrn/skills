@@ -20,6 +20,11 @@ config :posthog,
 
 `enable: true` is deliberate. With `test_mode: true` nothing leaves the process, and leaving `enable` false would make every capture a silent no-op and every assertion vacuous.
 
+Ensure `config/runtime.exs` does not replace this configuration during tests.
+Wrap the non-test PostHog runtime configuration in
+`if config_env() != :test do ... end`; checking `config_env()` only while
+computing `enable` still overwrites `enable: true` from `config/test.exs`.
+
 ```elixir
 defmodule MyApp.AnalyticsTest do
   # Shared mode makes this process the owner of every event captured anywhere in
@@ -53,6 +58,29 @@ defmodule MyApp.AnalyticsTest do
   end
 end
 ```
+
+For an accountless integration, test context propagation separately from domain
+properties:
+
+```elixir
+test "uses the anonymous distinct ID from request context" do
+  PostHog.set_context(%{
+    distinct_id: "anonymous-browser-id",
+    "$session_id" => "0195c2c1-7c00-7000-8000-000000000000"
+  })
+
+  assert :ok = Analytics.capture("thing happened", %{thing_id: "42"})
+
+  assert [%{distinct_id: "anonymous-browser-id", properties: properties}] =
+           captured("thing happened")
+
+  assert properties[:thing_id] == "42"
+  assert properties["$session_id"] == "0195c2c1-7c00-7000-8000-000000000000"
+end
+```
+
+The object ID remains a property. The test should fail if the adapter replaces
+either browser identity value with an application-generated person or session ID.
 
 `async: false` is not optional here. Shared ownership means a concurrent test's events land in this test's `all_captured/0`.
 
@@ -89,6 +117,11 @@ expect(MyApp.Analytics.Mock, :capture, fn "user signed up", properties ->
   :ok
 end)
 ```
+
+That expectation is for the authenticated identity path. In an accountless app,
+the Mox boundary should accept only the event and properties; test the PostHog
+adapter itself with in-memory capture to prove that request context supplies the
+anonymous distinct ID.
 
 When the capture happens in another process (a GenServer listener, an Oban worker), grant it access:
 
