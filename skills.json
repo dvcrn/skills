@@ -75,7 +75,8 @@
       "skills": [
         "setup-goreleaser",
         "setup-golang-npm-publish",
-        "setup-github-npm-publish"
+        "setup-github-npm-publish",
+        "setup-cloudflare-workers-builds-go"
       ]
     },
     {

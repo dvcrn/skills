@@ -1,0 +1,9 @@
+{
+  "name": "setup-cloudflare-workers-builds-go",
+  "description": "Set up Cloudflare Workers Builds (deploy on git push) for a Go Worker built with syumai/workers-go, using the cf CLI and mise-pinned Go.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}
