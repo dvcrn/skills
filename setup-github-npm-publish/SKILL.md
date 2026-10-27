@@ -19,6 +19,8 @@ One tag should start one run: two workflows on the same tag cannot depend on eac
 
 **Package at the root, version in package.json** (TypeScript and other npm-native projects): use `assets/publish-root.yml`. The job fails unless the tag equals the `package.json` version, so bump the version and tag together.
 
+**Bun projects** (a `bun.lock` and no npm lockfile): keep `setup-node` and `npm publish`, since the OIDC exchange runs through npm. Add `oven-sh/setup-bun@v2` and replace `npm ci` / `npm test` with `bun install --frozen-lockfile` and `bun test`. Run `bun install --frozen-lockfile` locally first; a stale committed `bun.lock` fails it in CI, so regenerate and commit it.
+
 Both need:
 
 - `permissions: id-token: write` (plus `contents: write` if the same workflow creates a GitHub release).
@@ -27,6 +29,8 @@ Both need:
 - No `NODE_AUTH_TOKEN` or `NPM_TOKEN` secret.
 
 ## 3. One-time npm setup
+
+If the package is already on npm (`npm view <package> version` succeeds), skip the placeholder and go straight to adding the trusted publisher.
 
 npm only accepts a trusted publisher for a package that already exists, so the first version is published by hand. Publish a minimal placeholder, not the real package: a wrapper's install script would fail for anyone installing it before its release exists.
 
