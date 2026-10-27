@@ -109,5 +109,82 @@
         "wework"
       ]
     }
-  ]
+  ],
+  "requires": {
+    "ask-codex": [
+      "codex"
+    ],
+    "ask-codex-for-comment-audit": [
+      "codex"
+    ],
+    "ask-codex-for-dual-pr-review": [
+      "codex"
+    ],
+    "ask-codex-for-dual-review": [
+      "codex"
+    ],
+    "ask-codex-for-pr-review": [
+      "codex"
+    ],
+    "ask-codex-for-review": [
+      "codex"
+    ],
+    "ask-gemini": [
+      "agy"
+    ],
+    "ask-gemini-for-comment-audit": [
+      "agy"
+    ],
+    "ask-gemini-for-deslop-review": [
+      "agy"
+    ],
+    "ask-gemini-for-dual-pr-review": [
+      "agy"
+    ],
+    "ask-gemini-for-dual-review": [
+      "agy"
+    ],
+    "ask-gemini-for-pr-review": [
+      "agy"
+    ],
+    "ask-gemini-for-review": [
+      "agy"
+    ],
+    "chainenv": [
+      "chainenv"
+    ],
+    "cloud-fnox": [
+      "fnox"
+    ],
+    "codex-cloud": [
+      "codex"
+    ],
+    "encrypt-for-cloud-agent": [
+      "fnox"
+    ],
+    "fnox": [
+      "fnox"
+    ],
+    "go-mcp-server-conventions": [
+      "fnox"
+    ],
+    "jules": [
+      "jules"
+    ],
+    "memrise": [
+      "memrise"
+    ],
+    "setup-cloudflare-workers-builds-go": [
+      "fnox"
+    ],
+    "tripit": [
+      "tripit"
+    ],
+    "wework": [
+      "wework"
+    ]
+  },
+  "dependencies": {
+    "code-review-and-quality": "addyosmani/agent-skills"
+  }
 }

@@ -20,6 +20,7 @@ Delegate a comprehensive five-axis code review to Gemini 3.8 Flash (High) using 
 - **Read scope:** Do not inspect secrets, credentials, `.env` files, private keys, binaries, or unrelated paths.
 - **Skills by name:** agy loads installed skills itself. Name `code-review-and-quality` in the prompt; do not pass skill directories with `--add-dir`.
 - **Report missing skills:** The prompt must tell Gemini to stop and reply to the user if the skill is not available. Do not invent a substitute standard.
+- `code-review-and-quality` lives outside this repo. When it is missing, give the user the install command: `npx skills add addyosmani/agent-skills -g --skill code-review-and-quality`.
 
 ## Canonical Invocation
 

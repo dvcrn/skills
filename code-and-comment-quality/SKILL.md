@@ -31,7 +31,7 @@ This aggregate is only as good as the skills it loads, so a missing component is
 a reportable condition, never something to silently work around.
 
 - Before reviewing, confirm each component skill resolves.
-- **If a component skill cannot be found, STOP and tell the user exactly which skill is missing and where it was looked for.** Do not fall back to your own idea of the standard, do not guess at its contents, and do not continue with the remaining skill as though the review were complete.
+- **If a component skill cannot be found, STOP and tell the user exactly which skill is missing and where it was looked for.** For `code-review-and-quality`, include the install command `npx skills add addyosmani/agent-skills -g --skill code-review-and-quality`. Do not fall back to your own idea of the standard, do not guess at its contents, and do not continue with the remaining skill as though the review were complete.
 - If a skill is missing but the user has already been told and asks you to proceed anyway, run the review with the skills that did resolve and state plainly in the output which standard was not applied.
 
 ## Running Both in One Pass
