@@ -1,0 +1,9 @@
+{
+  "name": "cloud-environments",
+  "description": "Manage Claude Code cloud environments (org and personal) through the claude.ai web APIs, covering setup scripts, env vars, network access, network secrets, sessions and routines.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "ask-codex-mcp",
+  "description": "Fallback for `ask-codex` when the `codex` CLI is not installed, as in cloud sessions. Asks Codex/GPT one-shot questions through the dpn `ask-codex_ask_codex` MCP tool with all context pasted into the prompt.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

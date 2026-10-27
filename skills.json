@@ -19,9 +19,22 @@
         "gh",
         "jules",
         "litestream-tigris-flyio",
-        "encrypt-for-cloud-agent",
         "codex-cloud",
         "astra-ify"
+      ]
+    },
+    {
+      "title": "Claude Code Cloud",
+      "skills": [
+        "cloud-environments",
+        "cloud-fnox",
+        "encrypt-for-cloud-agent"
+      ]
+    },
+    {
+      "title": "Writing",
+      "skills": [
+        "proofread-japanese"
       ]
     },
     {
@@ -34,12 +47,14 @@
         "ask-gemini-for-dual-pr-review",
         "ask-gemini-for-comment-audit",
         "ask-gemini-for-deslop-review",
+        "ask-gemini-mcp",
         "ask-codex",
         "ask-codex-for-review",
         "ask-codex-for-dual-review",
         "ask-codex-for-pr-review",
         "ask-codex-for-dual-pr-review",
         "ask-codex-for-comment-audit",
+        "ask-codex-mcp",
         "pr-code-review-and-quality",
         "address-pr-review-comments",
         "triage-pr-review-comments",

@@ -19,9 +19,18 @@ npx skills add dvcrn/skills
 - `gh`: Create GitHub issues and pull requests using the GitHub CLI (gh). Always write the body to a file in .tmp/ and pass it via --body-file so descriptions are descriptive and consistent.
 - `jules`: Interact with Jules, Google's asynchronous coding agent.
 - `litestream-tigris-flyio`: Set up or troubleshoot SQLite replication and restores with Litestream and Tigris on Fly.io.
-- `encrypt-for-cloud-agent`: Encrypt a secret for cloud agents using the shared cloud age key, producing a value ready to paste into fnox.cloud.toml.
 - `codex-cloud`: Run Codex tasks in cloud environments.
 - `astra-ify`: Audit and rewrite agent instructions for Astra when asked to reduce rigid prompting in a file or pasted text.
+
+### Claude Code Cloud
+
+- `cloud-environments`: Manage Claude Code cloud environments (org and personal) through the claude.ai web APIs, covering setup scripts, env vars, network access, network secrets, sessions and routines.
+- `cloud-fnox`: Store and read secrets for Claude Code cloud sessions with fnox, age-encrypted to the dedicated cloud key in fnox.cloud.toml.
+- `encrypt-for-cloud-agent`: Encrypt a secret for cloud agents using the shared cloud age key, producing a value ready to paste into fnox.cloud.toml.
+
+### Writing
+
+- `proofread-japanese`: Proofread any outgoing Japanese (emails, letters, forum posts, messages) with Gemini before it is sent.
 
 ### Multi-Agent Delegation & Review Loop
 
@@ -32,12 +41,14 @@ npx skills add dvcrn/skills
 - `ask-gemini-for-dual-pr-review`: Delegate a GitHub PR code and documentation review to Gemini, with posting when authorized.
 - `ask-gemini-for-comment-audit`: Delegates code comment, documentation, and commit message audits to Gemini 3.8 Flash (Medium) via the Antigravity CLI (agy), enforcing the comment-and-documentation-quality skill.
 - `ask-gemini-for-deslop-review`: Delegates article and technical documentation deslop reviews and rewrites to Gemini 3.8 Flash (Medium) via the Antigravity CLI (agy), enforcing the deslop-articles skill.
+- `ask-gemini-mcp`: Fallback for `ask-gemini` when the `agy` CLI is not installed, as in cloud sessions. Asks Gemini one-shot questions through the dpn `ask-antigravity_ask_gemini` MCP tool with all context pasted into the prompt.
 - `ask-codex`: Delegate a question or coding task to local Codex when an independent perspective is requested or useful.
 - `ask-codex-for-review`: Delegates code review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-review-and-quality skill.
 - `ask-codex-for-dual-review`: Delegates a combined code and comment review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-and-comment-quality aggregate for local targets without GitHub posting.
 - `ask-codex-for-pr-review`: Delegate a GitHub PR code review to local Codex, with posting when authorized.
 - `ask-codex-for-dual-pr-review`: Delegates a combined GitHub PR code and comment review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-and-comment-quality aggregate and posting one structured review to GitHub.
 - `ask-codex-for-comment-audit`: Delegates code comment, documentation, and commit message audits to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the comment-and-documentation-quality skill without changing code.
+- `ask-codex-mcp`: Fallback for `ask-codex` when the `codex` CLI is not installed, as in cloud sessions. Asks Codex/GPT one-shot questions through the dpn `ask-codex_ask_codex` MCP tool with all context pasted into the prompt.
 - `pr-code-review-and-quality`: Review GitHub pull requests for code quality and deliver inline findings when posting is authorized.
 - `address-pr-review-comments`: Fix GitHub PR review feedback and manage its threads when requested.
 - `triage-pr-review-comments`: Analyzes GitHub PR review comments, investigates the relevant codebase context, and provides a verdict on whether each comment should be fixed or ignored. Does not make code changes.
