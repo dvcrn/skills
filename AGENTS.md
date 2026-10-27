@@ -47,4 +47,6 @@
 - `skills.json` holds the marketplace identity and the README category map. Every skill and plugin must appear under exactly one category or `sync` fails.
 - `mise run sync-check` fails when the generated files are stale. Run it before pushing.
 - `node scripts/sync.mjs --prune` deletes generated plugin dirs whose root skill is gone; without it, `sync` reports them and stops.
+- `skills.json` `requires` maps a skill to the CLIs it runs that a stock Claude Code cloud session lacks (`agy`, `codex`, `fnox`, ...); `git`, `gh`, `node` and `python` are assumed. Consumers that vendor this repo filter on it, and `sync` fails when a skill runs a CLI listed in `requires` for another skill without declaring it itself.
+- `skills.json` `dependencies` maps a skill from another repo to its `owner/repo`. `sync` lists it in the README with its install command and the skills that load it.
 

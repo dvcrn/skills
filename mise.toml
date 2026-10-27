@@ -13,3 +13,7 @@ run = "node scripts/sync.mjs"
 [tasks.sync-check]
 description = "Fail if the generated plugin manifests, marketplace, or README are stale"
 run = "node scripts/sync.mjs --check"
+
+[tasks.test]
+description = "Run the sync script tests"
+run = "node --test scripts/*.test.mjs"

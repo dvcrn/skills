@@ -7,6 +7,8 @@ description: Delegate a question or coding task to local Codex when an independe
 
 Use local `codex exec`. Cloud tasks use `codex-cloud`; specialized review tasks use the corresponding `ask-codex-for-*` skill.
 
+If `codex` is not on PATH, use `ask-codex-mcp` instead.
+
 ## Task contract
 
 Each invocation starts a separate session. Include the goal, necessary context and prior decisions, allowed scope, completion condition, and output format. State whether edits and network access are allowed. For questions and reviews, keep repository files read-only. Allow relevant read-only inspection rather than forbidding the commands needed to read the target.

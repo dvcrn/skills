@@ -9,6 +9,8 @@ This skill lets you query Gemini via the `agy` CLI. Gemini 3.8 Flash (Medium) is
 the default. Gemini 4 Argon is reserved for single-shot prompts where all the
 context is in the prompt itself.
 
+If `agy` is not on PATH, use `ask-gemini-mcp` instead.
+
 ## Model Selection Guidance
 
 Pick the model by whether Gemini needs to use tools, then pick the effort.

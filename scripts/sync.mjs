@@ -10,6 +10,7 @@ import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { programsIn } from "./commands.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CONFIG = path.join(ROOT, "skills.json");
@@ -86,6 +87,19 @@ function listDirs(dir) {
     .map((e) => e.name)
     .sort();
 }
+
+/** Markdown and shell files of a skill dir, keyed by path. */
+function readSkillFiles(dir) {
+  return new Map(
+    fs
+      .readdirSync(dir, { withFileTypes: true, recursive: true })
+      .filter((e) => e.isFile() && /\.(md|sh|bash)$/.test(e.name))
+      .map((e) => path.join(e.parentPath ?? e.path, e.name))
+      .map((f) => [f, fs.readFileSync(f, "utf8")]),
+  );
+}
+
+const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 function safeJsonParse(text, fallback = null) {
   try {
@@ -222,6 +236,39 @@ const blurbs = new Map([
   ...vendored.map((p) => [p.name, shortDescription(p.description ?? "")]),
 ]);
 
+const skillFiles = new Map(
+  rootSkills.map((s) => [s.name, readSkillFiles(path.join(ROOT, s.name))]),
+);
+
+const requires = config.requires ?? {};
+for (const [name, clis] of Object.entries(requires)) {
+  if (!blurbs.has(name))
+    fail(`skills.json requires lists "${name}", which is not a skill or plugin`);
+  if (!Array.isArray(clis) || !clis.every((c) => /^[\w.+-]+$/.test(c)))
+    fail(`skills.json requires "${name}" must be an array of CLI names`);
+}
+
+// Every root skill must declare exactly the requires-tracked CLIs it runs, so
+// consumers filtering on "requires" never pick up a skill that can't run.
+const knownClis = new Set(Object.values(requires).flat());
+for (const skill of rootSkills) {
+  const runs = new Set();
+  for (const [file, text] of skillFiles.get(skill.name))
+    for (const cli of programsIn(file, text)) if (knownClis.has(cli)) runs.add(cli);
+  const declared = new Set(requires[skill.name] ?? []);
+  for (const cli of runs)
+    if (!declared.has(cli))
+      fail(`${skill.name} runs \`${cli}\` but skills.json requires does not list it`);
+  for (const cli of declared)
+    if (!runs.has(cli))
+      fail(`skills.json requires lists \`${cli}\` for ${skill.name}, which never runs it`);
+}
+
+const requiresNote = (name) =>
+  requires[name]
+    ? ` (requires ${requires[name].map((c) => `\`${c}\``).join(", ")})`
+    : "";
+
 const categorized = new Set();
 const sections = [];
 for (const category of config.categories) {
@@ -234,7 +281,7 @@ for (const category of config.categories) {
       continue;
     }
     categorized.add(name);
-    rows.push(`- \`${name}\`: ${blurbs.get(name)}`);
+    rows.push(`- \`${name}\`: ${blurbs.get(name)}${requiresNote(name)}`);
   }
   if (rows.length > 0)
     sections.push(`### ${category.title}\n\n${rows.join("\n")}`);
@@ -242,6 +289,28 @@ for (const category of config.categories) {
 for (const name of blurbs.keys()) {
   if (!categorized.has(name))
     fail(`"${name}" is not listed under any category in skills.json`);
+}
+
+const dependencies = Object.entries(config.dependencies ?? {}).sort();
+if (dependencies.length > 0) {
+  const rows = dependencies.map(([name, source]) => {
+    if (blurbs.has(name))
+      fail(`skills.json dependency "${name}" is also a skill in this repo`);
+    if (!/^[\w.-]+\/[\w.-]+$/.test(source))
+      fail(`skills.json dependency "${name}" source must be owner/repo`);
+    const mention = new RegExp(`(?<![\\w-])${escapeRe(name)}(?![\\w-])`);
+    const usedBy = rootSkills
+      .filter((s) =>
+        [...skillFiles.get(s.name).values()].some((text) => mention.test(text)),
+      )
+      .map((s) => `\`${s.name}\``);
+    if (usedBy.length === 0)
+      fail(`skills.json dependency "${name}" is not referenced by any skill`);
+    return `- \`${name}\` from \`${source}\`, used by ${usedBy.join(", ")}:\n\n  \`\`\`bash\n  npx skills add ${source} -g --skill ${name}\n  \`\`\``;
+  });
+  sections.push(
+    `### External Dependencies\n\nSome skills load skills from other repositories. Install these alongside this repo.\n\n${rows.join("\n")}`,
+  );
 }
 
 const readmePath = path.join(ROOT, "README.md");

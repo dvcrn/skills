@@ -1,0 +1,9 @@
+{
+  "name": "proofread-japanese",
+  "description": "Proofread any outgoing Japanese (emails, letters, forum posts, messages) with Gemini before it is sent.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

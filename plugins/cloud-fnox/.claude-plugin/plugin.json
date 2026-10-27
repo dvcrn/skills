@@ -1,0 +1,9 @@
+{
+  "name": "cloud-fnox",
+  "description": "Store and read secrets for Claude Code cloud sessions with fnox, age-encrypted to the dedicated cloud key in fnox.cloud.toml.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

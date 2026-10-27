@@ -50,6 +50,11 @@
       "source": "./plugins/ask-codex-for-review"
     },
     {
+      "name": "ask-codex-mcp",
+      "description": "Fallback for `ask-codex` when the `codex` CLI is not installed, as in cloud sessions. Asks Codex/GPT one-shot questions through the dpn `ask-codex_ask_codex` MCP tool with all context pasted into the prompt.",
+      "source": "./plugins/ask-codex-mcp"
+    },
+    {
       "name": "ask-gemini",
       "description": "Delegate questions or tasks to Gemini via the Antigravity CLI (agy).",
       "source": "./plugins/ask-gemini"
@@ -85,6 +90,11 @@
       "source": "./plugins/ask-gemini-for-review"
     },
     {
+      "name": "ask-gemini-mcp",
+      "description": "Fallback for `ask-gemini` when the `agy` CLI is not installed, as in cloud sessions. Asks Gemini one-shot questions through the dpn `ask-antigravity_ask_gemini` MCP tool with all context pasted into the prompt.",
+      "source": "./plugins/ask-gemini-mcp"
+    },
+    {
       "name": "astra-ify",
       "description": "Audit and rewrite agent instructions for Astra when asked to reduce rigid prompting in a file or pasted text.",
       "source": "./plugins/astra-ify"
@@ -93,6 +103,16 @@
       "name": "chainenv",
       "description": "Operate chainenv for local secret workflows, including backend diagnostics, config-aware key lookup, shell export generation, secret writes, and backend copy operations",
       "source": "./plugins/chainenv"
+    },
+    {
+      "name": "cloud-environments",
+      "description": "Manage Claude Code cloud environments (org and personal) through the claude.ai web APIs, covering setup scripts, env vars, network access, network secrets, sessions and routines.",
+      "source": "./plugins/cloud-environments"
+    },
+    {
+      "name": "cloud-fnox",
+      "description": "Store and read secrets for Claude Code cloud sessions with fnox, age-encrypted to the dedicated cloud key in fnox.cloud.toml.",
+      "source": "./plugins/cloud-fnox"
     },
     {
       "name": "code-and-comment-quality",
@@ -208,6 +228,11 @@
       "name": "pr-code-review-and-quality",
       "description": "Review GitHub pull requests for code quality and deliver inline findings when posting is authorized.",
       "source": "./plugins/pr-code-review-and-quality"
+    },
+    {
+      "name": "proofread-japanese",
+      "description": "Proofread any outgoing Japanese (emails, letters, forum posts, messages) with Gemini before it is sent.",
+      "source": "./plugins/proofread-japanese"
     },
     {
       "name": "setup-cloudflare-workers-builds-go",

@@ -23,7 +23,7 @@ Delegate a comprehensive five-axis code review to OpenAI Codex (`gpt-5.6-sol`, h
 ```bash
 STANDARDS="${HOME}/.agents/skills/code-review-and-quality/SKILL.md"
 if [ ! -f "$STANDARDS" ]; then
-  echo "code-review-and-quality skill not found at $STANDARDS" >&2
+  echo "code-review-and-quality skill not found at $STANDARDS; install it with: npx skills add addyosmani/agent-skills -g --skill code-review-and-quality" >&2
   exit 1
 fi
 ```
@@ -39,7 +39,7 @@ REPO="/path/to/repo"
 STANDARDS="${HOME}/.agents/skills/code-review-and-quality/SKILL.md"
 
 if [ ! -f "$STANDARDS" ]; then
-  echo "code-review-and-quality skill not found at $STANDARDS" >&2
+  echo "code-review-and-quality skill not found at $STANDARDS; install it with: npx skills add addyosmani/agent-skills -g --skill code-review-and-quality" >&2
   exit 1
 fi
 

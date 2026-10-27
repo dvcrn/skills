@@ -19,6 +19,8 @@ All three files are required:
 
 Resolve each file from the session catalog, canonical location, or a known repository skill directory before launch. Use the resolved paths in the invocation. If bounded lookup fails, report the missing standard and attempted paths; do not invent a substitute or silently run only one component. Proceed with a partial review only after the user explicitly requests it, and identify the omitted standard in the output.
 
+`code-review-and-quality` lives outside this repo. When it is missing, give the user the install command: `npx skills add addyosmani/agent-skills -g --skill code-review-and-quality`.
+
 ## Boundaries
 
 - Use local `codex exec` with `-s read-only`, `-C <repo>`, `--ephemeral`, and a unique output file.
