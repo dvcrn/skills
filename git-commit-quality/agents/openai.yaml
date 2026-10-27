@@ -1,0 +1,7 @@
+---
+interface:
+  display_name: "Git Commit Quality"
+  short_description: "Concise standards for Git commit messages"
+  default_prompt: >-
+    Use $git-commit-quality before authoring, amending, squashing, or auditing
+    a Git commit.
