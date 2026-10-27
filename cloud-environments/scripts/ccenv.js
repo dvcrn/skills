@@ -20,10 +20,12 @@
     return json;
   }
 
-  // Full-config write so networking, packages and setup script survive partial edits
+  // Full-config write so networking, packages and setup script survive partial edits.
+  // environment is only sent when the patch changes it: omitting it keeps the stored
+  // vars, and resending a value over 512 chars makes the API reject the whole write.
   const fullConfig = (c, patch = {}) => ({
     type: c.type, networking: c.networking, packages: c.packages,
-    init_script: c.init_script, environment: c.environment, ...patch,
+    init_script: c.init_script, ...patch,
   });
 
   const SECRET_RE = /ghp_|gho_|github_pat_|AGE-SECRET-KEY|xox[bap]-|AKIA[0-9A-Z]{12}|-----BEGIN|\bsk-[A-Za-z0-9]{8}/;
