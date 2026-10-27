@@ -3,7 +3,7 @@
 
 const SHELL_FENCES = new Set(["", "bash", "sh", "shell", "zsh", "console"]);
 const WRAPPERS = new Set(["sudo", "env", "exec", "npx", "xargs", "time", "nohup", "command"]);
-const KEYWORDS = new Set(["if", "then", "else", "elif", "while", "until", "do", "!", "{", "("]);
+const KEYWORDS = new Set(["if", "then", "else", "elif", "while", "until", "do", "!", "{"]);
 
 /** Shell snippets in Markdown: fenced shell blocks and inline code spans. */
 export function shellSnippets(markdown) {
@@ -26,7 +26,7 @@ export function commandNames(snippet) {
   const names = [];
   const lines = snippet.replace(/\\\n/g, " ").split("\n");
   for (const line of lines) {
-    for (const part of line.split(/&&|\|\||[;|]|\$\(|`/)) {
+    for (const part of line.split(/&&|\|\||[;|()`]/)) {
       const words = part.trim().replace(/^\$\s+/, "").split(/\s+/).filter(Boolean);
       while (words.length > 0) {
         const w = words[0];

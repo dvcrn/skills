@@ -17,6 +17,8 @@ test("finds commands behind separators, assignments and wrappers", () => {
     "codex\texec",
     "codex",
     "OUT=$(codex exec -o x)",
+    "OUT=$(codex)",
+    "(codex exec)",
     "$ codex exec",
     "if codex exec \\",
     "while ! codex exec; do",
