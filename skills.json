@@ -20,7 +20,8 @@
         "jules",
         "litestream-tigris-flyio",
         "codex-cloud",
-        "astra-ify"
+        "astra-ify",
+        "setup-github-actions"
       ]
     },
     {

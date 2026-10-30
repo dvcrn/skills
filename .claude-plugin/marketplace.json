@@ -240,6 +240,11 @@
       "source": "./plugins/setup-cloudflare-workers-builds-go"
     },
     {
+      "name": "setup-github-actions",
+      "description": "Write or optimize GitHub Actions workflows for private repos so they use as little of the plan's included Actions usage as possible - runner choice (ubuntu-slim, arm64), triggers, concurrency, timeouts, job layout, caching, and Claude Code review jobs.",
+      "source": "./plugins/setup-github-actions"
+    },
+    {
       "name": "setup-github-npm-publish",
       "description": "Publish an npm package automatically from GitHub Actions when a semver tag is pushed, using npm trusted publishing (OIDC) instead of an NPM_TOKEN.",
       "source": "./plugins/setup-github-npm-publish"

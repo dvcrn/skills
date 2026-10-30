@@ -21,6 +21,7 @@ npx skills add dvcrn/skills
 - `litestream-tigris-flyio`: Set up or troubleshoot SQLite replication and restores with Litestream and Tigris on Fly.io.
 - `codex-cloud`: Run Codex tasks in cloud environments. (requires `codex`)
 - `astra-ify`: Audit and rewrite agent instructions for Astra when asked to reduce rigid prompting in a file or pasted text.
+- `setup-github-actions`: Write or optimize GitHub Actions workflows for private repos so they use as little of the plan's included Actions usage as possible - runner choice (ubuntu-slim, arm64), triggers, concurrency, timeouts, job layout, caching, and Claude Code review jobs.
 
 ### Claude Code Cloud
 
