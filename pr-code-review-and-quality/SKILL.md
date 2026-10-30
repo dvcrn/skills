@@ -40,7 +40,7 @@ Use these severity labels consistently:
 
 Every finding needs concrete evidence, a useful file/line reference, and an explanation of impact. Omit praise, restated code, and speculative issues. State a clean result concisely when no findings remain.
 
-Each inline finding: the defect and its consequence in at most three sentences, then one fix. No history of how the code got there, no alternative fixes unless the main one is risky. No findings about code or settings outside the diff. Nit: only when it would cause a real misunderstanding; otherwise drop it.
+Each inline finding: the defect and its consequence in at most three sentences, then one fix (none for `FYI:`). No history of how the code got there, no alternative fixes unless the main one is risky. No findings about pre-existing problems in code the diff doesn't touch. Breakage the diff causes elsewhere goes under General findings. Nit: only when it would cause a real misunderstanding; otherwise drop it.
 
 ## Delivery
 

@@ -28,7 +28,7 @@ Each inline comment needs:
 
 `RIGHT`-side comments must land in `[newStart, newStart + newCount - 1]`; `LEFT`-side in `[oldStart, oldStart + oldCount - 1]`. Verify every comment against these ranges *before* submitting.
 
-**If a finding can't be anchored** — it's about something missing or about the change as a whole — put it in the summary body under "General findings" with a `path:line` reference in text. Do not force it onto an unrelated line just to make it inline.
+**If a finding can't be anchored** — it's about something missing, about the change as a whole, or about breakage the diff causes in code it doesn't touch — put it in the summary body under "General findings" with a `path:line` reference in text. Do not force it onto an unrelated line just to make it inline.
 
 Suggested fixes render as applyable suggestion blocks when the fenced block is tagged `suggestion` and its content replaces exactly the commented line range:
 
@@ -88,7 +88,7 @@ In priority order:
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| `422` — "line must be part of the diff" | A comment points outside a diff hunk | Re-check that comment against hunk ranges; move it to General findings if it concerns the change as a whole, drop it if it concerns code outside the diff |
+| `422` — "line must be part of the diff" | A comment points outside a diff hunk | Re-check that comment against hunk ranges; move it to General findings if the diff causes it, drop it if it's a pre-existing problem outside the diff |
 | `422` — "pull_request_review_thread.path is invalid" | Path doesn't match the diff exactly (case, leading `./`, renamed file) | Copy the path verbatim from `gh api .../files` |
 | `403` / `404` on POST | No write access, or a fine-grained token missing `pull_requests: write` | Fall back per above |
 | `422` on `APPROVE` for your own PR | GitHub forbids self-approval | Not applicable here — this skill always uses `COMMENT` |

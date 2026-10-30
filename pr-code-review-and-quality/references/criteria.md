@@ -104,15 +104,12 @@ A weak description is a legitimate review finding — raise it in the summary bo
 Check the PR for orphaned code:
 
 1. Identify code that is now unreachable or unused as a result of this change
-2. List it explicitly in the review body
+2. Flag it inline where the diff touches it, otherwise under General findings
 3. **Ask, don't demand deletion** — the author may know of a caller you can't see
 
 ```
-DEAD CODE IDENTIFIED:
-- formatLegacyDate() in src/utils/date.ts — replaced by formatDate()
-- OldTaskCard component in src/components/ — replaced by TaskCard
-- LEGACY_API_URL constant in src/config.ts — no remaining references
-→ Safe to remove these in this PR?
+### General findings
+- `src/utils/date.ts:12`: `formatLegacyDate()` has no callers left now that `formatDate()` replaces it. Safe to remove in this PR?
 ```
 
 ## Review Speed
@@ -121,7 +118,7 @@ Slow reviews block entire teams. The cost of context-switching to review is less
 
 - **Respond within one business day** — this is the maximum, not the target
 - **Prioritize fast individual responses** over quick final approval. Quick feedback reduces frustration even if multiple rounds are needed
-- **Large PRs:** review coherent file groups and report coverage. Recommend splitting when separate changes prevent a reliable review.
+- **Large PRs:** review coherent file groups and name what you didn't review in the Unverified line. Recommend splitting when separate changes prevent a reliable review.
 
 ## Handling Disagreements
 
