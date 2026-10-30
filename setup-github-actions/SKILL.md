@@ -9,21 +9,26 @@ Private repos draw from the account's included Actions usage, which is a dollar 
 
 ## Runner choice
 
-Default every job to `ubuntu-slim`. Move it to `ubuntu-24.04-arm` only when it hits a slim limit below (needs `services:`, Docker, more than 1 vCPU or 5 GB, or can exceed 15 minutes), and to `ubuntu-latest` only when part of its toolchain has no linux/arm64 build.
-
 | Label | Spec | $/min | Use for |
 |---|---|---|---|
-| `ubuntu-slim` | 1 vCPU, 5 GB, container | $0.002 | Default. Fits lint/format, deploys that build remotely, Claude Code review, `paths-filter` jobs, issue and label automation, release notes |
-| `ubuntu-24.04-arm` | 2 vCPU | $0.005 | Tests, `services:` (Postgres), compiles, Dialyzer, e2e, Docker |
-| `ubuntu-latest` | x64 | $0.006 | Only when something is x64-only |
+| `ubuntu-24.04-arm` | 2 vCPU | $0.005 | Default for any job that runs code: tests, compiles, typechecks, bundling, linters that compile, Dialyzer, e2e, `services:`, Docker, agents that run commands |
+| `ubuntu-slim` | 1 vCPU, 5 GB, container | $0.002 | Jobs that mostly wait or do almost nothing: remote builds/deploys, API calls, `paths-filter`, label/issue automation, notifications, release notes |
+| `ubuntu-latest` | 2 vCPU x64 | $0.006 | Only when part of the toolchain has no linux/arm64 build |
 
-`ubuntu-slim` limits:
+CPU-bound work on `ubuntu-slim` runs about 2.5 to 3x slower than on a 2-vCPU runner (measured: a Claude review that runs the test suite took 9 min on slim vs 3 min on `ubuntu-latest`). At 3x slower slim costs the same and feedback is 3x later, so slim only pays off for jobs that spend their time waiting.
 
-- 15 minute job limit; the job fails at the limit.
-- Unprivileged container: no `services:`, no `container:` jobs, no Docker or Docker-based actions (any action whose `action.yml` has `runs.using: docker`, for example `getsentry/action-release@v3`). Replace those with the underlying CLI at a pinned version, e.g. `npx @sentry/cli@<version> releases new/set-commits/finalize`.
-- Minimal preinstalled tools; install what the job needs with `setup-*` actions or `jdx/mise-action`.
+### Picking `ubuntu-slim`
 
-On arm64, check that steps don't download amd64-only binaries.
+Walk these in order; the first "yes" picks the runner.
+
+1. Does the job need `services:`, `container:`, Docker, or a Docker-based action (`runs.using: docker` in its `action.yml`, e.g. `getsentry/action-release@v3`)? **Yes → `ubuntu-24.04-arm`.** (Or replace the Docker action with its CLI at a pinned version, e.g. `npx @sentry/cli@<version>`, and continue.)
+2. Does it do CPU-bound work: compile, run tests, typecheck, bundle, Dialyzer, a linter that compiles the project or installs deps, or an agent (Claude Code, Codex) allowed to run builds or tests? **Yes → `ubuntu-24.04-arm`.**
+3. Does it need more than 5 GB RAM or 14 GB disk, or could it ever run longer than 10 minutes (the hard job limit on slim is 15)? **Yes → `ubuntu-24.04-arm`.**
+4. Otherwise it waits on something remote or barely runs: **`ubuntu-slim`.** Examples: `flyctl deploy --remote-only`, Cloudflare/Vercel deploys that build remotely, `gh` CLI calls, Slack/webhook notifications, `paths-filter`, labelers, release drafting, a Claude review restricted to reading the diff (no shell tools).
+
+Then measure: a slim job must stay under 3x its 2-vCPU duration and well under 15 minutes. If it doesn't, move it to arm64.
+
+Slim has minimal preinstalled tools; install what the job needs with `setup-*` actions or `jdx/mise-action`. On arm64, check that steps don't download amd64-only binaries.
 
 ## Triggers
 
@@ -69,8 +74,8 @@ Set `timeout-minutes` on every job. The default is 360, so one hung deploy can c
 
 ## Claude Code review job
 
-- `runs-on: ubuntu-slim` for review-only runs: the job mostly waits on the API. Set `timeout-minutes: 15` to match the slim limit.
-- Jobs where Claude compiles or runs the test suite (`@claude` implementation requests) go on `ubuntu-24.04-arm`.
+- `runs-on: ubuntu-24.04-arm` with `timeout-minutes: 20` for reviews that may run the build or tests, and for `@claude` implementation jobs.
+- `ubuntu-slim` only fits a review whose allowed tools exclude shell commands, so it only reads the diff and posts comments. Set `timeout-minutes: 15`.
 - Trigger reviews on `pull_request: types: [opened, ready_for_review]` with `if: ${{ !github.event.pull_request.draft }}`, so a PR opened as a draft is reviewed once when it becomes ready. Don't trigger on `synchronize`, or every push to a PR starts a new review. For label-triggered reviews, use `types: [labeled]` with `if: github.event.label.name == '<label>'`.
 - Group by PR so a new run replaces a pending one. Comment-triggered runs (`issue_comment`) carry the number in `issue`, not `pull_request`: `concurrency: { group: claude-${{ github.event.pull_request.number || github.event.issue.number }}, cancel-in-progress: true }`.
 - Skip bot-authored PRs by author, not actor (on `ready_for_review` and `labeled` the actor is whoever changed the PR): `if: ${{ !endsWith(github.event.pull_request.user.login, '[bot]') }}`.
