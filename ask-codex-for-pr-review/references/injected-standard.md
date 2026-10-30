@@ -17,7 +17,7 @@ Do not silently omit a required standard. If the caller cannot resolve it, repor
 
 ## Invocation example
 
-Set the resolved paths and target before running. This example is for an authorized GitHub posting request. For local-only review, omit the delivery reference and replace the posting instruction with local output. Add the re-review reference when it applies.
+Set the resolved paths and target before running. This example is for an authorized GitHub posting request. For local-only review, drop `references/github-delivery.md` from `STANDARD_FILES` and replace the posting instruction with local output. Add the re-review reference when it applies.
 
 ```bash
 OUT="$(mktemp -t codex-pr-review.XXXXXX)"

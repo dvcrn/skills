@@ -38,7 +38,7 @@ a reportable condition, never something to silently work around.
 Review the target once, judging every change against both standards, and emit a
 single report rather than two.
 
-- Use the review skill's severity labels for every finding, whatever its source.
+- Label every finding with the review skill's severity labels, whatever its source. For a pull request, use the High, Medium and Low levels from `pr-review-delivery`.
 - A comment or documentation finding is a normal finding. Give it the same severity treatment as a code finding, and anchor it to the line it concerns.
 - Do not open a separate "comments" report or append a second summary. One review, one verdict.
 - The comment audit applies to prose *in the diff under review*. Do not audit unrelated files the change did not touch.

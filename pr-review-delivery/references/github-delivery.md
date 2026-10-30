@@ -115,7 +115,7 @@ _Reviewed by <model name> (reasoning effort: <level>)._
 **Verdict:** Approve / Request changes / Needs discussion / Close. <one-line reason>
 
 ### General findings
-- `path:line`: <only findings that couldn't anchor inline>
+- `path:line`: <High:|Medium:> <only findings that couldn't anchor inline>
 
 Unverified: <one line, only what you couldn't check that the author should know, e.g. "newer commit 80e4ce8 not reviewed". Omit if nothing.>
 ```

@@ -24,7 +24,7 @@ Apply `code-review-and-quality` to find defects and `pr-review-delivery` to labe
 - Do not modify repository files, inspect secrets or unrelated paths, or use dangerous sandbox bypass flags.
 - Limit network access to the target PR through `gh` or GitHub API.
 - For authorized posting, submit one `COMMENT` review, anchor inline comments to the reviewed diff, and put other findings in the summary. Never submit `APPROVE` or `REQUEST_CHANGES`.
-- Follow the review standard's severity and attribution rules, subject to repository/user communication policy. Include available `humanizer` wording guidance without blocking on its absence.
+- Follow `pr-review-delivery`'s severity and attribution rules, subject to repository/user communication policy. Include available `humanizer` wording guidance without blocking on its absence.
 - Verify the returned review ID on the intended PR. If execution times out, check whether it already posted before retrying.
 
 ## Model and failure handling
@@ -78,4 +78,4 @@ fi
 
 Set `REVIEW_STANDARD`, `DELIVERY_STANDARD` and their `--add-dir` entries to the resolved locations, and make posting authorization explicit in the prompt. Read output only after successful exit and treat missing output as failure.
 
-For a delegate that cannot read the file, use [injected-standard.md](references/injected-standard.md).
+For a delegate that cannot read the files, use [injected-standard.md](references/injected-standard.md).

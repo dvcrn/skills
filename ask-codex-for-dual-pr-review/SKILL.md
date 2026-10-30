@@ -110,7 +110,7 @@ fi
 Before launch:
 
 - Confirm the resolved PR target, repository, and posting authorization.
-- Confirm all three standards exist.
+- Confirm all four standards exist.
 - Set Sol high and all read-only boundaries.
 - Include `humanizer` guidance when available.
 

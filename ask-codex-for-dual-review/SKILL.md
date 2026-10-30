@@ -70,7 +70,8 @@ If any skill is not available, immediately STOP and report that back with the sk
 
 Target: <files, local changes, branch comparison, or commit>
 
-Review the target in one pass for Correctness, Readability and Simplicity, Architecture, Security, Performance, and comment and documentation quality. Treat prose findings as normal findings with the same severity labels. Emit one review, not separate reports. Do not implement changes."
+Review the target in one pass for Correctness, Readability and Simplicity, Architecture, Security, Performance, and comment and documentation quality. Treat prose findings as normal findings with the same severity labels. Emit one review, not separate reports. Do not implement changes.
+Start each finding with High: (merging breaks something), Medium: (wrong behavior or a regression that doesn't block merge) or Low: (an applyable suggestion replacing lines in the diff plus one sentence, at most three). Flag only what the diff gets wrong or can clean up in place; skip design alternatives, scope expansions and pre-existing problems."
 then
   cat "$OUT"
   rm -f "$OUT"
