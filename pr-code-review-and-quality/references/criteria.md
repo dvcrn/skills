@@ -178,7 +178,7 @@ None of those change anything. Delete them.
 
 **FYI is not a praise slot.** It's for context the author genuinely lacks and can't get from the diff — "this endpoint is rate-limited to 10 req/s upstream, so the retry loop will trip it," "we hit this exact race in #482." If you can't name what the author would do differently knowing it, it isn't an FYI.
 
-**If the PR is genuinely good, say so once — in the summary body, in one line.** "Clean change, tests cover the branches that matter" is worth more than five scattered compliments, and it costs the author nothing to read.
+**If the PR is genuinely good, say so in the overall read.** "Clean change, tests cover the branches that matter" is worth more than five scattered compliments, and it costs the author nothing to read.
 
 Before submitting, re-read every inline comment and drop any that: only compliments, only restates what the code does, or says something the diff already makes obvious. A review of 3 real findings beats a review of 3 real findings buried in 9 pleasantries.
 

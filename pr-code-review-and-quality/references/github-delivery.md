@@ -28,7 +28,7 @@ Each inline comment needs:
 
 `RIGHT`-side comments must land in `[newStart, newStart + newCount - 1]`; `LEFT`-side in `[oldStart, oldStart + oldCount - 1]`. Verify every comment against these ranges *before* submitting.
 
-**If a finding can't be anchored** — it's about a file not in the diff, about something missing, or about the change as a whole — put it in the summary body under "General findings" with a `path:line` reference in text. Do not force it onto an unrelated line just to make it inline.
+**If a finding can't be anchored** — it's about something missing or about the change as a whole — put it in the summary body under "General findings" with a `path:line` reference in text. Do not force it onto an unrelated line just to make it inline.
 
 Suggested fixes render as applyable suggestion blocks when the fenced block is tagged `suggestion` and its content replaces exactly the commented line range:
 
@@ -49,7 +49,7 @@ cat > /tmp/pr-review-NUMBER.json <<'JSON'
 {
   "commit_id": "HEAD_SHA",
   "event": "COMMENT",
-  "body": "## Review summary\n\n...",
+  "body": "...\n\n**Verdict:** ...",
   "comments": [
     {
       "path": "src/auth/session.go",
@@ -88,7 +88,7 @@ In priority order:
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| `422` — "line must be part of the diff" | A comment points outside a diff hunk | Re-check that comment against hunk ranges; move it to the summary body if it can't anchor |
+| `422` — "line must be part of the diff" | A comment points outside a diff hunk | Re-check that comment against hunk ranges; move it to General findings if it concerns the change as a whole, drop it if it concerns code outside the diff |
 | `422` — "pull_request_review_thread.path is invalid" | Path doesn't match the diff exactly (case, leading `./`, renamed file) | Copy the path verbatim from `gh api .../files` |
 | `403` / `404` on POST | No write access, or a fine-grained token missing `pull_requests: write` | Fall back per above |
 | `422` on `APPROVE` for your own PR | GitHub forbids self-approval | Not applicable here — this skill always uses `COMMENT` |
@@ -97,7 +97,7 @@ A 422 rejects the **whole** review, so nothing is posted twice. Fix the offendin
 
 ### The summary body
 
-The review body is the overall assessment. Keep it tight — the detail lives inline.
+The review body carries a short overall read, the verdict, and only what has no inline home. Inline findings are never repeated in the body. No restated PR description, no finding counts, no list of checks that ran or passed.
 
 **Unless user or repository policy prohibits attribution, the first line attributes the review to the model that produced it** — model name, and reasoning effort when that's known. This tells the author what reviewed their code and how hard it thought about it. Use the model you are actually running as, not a placeholder:
 
@@ -110,25 +110,17 @@ If the effort level isn't available to you, state the model alone — don't inve
 ```markdown
 _Reviewed by <model name> (reasoning effort: <level>)._
 
-## Review summary
+<One or two sentences: your read on the change, not a description of what it does.>
 
-One or two sentences: what this PR does and the overall read on it.
+**Verdict:** Approve / Request changes / Needs discussion / Close. <one-line reason>
 
-**Verdict:** Approve / Request changes / Needs discussion — with the one-line reason.
+### General findings
+- `path:line`: <only findings that couldn't anchor inline>
 
-### Blocking
-- `src/auth/session.go:84` — session token written to logs at info level
-
-### Should fix
-- `src/api/list.go:210` — N+1 query, one lookup per row; ~50ms added per 100 items
-
-### Optional
-- 3 nits left inline.
-
-### Coverage
-Reviewed all 12 changed files. CI: 2 checks passing, 1 failing (`test-integration`).
-Tests: added for the happy path; no test for the expired-token branch.
+Unverified: <one line, only what you couldn't check that the author should know, e.g. "newer commit 80e4ce8 not reviewed". Omit if nothing.>
 ```
+
+Omit the General findings heading when there are none.
 
 State the verdict in the body even though the GitHub event is always `COMMENT` — that's how the reader gets your actual call.
 

@@ -20,7 +20,7 @@ Use the delivery choice established by the output rule above. Do not modify impl
 
 ## Evidence and coverage
 
-Inspect the PR intent, diff, and relevant CI results. Read changed files, callers, and tests as needed to assess the behavior. Choose the reading order and depth appropriate to the risk. Review large changes in coherent groups and disclose any incomplete coverage.
+Inspect the PR intent, diff, and relevant CI results. Read changed files, callers, and tests as needed to assess the behavior. Choose the reading order and depth appropriate to the risk. Review large changes in coherent groups and note any incomplete coverage in the Unverified line.
 
 Use [criteria.md](references/criteria.md) for the five axes and team standards. Load [security-checklist.md](references/security-checklist.md) for security-sensitive changes and [performance-checklist.md](references/performance-checklist.md) when performance is in scope.
 
@@ -34,14 +34,16 @@ Use these severity labels consistently:
 | --- | --- |
 | No prefix | Required change |
 | Critical: | Security vulnerability, data loss, or broken functionality that blocks merge |
-| Nit: | Optional minor style preference |
+| Nit: | Minor point that would otherwise cause a real misunderstanding |
 | Optional: / Consider: | Suggested improvement |
 | FYI: | Relevant information the author lacks |
 
 Every finding needs concrete evidence, a useful file/line reference, and an explanation of impact. Omit praise, restated code, and speculative issues. State a clean result concisely when no findings remain.
 
+Each inline finding: the defect and its consequence in at most three sentences, then one fix. No history of how the code got there, no alternative fixes unless the main one is risky. No findings about code or settings outside the diff. Nit: only when it would cause a real misunderstanding; otherwise drop it.
+
 ## Delivery
 
 For authorized posting, use [github-delivery.md](references/github-delivery.md). Submit one review with event `COMMENT`; never `APPROVE` or `REQUEST_CHANGES`. Inline comments must anchor to the reviewed diff; other findings belong in the summary. Preserve user/repository attribution policy.
 
-Completion means the requested scope was reviewed and findings delivered on the authorized surface, with verification limits disclosed. For GitHub delivery, verify the submitted review and report its URL. After new commits, use [re-review.md](references/re-review.md) to assess the delta without duplicating prior findings.
+Completion means the requested scope was reviewed and findings delivered on the authorized surface, with verification limits stated in the summary's one Unverified line. For GitHub delivery, verify the submitted review and report its URL. After new commits, use [re-review.md](references/re-review.md) to assess the delta without duplicating prior findings.
