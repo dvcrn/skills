@@ -23,34 +23,14 @@ Write for the human reader: deliver the outcome, essential technical rationale, 
 ### 1. The "Development Diary" PR Description
 
 - **Anti-Pattern:** Turning the PR body into a narrative journal of everything thought, tried, measured, and discarded (e.g. multi-paragraph design essays, discarded alternatives, benchmark replicas, and obsolete drafting history).
-- **Rule:** A PR body documents the **current state of the branch**, not the historical drafting journey. Keep it focused:
-  - **Summary:** 1-2 bullet points on the user-visible or architectural change.
-  - **Key Changes:** Concrete implementation details (only if non-obvious).
-  - **Verification:** Specific tests added/passed and manual checks (no raw terminal dumps).
-  - **Fixes:** Issue references.
-  - _(For small, 1-3 line changes, a 1-2 sentence description without section headings is preferred)._
+- **Rule:** A PR body documents the **current state of the branch**, not the historical drafting journey. Use the Small Change or Standard PR description template in [templates.md](references/templates.md) and its rules:
+  - Write the description last, from `git diff <base>...HEAD` and the linked issue only, as if describing someone else's branch. Never from the session's history of what was tried.
+  - Pick the small template unless the change has several parts or real decisions.
+  - No "This PR…" opener, no bold, no nested bullets, no file-by-file walkthrough, no restating the diff.
+  - Exact versions, hashes and flags only when the reviewer needs them to judge the change.
+  - Don't mention what wasn't done unless it's a real limitation the reviewer must weigh.
+  - Delete any sentence the reviewer wouldn't miss.
 - ❌ _(500-word essay explaining rejected library dependencies, how test harnesses were configured, and pasting 40 lines of terminal output)_
-- ✅
-
-  ```markdown
-  Fixes #72
-
-  ## Summary
-
-  - Initialize upstream MCP servers concurrently during startup rather than serially.
-  - Bounds startup latency to the slowest single upstream server.
-
-  ## Changes
-
-  - Launch each configured upstream in its own goroutine and merge results deterministically by sorted server name.
-  - Retain child process handles to ensure clean process termination on shutdown.
-
-  ## Verification
-
-  - Added unit tests for concurrent launch timing and deterministic tool ordering.
-  - Local benchmark: 9 upstreams initialize in 9.7s (down from 31.1s serial).
-  - `go test -race ./...` passes.
-  ```
 
 ### 2. Disproportionate & Compliance-Obsessed Review Replies
 
