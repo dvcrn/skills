@@ -28,7 +28,17 @@ Label each finding with one of these levels:
 | Medium | Wrong behavior or a regression that doesn't block merge |
 | Low | Applyable cleanup only: a GitHub suggestion block replacing lines inside the diff, plus one sentence. No prose-only Low findings. At most three per review. |
 
-Finding bodies start with `High:`, `Medium:` or `Low:`. General findings take `High:` or `Medium:` only, since a Low finding must anchor to lines in the diff.
+Every new inline review comment starts with the badge for its level on its own line, then a blank line, then the finding. Thread replies take no badge. No text prefix follows the badge.
+
+| Level | First line |
+| --- | --- |
+| High | `![High](https://img.shields.io/badge/High-red?style=flat)` |
+| Medium | `![Medium](https://img.shields.io/badge/Medium-orange?style=flat)` |
+| Low | `![Low](https://img.shields.io/badge/Low-yellow?style=flat)` |
+
+Callers may hand findings over with `High:`, `Medium:` or `Low:` text prefixes; replace the prefix with the badge at delivery. General findings in the summary keep the `High:` or `Medium:` text prefix and take only those two levels, since a Low finding must anchor to lines in the diff.
+
+When running `github-comment-quality` or `humanizer` over comment text, pass only the body below the badge. Never edit, reword or remove the badge line.
 
 Only flag what the diff as written gets wrong. A wrong outcome is High or Medium, never Low. Drop design alternatives, scope expansions, changes to files outside the diff, and anything that was equally true before the PR.
 

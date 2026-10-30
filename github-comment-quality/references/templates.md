@@ -81,9 +81,11 @@ Fixed in `<commit-sha>`. <1 short sentence stating what was changed if not immed
 ### 5. Review Comment: Original Review Finding
 
 ```markdown
-<High:|Medium:|Low:> <1-2 sentences stating the issue and concrete impact>.
+<Level badge line from `pr-review-delivery` (High red, Medium orange, Low yellow)>
 
-<Optional suggested replacement or requested change; a Low: finding requires a `suggestion` block>.
+<1-2 sentences stating the issue and concrete impact>.
+
+<Optional suggested replacement or requested change; a Low finding requires a `suggestion` block>.
 ```
 
 ### 6. Creating a New Issue (Bug Report)

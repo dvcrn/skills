@@ -18,7 +18,7 @@ Each inline comment needs:
 | `line` | Line number **in the file at the given side** — not a diff offset |
 | `side` | `RIGHT` for added/unchanged lines (the new file), `LEFT` for removed lines (the old file) |
 | `start_line` + `start_side` | Optional — for a multi-line comment spanning a range, with `line` as the end |
-| `body` | The finding, starting with `High:`, `Medium:` or `Low:` |
+| `body` | The level badge from SKILL.md on its own line, a blank line, then the finding |
 
 **The hard constraint: `line` must fall inside a hunk present in the PR diff.** GitHub rejects the entire review with `422 Unprocessable Entity` if any single comment points outside the diff. Derive valid ranges from the hunk headers:
 
@@ -33,7 +33,9 @@ Each inline comment needs:
 Suggested fixes render as applyable suggestion blocks when the fenced block is tagged `suggestion` and its content replaces exactly the commented line range:
 
 ````
-Low: this shadows the outer `err`.
+![Low](https://img.shields.io/badge/Low-yellow?style=flat)
+
+This shadows the outer `err`.
 
 ```suggestion
 	if writeErr := w.Flush(); writeErr != nil {
@@ -55,7 +57,7 @@ cat > /tmp/pr-review-NUMBER.json <<'JSON'
       "path": "src/auth/session.go",
       "line": 84,
       "side": "RIGHT",
-      "body": "High: the session token is logged in full here..."
+      "body": "![High](https://img.shields.io/badge/High-red?style=flat)\n\nThe session token is logged in full here..."
     },
     {
       "path": "src/auth/session.go",
@@ -63,7 +65,7 @@ cat > /tmp/pr-review-NUMBER.json <<'JSON'
       "start_side": "RIGHT",
       "line": 128,
       "side": "RIGHT",
-      "body": "Medium: this retry loop never resets `attempt`, so a second refresh fails at once..."
+      "body": "![Medium](https://img.shields.io/badge/Medium-orange?style=flat)\n\nThis retry loop never resets `attempt`, so a second refresh fails at once..."
     }
   ]
 }

@@ -119,6 +119,7 @@ Write for the human reader: deliver the outcome, essential technical rationale, 
 
 1. **Zero em dashes (`—`), en dashes (`–`), and pause double-hyphens (`--`):** Use colons, parentheses, or separate sentences. (Preserve literal CLI flags such as `--verbose`).
 2. **No bold-spam or decorative emojis:** Avoid bolding every second phrase or prefixing headings with `🚀`, `💡`, `✅`.
+   - Exception: keep the level badge image that opens a `pr-review-delivery` inline comment (`![High](...)`, `![Medium](...)`, `![Low](...)`); edit only the text below it.
 3. **No raw terminal dump logs:** Summarize test and benchmark results cleanly in a single line or concise table, rather than dumping 40 lines of test output.
 4. **No throat-clearing / sycophancy:** Cut _"Great suggestion!", "You're absolutely right!", "Let's dive in"_.
 5. **Use clean titles:** Keep PR and issue titles specific, concise, and free of conversational fluff. PR titles should be imperative (e.g. `Fix dirty state warning in AI dialog`). Issue titles should clearly describe the problem or goal (e.g. `AI dialog shows stale warning after save` or `Support concurrent upstream initialization`). Avoid conventional commit prefixes (`feat:`, `fix:`) unless required by the repo.
