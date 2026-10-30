@@ -50,7 +50,7 @@ npx skills add dvcrn/skills
 - `ask-codex-for-dual-pr-review`: Delegates a combined GitHub PR code and comment review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-and-comment-quality aggregate and posting one structured review to GitHub. (requires `codex`)
 - `ask-codex-for-comment-audit`: Delegates code comment, documentation, and commit message audits to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the comment-and-documentation-quality skill without changing code. (requires `codex`)
 - `ask-codex-mcp`: Fallback for `ask-codex` when the `codex` CLI is not installed, as in cloud sessions. Asks Codex/GPT one-shot questions through the dpn `ask-codex_ask_codex` MCP tool with all context pasted into the prompt.
-- `pr-code-review-and-quality`: Review GitHub pull requests for code quality and deliver inline findings when posting is authorized.
+- `pr-review-delivery`: Deliver a list of PR review findings as one GitHub COMMENT review: levels, anchoring, summary and verdict, re-reviews.
 - `address-pr-review-comments`: Fix GitHub PR review feedback and manage its threads when requested.
 - `triage-pr-review-comments`: Analyzes GitHub PR review comments, investigates the relevant codebase context, and provides a verdict on whether each comment should be fixed or ignored. Does not make code changes.
 - `loop-fix-github-review`: Continuously monitor and address GitHub PR feedback when the user requests an ongoing review-fix loop.
@@ -97,7 +97,7 @@ npx skills add dvcrn/skills
 
 Some skills load skills from other repositories. Install these alongside this repo.
 
-- `code-review-and-quality` from `addyosmani/agent-skills`, used by `ask-codex-for-dual-review`, `ask-codex-for-review`, `ask-gemini-for-dual-review`, `ask-gemini-for-review`, `code-and-comment-quality`:
+- `code-review-and-quality` from `addyosmani/agent-skills`, used by `ask-codex-for-dual-pr-review`, `ask-codex-for-dual-review`, `ask-codex-for-pr-review`, `ask-codex-for-review`, `ask-gemini-for-dual-pr-review`, `ask-gemini-for-dual-review`, `ask-gemini-for-pr-review`, `ask-gemini-for-review`, `code-and-comment-quality`:
 
   ```bash
   npx skills add addyosmani/agent-skills -g --skill code-review-and-quality

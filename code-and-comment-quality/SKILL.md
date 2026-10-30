@@ -16,12 +16,11 @@ Load both:
 
 | Skill | Covers |
 | --- | --- |
-| `code-review-and-quality` (local changes) **or** `pr-code-review-and-quality` (GitHub PR) | The five review axes: Correctness, Readability, Architecture, Security, Performance |
+| `code-review-and-quality` | The five review axes: Correctness, Readability, Architecture, Security, Performance |
 | `comment-and-documentation-quality` | Code comments, docstrings, READMEs, and commit messages: AI fluff, over-explanation, ghost commentary, tautologies, em dashes |
 
-Pick the review skill by target. A GitHub pull request uses
-`pr-code-review-and-quality`, because it also carries the posting rules. Local
-or uncommitted changes use `code-review-and-quality`.
+For a GitHub pull request, also load `pr-review-delivery`, which labels,
+filters and posts the findings as one review.
 
 **Canonical location:** `~/.agents/skills/<skill-name>/SKILL.md`
 

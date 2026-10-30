@@ -225,9 +225,9 @@
       "source": "./plugins/phoenix-live-islands"
     },
     {
-      "name": "pr-code-review-and-quality",
-      "description": "Review GitHub pull requests for code quality and deliver inline findings when posting is authorized.",
-      "source": "./plugins/pr-code-review-and-quality"
+      "name": "pr-review-delivery",
+      "description": "Deliver a list of PR review findings as one GitHub COMMENT review: levels, anchoring, summary and verdict, re-reviews.",
+      "source": "./plugins/pr-review-delivery"
     },
     {
       "name": "proofread-japanese",

@@ -64,7 +64,7 @@ If the skill is not available, immediately STOP and report that back with the sk
 Target: <target files, working tree changes, or branch comparison>
 
 Review the target code against the five axes (Correctness, Readability, Architecture, Security, Performance).
-Format findings using standard severity prefixes: Critical:, Nit:, Optional: / Consider:, FYI:, or unprefixed for required changes."
+Start each finding with High: (merging breaks something), Medium: (wrong behavior or a regression that doesn't block merge) or Low: (an applyable suggestion replacing lines in the diff plus one sentence, at most three). Flag only what the diff gets wrong or can clean up in place; skip design alternatives, scope expansions and pre-existing problems."
 then
   cat "$OUT"
   rm -f "$OUT"

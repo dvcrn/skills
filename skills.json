@@ -56,7 +56,7 @@
         "ask-codex-for-dual-pr-review",
         "ask-codex-for-comment-audit",
         "ask-codex-mcp",
-        "pr-code-review-and-quality",
+        "pr-review-delivery",
         "address-pr-review-comments",
         "triage-pr-review-comments",
         "loop-fix-github-review",

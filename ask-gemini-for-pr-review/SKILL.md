@@ -5,7 +5,7 @@ description: Delegate a GitHub PR code review to Gemini, with posting when autho
 
 # Ask Gemini for PR Review
 
-Delegate a GitHub pull request review to Gemini 3.8 Flash (High) using the `agy` CLI, enforcing `pr-code-review-and-quality` and posting inline review comments and summary assessment directly to GitHub.
+Delegate a GitHub pull request review to Gemini 3.8 Flash (High) using the `agy` CLI, enforcing `code-review-and-quality` for the review and `pr-review-delivery` for labeling and posting inline review comments and summary assessment directly to GitHub.
 
 **PR target:** Require a PR number, `owner/repo#number`, or URL supplied by the user, including an unambiguous prior mention. Do not infer it from the current branch or choose an open PR. If no target was provided, ask.
 
@@ -35,8 +35,8 @@ gh pr view NUMBER --repo OWNER/REPO --json number,title,state,headRefOid,baseRef
 - **Review and GitHub posting only:** Gemini must not edit local repository files or run mutating build commands.
 - **Restricted network access:** Network access is permitted exclusively for GitHub CLI (`gh`) and GitHub API requests targeting the specific PR. General web search is forbidden.
 - **Read scope:** Do not inspect secrets, credentials, `.env` files, private keys, binaries, or unrelated paths.
-- **Skills by name:** agy loads installed skills itself. Name `pr-code-review-and-quality` in the prompt; do not pass skill directories with `--add-dir`.
-- **Report missing skills:** The prompt must tell Gemini to stop and reply to the user if the skill is not available. Do not invent a substitute standard.
+- **Skills by name:** agy loads installed skills itself. Name `code-review-and-quality` and `pr-review-delivery` in the prompt; do not pass skill directories with `--add-dir`.
+- **Report missing skills:** The prompt must tell Gemini to stop and reply to the user if either skill is not available. Do not invent a substitute standard.
 
 ## Canonical Invocation
 
@@ -52,7 +52,7 @@ Do not make any code changes in the local repository. Do not implement anything 
 Do not search the general web. Network access is permitted ONLY for GitHub CLI (gh) and GitHub API calls for this PR.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
-Use the pr-code-review-and-quality skill. If the skill 'pr-code-review-and-quality' is not available, stop and reply to the user that it is missing. Do not invent a substitute standard.
+Use the code-review-and-quality skill to find defects and the pr-review-delivery skill to label, filter and deliver them. If the skill 'code-review-and-quality' or 'pr-review-delivery' is not available, stop and reply to the user naming the missing skill. Do not invent a substitute standard.
 
 Target PR: OWNER/REPO#NUMBER
 

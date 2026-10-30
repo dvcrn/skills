@@ -18,7 +18,7 @@ Each inline comment needs:
 | `line` | Line number **in the file at the given side** — not a diff offset |
 | `side` | `RIGHT` for added/unchanged lines (the new file), `LEFT` for removed lines (the old file) |
 | `start_line` + `start_side` | Optional — for a multi-line comment spanning a range, with `line` as the end |
-| `body` | The finding, severity-prefixed |
+| `body` | The finding, starting with `High:`, `Medium:` or `Low:` |
 
 **The hard constraint: `line` must fall inside a hunk present in the PR diff.** GitHub rejects the entire review with `422 Unprocessable Entity` if any single comment points outside the diff. Derive valid ranges from the hunk headers:
 
@@ -33,7 +33,7 @@ Each inline comment needs:
 Suggested fixes render as applyable suggestion blocks when the fenced block is tagged `suggestion` and its content replaces exactly the commented line range:
 
 ````
-Nit: this shadows the outer `err`.
+Low: this shadows the outer `err`.
 
 ```suggestion
 	if writeErr := w.Flush(); writeErr != nil {
@@ -55,7 +55,7 @@ cat > /tmp/pr-review-NUMBER.json <<'JSON'
       "path": "src/auth/session.go",
       "line": 84,
       "side": "RIGHT",
-      "body": "**Critical:** the session token is logged in full here..."
+      "body": "High: the session token is logged in full here..."
     },
     {
       "path": "src/auth/session.go",
@@ -63,7 +63,7 @@ cat > /tmp/pr-review-NUMBER.json <<'JSON'
       "start_side": "RIGHT",
       "line": 128,
       "side": "RIGHT",
-      "body": "**Consider:** this block duplicates `refreshToken` above..."
+      "body": "Medium: this retry loop never resets `attempt`, so a second refresh fails at once..."
     }
   ]
 }
@@ -123,6 +123,8 @@ Unverified: <one line, only what you couldn't check that the author should know,
 Omit the General findings heading when there are none.
 
 State the verdict in the body even though the GitHub event is always `COMMENT` — that's how the reader gets your actual call.
+
+Pick the verdict from the findings: any High means Request changes. Medium without High means Request changes or Needs discussion. Low only, or no findings, means Approve. Close is for a PR that shouldn't land at all.
 
 After posting, use the response's review ID to verify that review and its comments on the intended PR. Report its URL. Check existing submissions before retrying after an uncertain network result.
 

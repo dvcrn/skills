@@ -16,7 +16,7 @@ Use local Codex for a five-axis PR review. For local changes without GitHub deli
 
 Resolve the PR from an explicit number, URL, prior conversation, or an explicit PR named earlier in the conversation. Confirm owner, repository, number, and head SHA with `gh pr view`. Ask only if the target remains ambiguous. A general inspection request does not by itself authorize posting.
 
-Apply `pr-code-review-and-quality`. Locate it in the session catalog, at `~/.agents/skills/pr-code-review-and-quality/SKILL.md`, or in a known repository skill directory. If unavailable after bounded lookup, report the paths checked. Do not invent a substitute or silently omit the standard. Continue without it only if the user authorizes that omission.
+Apply `code-review-and-quality` to find defects and `pr-review-delivery` to label, filter and deliver them. Locate each in the session catalog, at `~/.agents/skills/<name>/SKILL.md`, or in a known repository skill directory. If unavailable after bounded lookup, report the paths checked. Do not invent a substitute or silently omit the standard. Continue without it only if the user authorizes that omission.
 
 ## Boundaries and delivery
 
@@ -38,24 +38,28 @@ Use this envelope for invoking Codex:
 ```bash
 OUT="$(mktemp -t codex-pr-review.XXXXXX)"
 REPO="/path/to/repo"
-STANDARDS="${HOME}/.agents/skills/pr-code-review-and-quality/SKILL.md"
+REVIEW_STANDARD="${HOME}/.agents/skills/code-review-and-quality/SKILL.md"
+DELIVERY_STANDARD="${HOME}/.agents/skills/pr-review-delivery/SKILL.md"
 PR="123" # Must be resolved: bare number, owner/repo#123, or URL
 
 # Fail closed if standards are missing
-if [ ! -f "$STANDARDS" ]; then
-  echo "pr-code-review-and-quality skill not found at $STANDARDS" >&2
-  exit 1
-fi
+for f in "$REVIEW_STANDARD" "$DELIVERY_STANDARD"; do
+  if [ ! -f "$f" ]; then
+    echo "required skill not found at $f" >&2
+    exit 1
+  fi
+done
 
 if codex exec \
   -m gpt-5.6-sol \
   -c model_reasoning_effort="high" \
   -C "$REPO" \
-  --add-dir "${HOME}/.agents/skills/pr-code-review-and-quality" \
+  --add-dir "${HOME}/.agents/skills/code-review-and-quality" \
+  --add-dir "${HOME}/.agents/skills/pr-review-delivery" \
   -s read-only \
   --ephemeral \
   -o "$OUT" \
-  "Review only; do not modify repository files or inspect secrets or unrelated paths. Network access is limited to gh and the GitHub API for $PR. Apply pr-code-review-and-quality from $STANDARDS. If the standard is unavailable, report the missing file rather than inventing its contents. Review the target and necessary context. Post one COMMENT review only when posting is authorized; otherwise return the findings locally. Use the standard's severity and diff-anchoring rules. If posting was authorized and succeeded, verify the submitted review by its returned ID and report its URL; otherwise return local findings."
+  "Review only; do not modify repository files or inspect secrets or unrelated paths. Network access is limited to gh and the GitHub API for $PR. Apply code-review-and-quality from $REVIEW_STANDARD to find defects and pr-review-delivery from $DELIVERY_STANDARD to label, filter and deliver them. If a standard is unavailable, report the missing file rather than inventing its contents. Review the target and necessary context. Post one COMMENT review only when posting is authorized; otherwise return the findings locally. Use pr-review-delivery's severity and diff-anchoring rules. If posting was authorized and succeeded, verify the submitted review by its returned ID and report its URL; otherwise return local findings."
 then
   if [ ! -s "$OUT" ]; then
     echo "codex returned no review output" >&2
@@ -72,6 +76,6 @@ else
 fi
 ```
 
-Set `STANDARDS` and its `--add-dir` to the resolved location, and make posting authorization explicit in the prompt. Read output only after successful exit and treat missing output as failure.
+Set `REVIEW_STANDARD`, `DELIVERY_STANDARD` and their `--add-dir` entries to the resolved locations, and make posting authorization explicit in the prompt. Read output only after successful exit and treat missing output as failure.
 
 For a delegate that cannot read the file, use [injected-standard.md](references/injected-standard.md).

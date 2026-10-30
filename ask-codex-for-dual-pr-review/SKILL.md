@@ -18,12 +18,13 @@ Resolve the PR from a number, URL, established conversation context, or an expli
 
 ## Standards
 
-All three files are required:
+All four files are required:
 
 | Skill | Canonical path |
 | --- | --- |
 | `code-and-comment-quality` | `~/.agents/skills/code-and-comment-quality/SKILL.md` |
-| `pr-code-review-and-quality` | `~/.agents/skills/pr-code-review-and-quality/SKILL.md` |
+| `code-review-and-quality` | `~/.agents/skills/code-review-and-quality/SKILL.md` |
+| `pr-review-delivery` | `~/.agents/skills/pr-review-delivery/SKILL.md` |
 | `comment-and-documentation-quality` | `~/.agents/skills/comment-and-documentation-quality/SKILL.md` |
 
 Resolve each file from the session catalog, canonical location, or a known repository skill directory before launch. Use the resolved paths in the invocation. If bounded lookup fails, report the missing standard and attempted paths; do not invent a substitute or silently run only one component. Proceed with a partial review only after the user explicitly requests it, and identify the omitted standard in the GitHub review body.
@@ -33,7 +34,7 @@ Resolve each file from the session catalog, canonical location, or a known repos
 - Use local `codex exec` with `-s read-only`, `-C <repo>`, `--ephemeral`, and a unique output file.
 - Review and GitHub posting only. Do not modify repository files or implement changes.
 - Restrict network access to `gh` and the GitHub API for the target PR.
-- Read only PR metadata, diff, changed files, CI results, all three standards, and directly necessary repository context.
+- Read only PR metadata, diff, changed files, CI results, all four standards, and directly necessary repository context.
 - Do not inspect secrets, credentials, binaries, package internals, or unrelated paths.
 - Never use `danger-full-access` or `--dangerously-bypass-approvals-and-sandbox`.
 
@@ -41,7 +42,7 @@ Resolve each file from the session catalog, canonical location, or a known repos
 
 - When posting is authorized, submit one GitHub review with event `COMMENT`, never `APPROVE` or `REQUEST_CHANGES`.
 - Anchor inline comments inside diff hunks. Put unanchorable findings in the summary under General findings.
-- Use the severity prefixes defined by `pr-code-review-and-quality` and do not post praise inline.
+- Use the severity levels and filter defined by `pr-review-delivery` and do not post praise inline.
 - Treat comment and documentation findings as normal findings in the same review.
 - Unless user or repository policy prohibits it, start the summary with dynamic attribution for the actual model and effort: `_Reviewed by OpenAI Codex (<model>) (reasoning effort: <effort>)._`
 - When the `humanizer` skill is available, fold its wording guidance into the prompt before review generation. Its absence does not block the review.
@@ -59,10 +60,11 @@ OUT="$(mktemp -t codex-dual-pr-review.XXXXXX)"
 REPO="/path/to/repo"
 PR="owner/repo#123"
 AGGREGATE="${HOME}/.agents/skills/code-and-comment-quality/SKILL.md"
-CODE_STANDARD="${HOME}/.agents/skills/pr-code-review-and-quality/SKILL.md"
+CODE_STANDARD="${HOME}/.agents/skills/code-review-and-quality/SKILL.md"
+DELIVERY_STANDARD="${HOME}/.agents/skills/pr-review-delivery/SKILL.md"
 COMMENT_STANDARD="${HOME}/.agents/skills/comment-and-documentation-quality/SKILL.md"
 
-for f in "$AGGREGATE" "$CODE_STANDARD" "$COMMENT_STANDARD"; do
+for f in "$AGGREGATE" "$CODE_STANDARD" "$DELIVERY_STANDARD" "$COMMENT_STANDARD"; do
   if [ ! -f "$f" ]; then
     echo "required skill not found at $f" >&2
     exit 1
@@ -74,14 +76,15 @@ if codex exec \
   -c model_reasoning_effort="high" \
   -C "$REPO" \
   --add-dir "${HOME}/.agents/skills/code-and-comment-quality" \
-  --add-dir "${HOME}/.agents/skills/pr-code-review-and-quality" \
+  --add-dir "${HOME}/.agents/skills/code-review-and-quality" \
+  --add-dir "${HOME}/.agents/skills/pr-review-delivery" \
   --add-dir "${HOME}/.agents/skills/comment-and-documentation-quality" \
   -s read-only \
   --ephemeral \
   -o "$OUT" \
   "This is a combined GitHub PR code and comment review. Do not modify repository files. Do not search the general web. Network access is permitted only through gh and the GitHub API for the target PR.
 
-Use the code-and-comment-quality aggregate and its pr-code-review-and-quality and comment-and-documentation-quality component skills.
+Use the code-and-comment-quality aggregate and its code-review-and-quality and comment-and-documentation-quality component skills to find defects, and pr-review-delivery to label, filter and deliver them.
 If any skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute or continue with one component.
 
 Target PR: $PR

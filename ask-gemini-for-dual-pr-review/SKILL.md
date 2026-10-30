@@ -5,7 +5,7 @@ description: Delegate a GitHub PR code and documentation review to Gemini, with 
 
 # Ask Gemini for Dual PR Review
 
-Delegate a combined GitHub pull request code and comment/documentation review to Gemini 3.8 Flash (High) using the `agy` CLI, enforcing `code-and-comment-quality` and `pr-code-review-and-quality` and posting directly to GitHub.
+Delegate a combined GitHub pull request code and comment/documentation review to Gemini 3.8 Flash (High) using the `agy` CLI, enforcing `code-and-comment-quality` for the review and `pr-review-delivery` for labeling and posting directly to GitHub.
 
 **PR target:** Require a PR number, `owner/repo#number`, or URL supplied by the user, including an unambiguous prior mention. Do not infer it from the current branch or choose an open PR. If no target was provided, ask.
 
@@ -35,7 +35,7 @@ gh pr view NUMBER --repo OWNER/REPO --json number,title,state,headRefOid,baseRef
 - **Review and GitHub posting only:** Gemini must not edit local repository files or run mutating build commands.
 - **Restricted network access:** Network access is permitted exclusively for GitHub CLI (`gh`) and GitHub API requests targeting the specific PR. General web search is forbidden.
 - **Read scope:** Do not inspect secrets, credentials, `.env` files, private keys, binaries, or unrelated paths.
-- **Skills by name:** agy loads installed skills itself. Name `code-and-comment-quality`, `pr-code-review-and-quality`, and `comment-and-documentation-quality` in the prompt; do not pass skill directories with `--add-dir`.
+- **Skills by name:** agy loads installed skills itself. Name `code-and-comment-quality`, `code-review-and-quality`, `comment-and-documentation-quality`, and `pr-review-delivery` in the prompt; do not pass skill directories with `--add-dir`.
 - **Report missing skills:** The prompt must tell Gemini to stop and reply to the user if any skill is not available. Do not invent substitute standards.
 
 ## Canonical Invocation
@@ -52,8 +52,8 @@ Do not make any code changes in the local repository. Do not implement anything 
 Do not search the general web. Network access is permitted ONLY for GitHub CLI (gh) and GitHub API calls for this PR.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 
-Use the code-and-comment-quality aggregate and its pr-code-review-and-quality and comment-and-documentation-quality component skills.
-If the skill 'code-and-comment-quality', 'pr-code-review-and-quality', or 'comment-and-documentation-quality' is not available, stop and reply to the user naming the missing skill. Do not invent a substitute standard.
+Use the code-and-comment-quality aggregate and its code-review-and-quality and comment-and-documentation-quality component skills to find defects, and pr-review-delivery to label, filter and deliver them.
+If the skill 'code-and-comment-quality', 'code-review-and-quality', 'comment-and-documentation-quality', or 'pr-review-delivery' is not available, stop and reply to the user naming the missing skill. Do not invent a substitute standard.
 
 Target PR: OWNER/REPO#NUMBER
 
