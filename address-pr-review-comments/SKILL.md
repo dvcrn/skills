@@ -76,7 +76,7 @@ you must both reply AND resolve.
 
 ```bash
 # 1. Reply to the thread
-gh api graphql -F threadId="<THREAD_ID>" -F body="Fixed - addressed in the latest update." -f query='mutation($threadId: ID!, $body: String!) { addPullRequestReviewThreadReply(input: {pullRequestThreadId: $threadId, body: $body}) { reply { id } } }'
+gh api graphql -F threadId="<THREAD_ID>" -F body="Fixed - addressed in the latest update." -f query='mutation($threadId: ID!, $body: String!) { addPullRequestReviewThreadReply(input: {pullRequestReviewThreadId: $threadId, body: $body}) { comment { url } } }'
 
 # 2. Resolve the thread
 gh api graphql -F threadId="<THREAD_ID>" -f query='mutation($threadId: ID!) { resolveReviewThread(input: {threadId: $threadId}) { thread { isResolved } } }'
@@ -86,7 +86,7 @@ gh api graphql -F threadId="<THREAD_ID>" -f query='mutation($threadId: ID!) { re
 
 ```bash
 # 1. Reply explaining why
-gh api graphql -F threadId="<THREAD_ID>" -F body="Deferring this suggestion for now as it falls outside the immediate scope." -f query='mutation($threadId: ID!, $body: String!) { addPullRequestReviewThreadReply(input: {pullRequestThreadId: $threadId, body: $body}) { reply { id } } }'
+gh api graphql -F threadId="<THREAD_ID>" -F body="Deferring this suggestion for now as it falls outside the immediate scope." -f query='mutation($threadId: ID!, $body: String!) { addPullRequestReviewThreadReply(input: {pullRequestReviewThreadId: $threadId, body: $body}) { comment { url } } }'
 
 # 2. Resolve the thread
 gh api graphql -F threadId="<THREAD_ID>" -f query='mutation($threadId: ID!) { resolveReviewThread(input: {threadId: $threadId}) { thread { isResolved } } }'
