@@ -1,0 +1,9 @@
+{
+  "name": "op-convention",
+  "description": "Conventions for storing development secrets in 1Password, covering vault, item names, bundles vs standalone items, categories, field names and tags.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

@@ -96,7 +96,7 @@ If unsure whether something is sensitive or not, ask the user. Do not make assum
 
 ## 1Password provider
 
-When using 1Password, read [onepassword.md](references/onepassword.md) for auth, item layout, `op://` references, and syncing to a local age cache.
+When using 1Password, read [onepassword.md](references/onepassword.md) for auth, `op://` references, and syncing to a local age cache. Load the `op-convention` skill for how items are named and laid out.
 
 ## Cloud environments
 

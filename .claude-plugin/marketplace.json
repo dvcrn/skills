@@ -205,6 +205,11 @@
       "source": "./plugins/mise-tasks"
     },
     {
+      "name": "op-convention",
+      "description": "Conventions for storing development secrets in 1Password, covering vault, item names, bundles vs standalone items, categories, field names and tags.",
+      "source": "./plugins/op-convention"
+    },
+    {
       "name": "phoenix-colocated-hooks",
       "description": "Use when we need an explanation of phoenix colocated hooks.",
       "source": "./plugins/phoenix-colocated-hooks"

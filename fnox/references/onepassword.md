@@ -10,21 +10,19 @@ If `OP_SERVICE_ACCOUNT_TOKEN` is set in the environment, `op` uses it instead of
 
 ## Items
 
-- One vault per environment, e.g. `cloud-dev`.
-- One item per project, titled with the project or repo name, e.g. `tailscale-nextdns-sync`.
-- One field per secret, named exactly like the env var, e.g. `NEXTDNS_API_KEY`.
-
-The user creates the item and enters secret values in the 1Password app, so values never land in shell history or the transcript. Non-secret fields can be changed with `op item edit <item> --vault <vault> 'FIELD=value'`.
+Load the `op-convention` skill before creating, naming or editing 1Password items. It defines vaults, titles, categories, field names and tags.
 
 ## fnox.toml
+
+Each env var points at the item and field that holds it. A vendor credential uses its built-in `credential` field, and the project's own secrets use a field named after the env var:
 
 ```toml
 [providers.1password]
 type = "1password"
 
 [secrets]
-NEXTDNS_API_KEY = { provider = "1password", value = "op://cloud-dev/tailscale-nextdns-sync/NEXTDNS_API_KEY" }
-NEXTDNS_PROFILE_ID = { provider = "1password", value = "op://cloud-dev/tailscale-nextdns-sync/NEXTDNS_PROFILE_ID" }
+NEXTDNS_API_KEY = { provider = "1password", value = "op://Dev/NextDNS - tailscale-nextdns-sync/credential" }
+SECRET_KEY_BASE = { provider = "1password", value = "op://Dev/quickshot/SECRET_KEY_BASE" }
 ```
 
 `fnox.toml` only holds references, so commit it. The `age` provider used for the cache usually comes from the global `~/.config/fnox/config.toml`; check with `fnox provider list` and add it to the project only if it is missing.

@@ -15,6 +15,7 @@ npx skills add dvcrn/skills
 ### Tools & Automation
 
 - `fnox`: Manage secrets with fnox, including 1Password-backed secrets (op:// references) cached locally with fnox sync. (requires `fnox`)
+- `op-convention`: Conventions for storing development secrets in 1Password, covering vault, item names, bundles vs standalone items, categories, field names and tags. (requires `fnox`)
 - `mise-tasks`: Define, debug, or optimize mise tasks, dependencies, and build caching.
 - `gh`: Create GitHub issues and pull requests using the GitHub CLI (gh). Always write the body to a file in .tmp/ and pass it via --body-file so descriptions are descriptive and consistent.
 - `jules`: Interact with Jules, Google's asynchronous coding agent. (requires `jules`)
