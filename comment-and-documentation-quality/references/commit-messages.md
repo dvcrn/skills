@@ -1,12 +1,14 @@
 ## Commit Message Standards & Anti-Patterns
 
 ### Core Format
+
 - **Subject:** Start with an imperative verb (Add, Fix, Update, Refactor, Remove). Capitalize first letter. No trailing period. Keep under 50 characters. No conventional commit prefixes (`feat:`, `fix:`).
 - **Body:** Concise, high-information summary of the essential "why". Terse, technical, wrapped at 72 characters.
 
 ### Commit Anti-Patterns to Flag
 
 #### 1. Narrative Essay & Request-Accounting Storytelling
+
 - **Anti-Pattern:** Writing multi-paragraph essays dissecting step-by-step cold vs warm request counts or conversational storytelling.
 - ❌
   ```text
@@ -29,7 +31,8 @@
   ```
 
 #### 2. Transient Test Lore & Debugging Diary Entries
-- **Anti-Pattern:** Mentioning transient debugging artifacts, reverse-engineering notes, or ephemeral testing states (*"verified today"*, *"dummy course had 76 rows"*, *"typed from a live response"*).
+
+- **Anti-Pattern:** Mentioning transient debugging artifacts, reverse-engineering notes, or ephemeral testing states (_"verified today"_, _"dummy course had 76 rows"_, _"typed from a live response"_).
 - ❌
   ```text
   deleteThing wraps /ajax/thing/delete/, verified today: it destroys the pool
@@ -43,6 +46,7 @@
   ```
 
 #### 3. Conversational Drama & Double-Hyphen Dashes
+
 - ❌
   ```text
   deleteThingFromLevel never deleted anything -- it detaches a row from one
@@ -58,12 +62,27 @@
   underlying pool record. Retain deleteThingFromLevel as a deprecated alias.
   ```
 
+#### 4. Foreign Co-Author & AI Attribution Trailers
+
+- **Rule:** The only permitted `Co-authored-by` trailer is `Co-authored-by: David Mohl <git@d.sh>`. Flag any other co-author (AI models, agents, bots, GitHub Apps, other people) and any `Generated with ...` watermark.
+- ❌
+  ```text
+  Add avatar upload
+
+  Co-authored-by: Claude <noreply@anthropic.com>
+  ```
+- ✅
+  ```text
+  Add avatar upload
+  ```
+
 ---
 
-
 ### For Commit Messages:
+
 ````markdown
 ### Commit `<commit-hash>`: `<Subject line>`
+
 - **Original:** `<original commit message text>`
 - **Anti-Pattern:** `<Anti-Pattern Name(s)>`
 - **Issue:** `<1-sentence explanation of what makes it noise/bloat>`

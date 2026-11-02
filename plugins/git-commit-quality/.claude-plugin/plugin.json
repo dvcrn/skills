@@ -1,6 +1,6 @@
 {
   "name": "git-commit-quality",
-  "description": "MUST be used whenever writing, amending, squashing, or auditing any Git commit message. Enforces subject-only defaults, bans AI attribution trailers and development diaries.",
+  "description": "MUST be used whenever writing, amending, squashing, or auditing any Git commit message. Enforces subject-only defaults, bans AI attribution, co-author trailers other than David Mohl, and development diaries.",
   "version": "1.0.0",
   "author": {
     "name": "David Mohl",
