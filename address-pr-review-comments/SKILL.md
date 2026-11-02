@@ -7,7 +7,7 @@ description: Fix GitHub PR review feedback and manage its threads when requested
 
 Workflow for handling GitHub PR review comment autofix sessions end-to-end.
 This covers everything from fetching unresolved threads through to resolving
-them and re-triggering bot reviews.
+them. Do not request new bot reviews (`@codex review`, `/gemini review`).
 
 ## When to use
 
@@ -90,14 +90,6 @@ gh api graphql -F threadId="<THREAD_ID>" -F body="Deferring this suggestion for 
 
 # 2. Resolve the thread
 gh api graphql -F threadId="<THREAD_ID>" -f query='mutation($threadId: ID!) { resolveReviewThread(input: {threadId: $threadId}) { thread { isResolved } } }'
-```
-
-### 8. Re-trigger bot reviews
-
-After pushing, post a comment to re-trigger automated reviewers:
-
-```bash
-gh pr comment PR_NUMBER --body "@codex review /gemini review"
 ```
 
 ## Important: why GraphQL, not REST
