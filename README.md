@@ -16,6 +16,7 @@ npx skills add dvcrn/skills
 
 - `fnox`: Manage secrets with fnox, including 1Password-backed secrets (op:// references) cached locally with fnox sync. (requires `fnox`)
 - `op-convention`: Conventions for storing development secrets in 1Password, covering vault, item names, bundles vs standalone items, categories, field names and tags. (requires `fnox`)
+- `generate-stripe-api-keys`: Create Stripe restricted API keys, including agent-tagged keys for the Stripe MCP server, by opening a prefilled Dashboard create URL.
 - `mise-tasks`: Define, debug, or optimize mise tasks, dependencies, and build caching.
 - `gh`: Create GitHub issues and pull requests using the GitHub CLI (gh). Always write the body to a file in .tmp/ and pass it via --body-file so descriptions are descriptive and consistent.
 - `jules`: Interact with Jules, Google's asynchronous coding agent. (requires `jules`)
@@ -56,7 +57,7 @@ npx skills add dvcrn/skills
 - `triage-pr-review-comments`: Analyzes GitHub PR review comments, investigates the relevant codebase context, and provides a verdict on whether each comment should be fixed or ignored. Does not make code changes.
 - `loop-fix-github-review`: Continuously monitor and address GitHub PR feedback when the user requests an ongoing review-fix loop.
 - `deslop-articles`: Use whenever creating, editing, or reviewing any public-facing article, guide, tutorial, or blog post. Eliminates AI padding, synthetic tropes, defensive bloat, and misplaced plumbing trivia while preserving technical depth, concrete constraints, tested commands, and authentic human voice.
-- `git-commit-quality`: MUST be used whenever writing, amending, squashing, or auditing any Git commit message. Enforces subject-only defaults, bans AI attribution trailers and development diaries.
+- `git-commit-quality`: MUST be used whenever writing, amending, squashing, or auditing any Git commit message. Enforces subject-only defaults, bans AI attribution, co-author trailers other than David Mohl, and development diaries.
 - `github-comment-quality`: MUST be used whenever writing or replying to anything on GitHub - issues, pull requests, discussions, review threads. Enforces technical brevity, bans AI execution diaries, report bloat, bot watermarks, and em dashes.
 - `comment-and-documentation-quality`: Standards and quality gates for code comments, JSDoc/docstrings, technical documentation, and git commit messages.
 - `code-and-comment-quality`: Aggregate review standard that combines the code review axes with the comment, documentation, and commit message audit into a single pass.

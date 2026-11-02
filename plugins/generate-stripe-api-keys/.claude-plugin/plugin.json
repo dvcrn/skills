@@ -1,0 +1,9 @@
+{
+  "name": "generate-stripe-api-keys",
+  "description": "Create Stripe restricted API keys, including agent-tagged keys for the Stripe MCP server, by opening a prefilled Dashboard create URL.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

@@ -145,13 +145,18 @@
       "source": "./plugins/fnox"
     },
     {
+      "name": "generate-stripe-api-keys",
+      "description": "Create Stripe restricted API keys, including agent-tagged keys for the Stripe MCP server, by opening a prefilled Dashboard create URL.",
+      "source": "./plugins/generate-stripe-api-keys"
+    },
+    {
       "name": "gh",
       "description": "Create GitHub issues and pull requests using the GitHub CLI (gh). Always write the body to a file in .tmp/ and pass it via --body-file so descriptions are descriptive and consistent.",
       "source": "./plugins/gh"
     },
     {
       "name": "git-commit-quality",
-      "description": "MUST be used whenever writing, amending, squashing, or auditing any Git commit message. Enforces subject-only defaults, bans AI attribution trailers and development diaries.",
+      "description": "MUST be used whenever writing, amending, squashing, or auditing any Git commit message. Enforces subject-only defaults, bans AI attribution, co-author trailers other than David Mohl, and development diaries.",
       "source": "./plugins/git-commit-quality"
     },
     {
