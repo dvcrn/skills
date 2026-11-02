@@ -21,15 +21,21 @@ Read the title, notes, URLs and `hostname` first. If the service, purpose, proje
 
 | Item | Holds | Category | Title | Fields |
 |---|---|---|---|---|
-| Vendor credential | One issuance from a vendor: a token, or a set issued together (access key ID + secret, OAuth client ID + secret) | API Credential | `<Service> - <purpose>`, e.g. `GitHub - Zed MCP`, `Cloudflare R2 - quickshot` | Built-in: `credential` for the secret, `username` for the ID or account, `hostname`, `expires` when known |
+| Vendor credential | One issuance from a vendor: a token, or a set issued together (access key ID + secret, OAuth client ID + secret) | API Credential | `<Service> - <consumer>` or `<Service> - <account> - <consumer>`, e.g. `GitHub - Zed MCP`, `Stripe - configmesh - Cloudflare MCP gateway` | Built-in: `credential` for the secret, `username` for the ID or account, `hostname`, `expires` when known |
 | Project secrets | Secrets the app generates itself, with no vendor behind them (`SECRET_KEY_BASE`, signing and encryption keys) | Secure Note | Project slug, kebab-case, e.g. `quickshot` | One concealed custom field per secret, labelled exactly like its env var |
 | k8s Secret | Everything one k8s `Secret` contains, because the operator maps one item to one Secret | Secure Note | The Secret's name, e.g. `beeper-secrets` | One concealed custom field per Secret key |
 | Account | A real account with a username and password | Login | `<Service> - <purpose>` | Built-in |
 | File or SSH key | Service-account JSON, certificates, SSH keys | Document / SSH Key | `<Service> - <purpose>` | The 1Password SSH agent only serves SSH Key items |
 
+- Titles use only letters, digits, spaces, `-`, `_` and `.`. Any other character (`(`, `:`, `/`, `[`, `,`, `@`, ...) breaks `op://` references. Replace a disallowed character with a space and collapse repeated spaces.
+- Vendor credential titles are `<Service> - <consumer>`, or `<Service> - <account> - <consumer>`:
+  - Add the `<account>` segment only when you have more than one account at that vendor; the account ID goes in `username`.
+  - `<consumer>` is what sends the key: the project slug when you own the project, otherwise the product in plain words (`Cloudflare MCP gateway`). Never a protocol or feature (`MCP`, `API`, `token`).
+  - The key's name in the vendor's dashboard goes in the note as `Key name in <vendor>: <name>`, so it can be found to revoke.
+  - Example: `Stripe - configmesh - Cloudflare MCP gateway`.
 - Vendor credentials are standalone even when only one project uses them. The `project/<slug>` tag groups them, and the project's `fnox.toml` maps each one to its env var.
 - Every deployed consumer gets its own key from the vendor. Do not share one key between your shell and a deployed app.
-- Keep titles a vendor generated when they already fit, e.g. Cloudflare's `Cloudflare Access Service Token - <app>: <token>`.
+- Keep titles a vendor generated, after replacing disallowed characters, e.g. Cloudflare's `Cloudflare Access Service Token - <app>: <token>` becomes `Cloudflare Access Service Token - <app> <token>`.
 - Titles must be unique within a vault, because `op://` resolves by title. When the same item exists per environment, suffix the title with the env (`Stripe - microfn prod`, `microfn-prod`).
 - 1Password cannot change an item's category later, so pick it before creating the item.
 - Non-secret config (regions, account or product IDs) goes in `mise.toml`, not 1Password.
@@ -45,7 +51,7 @@ op://Dev/OpenRouter - personal/credential
 
 At most one scope tag per item:
 
-- `project/<slug>`: anything belonging to a project, including its dashboard logins and service-account files
+- `project/<slug>`: anything belonging to a project you own, including its dashboard logins and service-account files
 - `server/<hostname>`: a machine's own credentials (its service account token, keyring password, Tailscale auth key)
 - no tag: personal tool keys
 
