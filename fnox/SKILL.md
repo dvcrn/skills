@@ -97,3 +97,7 @@ If unsure whether something is sensitive or not, ask the user. Do not make assum
 ## 1Password provider
 
 When using 1Password, read [onepassword.md](references/onepassword.md) for auth, item layout, `op://` references, and syncing to a local age cache.
+
+## Cloud environments
+
+Secrets for cloud agents go in `fnox.cloud.toml`, with a `[providers.cloud]` block using the cloud age recipient. Use the `encrypt-for-cloud-agent` skill (or the `fnox-cloud` fish function) for this; do not name the provider `age` there.

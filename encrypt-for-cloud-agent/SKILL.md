@@ -15,6 +15,44 @@ encrypt it to the matching **public key** — you never need the private key for
 age1j84a8smt77mpcqphyhfjz0g9gw0gehzad4yuvcerr856hw87gyvsq2hp0q
 ```
 
+## Preferred: `fnox-cloud`
+
+The fish function `fnox-cloud` (`~/.config/fish/functions/fnox-cloud.fish`) wraps
+`fnox -P cloud`, creates `fnox.cloud.toml` with the provider block below if it is
+missing, and defaults `set` to `--provider cloud --if-missing error`:
+
+```bash
+fnox get KEY | fish -c 'fnox-cloud set KEY'
+op read "op://Personal/Some Item/credential" | fish -c 'fnox-cloud set KEY'
+fish -c 'fnox-cloud list'
+```
+
+Use the manual commands below only when `fnox-cloud` is unavailable.
+
+## Why the provider is named `cloud`, not `age`
+
+The global `~/.config/fnox/config.toml` defines `[providers.age]` with the local key.
+A `[providers.age]` in `fnox.cloud.toml` can be shadowed by it (with `-c`, the global
+one wins), so secrets end up encrypted to the wrong key. A distinct name `cloud` cannot
+collide, and forgetting `-P cloud` fails loudly with "Provider 'cloud' not found".
+
+fnox only loads `fnox.<profile>.toml` when that profile is active, so always run fnox
+against this file with `-P cloud` (or `FNOX_PROFILE=cloud`), never `-c fnox.cloud.toml`.
+
+## Why `if_missing` is set
+
+`-P cloud` also loads the top-level secrets from the project's `fnox.toml`, which are
+encrypted to the local key and cannot be decrypted in the cloud. The cloud environment
+cannot be given extra env vars such as `FNOX_NO_DEFAULTS`, so the file handles it:
+
+- top-level `if_missing = "ignore"` in `fnox.cloud.toml` silences the undecryptable
+  `fnox.toml` secrets
+- every cloud secret sets `if_missing = "error"`, which beats the top-level value, so a
+  wrong or missing `FNOX_AGE_KEY` still fails the command
+
+A `fnox.toml` secret with its own `if_missing = "error"` still fails under `-P cloud`;
+move it to a profile or relax it if that happens.
+
 ## Rules
 
 - **Never print the plaintext.** Pipe it directly from its source into `age`; do not
@@ -47,17 +85,29 @@ op read "op://Personal/Some Item/credential" \
 
 ## Output format
 
-Give the user a block they can paste into `fnox.cloud.toml`:
+Give the user a block they can paste into `fnox.cloud.toml`. The provider block must be
+in the file itself; it is committed and travels to the cloud with the secrets:
 
 ```toml
-[providers.age]
+if_missing = "ignore"
+
+[providers.cloud]
 type = "age"
 recipients = ["age1j84a8smt77mpcqphyhfjz0g9gw0gehzad4yuvcerr856hw87gyvsq2hp0q"]
 
 [secrets.KEY_ONE]
-provider = "age"
+provider = "cloud"
+if_missing = "error"
 value = "<base64 ciphertext>"
 ```
+
+## Cloud environment requirements
+
+- `fnox.cloud.toml` committed in the repo (contains the provider block)
+- `FNOX_AGE_KEY` set to the cloud private key
+- `-P cloud` on every fnox command, e.g. `fnox -P cloud exec -- <command>`
+
+No global fnox config, provider setup, or extra env vars are needed in the cloud.
 
 Production-scoped values still take `--profile production` on the fnox side; see the
 [[fnox]] skill for provider/profile mechanics.
