@@ -15,6 +15,10 @@ description: Conventions for storing development secrets in 1Password, covering 
 
 One item is one thing you create, rotate or revoke together. Each secret lives in exactly one item; never copy a value into a second item.
 
+Titles must say what the item is without opening it. Put any context the title cannot carry in the item's note: what it is for, who or what uses it, where it is deployed, its scopes. For example: `1Password service account "m2" (cloud-dev: read/write). Deployed to ~/.config/op/token by homeserver playbooks/common/1password.yml.`
+
+Read the title, notes, URLs and `hostname` first. If the service, purpose, project or environment is still unclear, ask the user before naming, tagging or moving the item, and write the answer into the note. Do not guess.
+
 | Item | Holds | Category | Title | Fields |
 |---|---|---|---|---|
 | Vendor credential | One issuance from a vendor: a token, or a set issued together (access key ID + secret, OAuth client ID + secret) | API Credential | `<Service> - <purpose>`, e.g. `GitHub - Zed MCP`, `Cloudflare R2 - quickshot` | Built-in: `credential` for the secret, `username` for the ID or account, `hostname`, `expires` when known |
@@ -30,7 +34,7 @@ One item is one thing you create, rotate or revoke together. Each secret lives i
 - 1Password cannot change an item's category later, so pick it before creating the item.
 - Non-secret config (regions, account or product IDs) goes in `mise.toml`, not 1Password.
 
-References:
+References copy the exact spelling of the vault, item and field, so a search for an item's title finds every reference to it:
 
 ```
 op://Dev/quickshot/SECRET_KEY_BASE
@@ -55,7 +59,7 @@ Never pass a secret value as a command argument, because it ends up in shell his
 
 - Pipe it. `jq -Rs` reads all of stdin, so multi-line values (PEM keys) survive:
   ```sh
-  fnox get STRIPE_SECRET_KEY | jq -Rs '{title: "Stripe - microfn prod", category: "API_CREDENTIAL", tags: ["project/microfn", "env/prod"], fields: [{id: "credential", type: "CONCEALED", value: rtrimstr("\n")}]}' | op item create --vault Dev -
+  fnox get STRIPE_SECRET_KEY | jq -Rs '{title: "Stripe - microfn prod", category: "API_CREDENTIAL", tags: ["project/microfn", "env/prod"], fields: [{id: "credential", label: "credential", type: "CONCEALED", value: rtrimstr("\n")}]}' | op item create --vault Dev -
   ```
   For a custom field set `label` to the env var name, e.g. `{label: "SECRET_KEY_BASE", type: "CONCEALED", value: ...}`, otherwise `op://` cannot resolve it.
 - Files go through `op document create`: `op document create <file> --title "<title>" --vault Dev --tags project/<slug>`, or `- --file-name <name>` to read stdin.
