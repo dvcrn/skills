@@ -42,9 +42,11 @@ From the project root:
 
 ```sh
 fnox sync --provider age --local-file --source 1password -n   # preview
-fnox sync --provider age --local-file --source 1password
+fnox sync --force --provider age --local-file --source 1password
 fnox get <KEY> >/dev/null && echo resolved                   # sanity check without printing the value
 ```
+
+Agents must pass `--force`, because without it sync waits on a y/N prompt they can't answer.
 
 Re-run the sync whenever a value changes in 1Password.
 
