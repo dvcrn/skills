@@ -12,13 +12,13 @@ When posting is authorized, deliver **one** GitHub review containing every inlin
 
 Each inline comment needs:
 
-| Field | Value |
-|---|---|
-| `path` | Repo-relative file path, exactly as it appears in the diff |
-| `line` | Line number **in the file at the given side** — not a diff offset |
-| `side` | `RIGHT` for added/unchanged lines (the new file), `LEFT` for removed lines (the old file) |
-| `start_line` + `start_side` | Optional — for a multi-line comment spanning a range, with `line` as the end |
-| `body` | The level badge from SKILL.md on its own line, a blank line, then the finding |
+| Field                       | Value                                                                                     |
+| --------------------------- | ----------------------------------------------------------------------------------------- |
+| `path`                      | Repo-relative file path, exactly as it appears in the diff                                |
+| `line`                      | Line number **in the file at the given side** — not a diff offset                         |
+| `side`                      | `RIGHT` for added/unchanged lines (the new file), `LEFT` for removed lines (the old file) |
+| `start_line` + `start_side` | Optional — for a multi-line comment spanning a range, with `line` as the end              |
+| `body`                      | The level badge from SKILL.md on its own line, a blank line, then the finding             |
 
 **The hard constraint: `line` must fall inside a hunk present in the PR diff.** GitHub rejects the entire review with `422 Unprocessable Entity` if any single comment points outside the diff. Derive valid ranges from the hunk headers:
 
@@ -26,7 +26,7 @@ Each inline comment needs:
 @@ -oldStart,oldCount +newStart,newCount @@
 ```
 
-`RIGHT`-side comments must land in `[newStart, newStart + newCount - 1]`; `LEFT`-side in `[oldStart, oldStart + oldCount - 1]`. Verify every comment against these ranges *before* submitting.
+`RIGHT`-side comments must land in `[newStart, newStart + newCount - 1]`; `LEFT`-side in `[oldStart, oldStart + oldCount - 1]`. Verify every comment against these ranges _before_ submitting.
 
 **If a finding can't be anchored** — it's about something missing, about the change as a whole, or about breakage the diff causes in code it doesn't touch — put it in the summary body under "General findings" with a `path:line` reference in text. Do not force it onto an unrelated line just to make it inline.
 
@@ -88,12 +88,12 @@ In priority order:
 
 ### Handling failures
 
-| Symptom | Cause | Fix |
-|---|---|---|
-| `422` — "line must be part of the diff" | A comment points outside a diff hunk | Re-check that comment against hunk ranges; move it to General findings if the diff causes it, drop it if it's a pre-existing problem outside the diff |
-| `422` — "pull_request_review_thread.path is invalid" | Path doesn't match the diff exactly (case, leading `./`, renamed file) | Copy the path verbatim from `gh api .../files` |
-| `403` / `404` on POST | No write access, or a fine-grained token missing `pull_requests: write` | Fall back per above |
-| `422` on `APPROVE` for your own PR | GitHub forbids self-approval | Not applicable here — this skill always uses `COMMENT` |
+| Symptom                                              | Cause                                                                   | Fix                                                                                                                                                   |
+| ---------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `422` — "line must be part of the diff"              | A comment points outside a diff hunk                                    | Re-check that comment against hunk ranges; move it to General findings if the diff causes it, drop it if it's a pre-existing problem outside the diff |
+| `422` — "pull_request_review_thread.path is invalid" | Path doesn't match the diff exactly (case, leading `./`, renamed file)  | Copy the path verbatim from `gh api .../files`                                                                                                        |
+| `403` / `404` on POST                                | No write access, or a fine-grained token missing `pull_requests: write` | Fall back per above                                                                                                                                   |
+| `422` on `APPROVE` for your own PR                   | GitHub forbids self-approval                                            | Not applicable here — this skill always uses `COMMENT`                                                                                                |
 
 A 422 rejects the **whole** review, so nothing is posted twice. Fix the offending comment and resubmit the full payload. If the same payload partially succeeded (it doesn't, but if in doubt), check `gh api repos/OWNER/REPO/pulls/NUMBER/reviews` before resubmitting to avoid a duplicate review.
 
@@ -114,9 +114,10 @@ _Reviewed by <model name> (reasoning effort: <level>)._
 
 <One or two sentences: your read on the change, not a description of what it does.>
 
-**Verdict:** Approve / Request changes / Needs discussion / Close. <one-line reason>
+**Verdict:** Approve / Approve after fixes / Request changes / Needs author input / Close. <one-line reason>
 
 ### General findings
+
 - `path:line`: <High:|Medium:> <only findings that couldn't anchor inline>
 
 Unverified: <one line, only what you couldn't check that the author should know, e.g. "newer commit 80e4ce8 not reviewed". Omit if nothing.>
@@ -126,7 +127,7 @@ Omit the General findings heading when there are none.
 
 State the verdict in the body even though the GitHub event is always `COMMENT` — that's how the reader gets your actual call.
 
-Pick the verdict from the findings: any High means Request changes. Medium without High means Request changes or Needs discussion. Low only, or no findings, means Approve. Close is for a PR that shouldn't land at all.
+Pick the verdict from the findings: any High means Request changes. Medium only means Approve after fixes, unless a fix needs a redesign, which means Request changes. Use Needs author input only when correctness can't be judged without information only the author has, such as intent or a product decision; the one-line reason must be that question. Low only, or no findings, means Approve. Close is for a PR that shouldn't land at all.
 
 After posting, use the response's review ID to verify that review and its comments on the intended PR. Report its URL. Check existing submissions before retrying after an uncertain network result.
 
