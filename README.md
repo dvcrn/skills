@@ -24,6 +24,8 @@ npx skills add dvcrn/skills
 - `codex-cloud`: Run Codex tasks in cloud environments. (requires `codex`)
 - `astra-ify`: Audit and rewrite agent instructions for Astra when asked to reduce rigid prompting in a file or pasted text.
 - `setup-github-actions`: Write or optimize GitHub Actions workflows for private repos so they use as little of the plan's included Actions usage as possible - runner choice (ubuntu-slim, arm64), triggers, concurrency, timeouts, job layout, caching, and Claude Code review jobs.
+- `obsidian-ai-vault`: Rules for reading and writing David's Obsidian AI vault via the hosted Obsidian MCP (mcp__Obsidian__*) or official obsidian CLI: layout, MOCs, naming, folders, note format, and automated project workflows.
+- `obsidian-note-organizer`: Guidelines and patterns for creating, naming, structuring, and organizing notes and Maps of Content (MOCs) in the user's Obsidian vault.
 
 ### Claude Code Cloud
 

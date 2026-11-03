@@ -210,6 +210,16 @@
       "source": "./plugins/mise-tasks"
     },
     {
+      "name": "obsidian-ai-vault",
+      "description": "Rules for reading and writing David's Obsidian AI vault via the hosted Obsidian MCP (mcp__Obsidian__*) or official obsidian CLI: layout, MOCs, naming, folders, note format, and automated project workflows.",
+      "source": "./plugins/obsidian-ai-vault"
+    },
+    {
+      "name": "obsidian-note-organizer",
+      "description": "Guidelines and patterns for creating, naming, structuring, and organizing notes and Maps of Content (MOCs) in the user's Obsidian vault.",
+      "source": "./plugins/obsidian-note-organizer"
+    },
+    {
       "name": "op-convention",
       "description": "Conventions for storing development secrets in 1Password, covering vault, item names, bundles vs standalone items, categories, field names and tags.",
       "source": "./plugins/op-convention"

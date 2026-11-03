@@ -23,7 +23,9 @@
         "litestream-tigris-flyio",
         "codex-cloud",
         "astra-ify",
-        "setup-github-actions"
+        "setup-github-actions",
+        "obsidian-ai-vault",
+        "obsidian-note-organizer"
       ]
     },
     {
