@@ -14,6 +14,12 @@ The hosted Obsidian MCP (`mcp__Obsidian__*`, also `mcp__dpn__obsidian_*`) and th
 - **Question- & Problem-Oriented Naming**: Name files by the exact question, problem, or action they solve for instant Cmd+P recall.
 - **Brief and Skimmable**: Bulleted, actionable, zero prose fluff or wall-of-text Markdown.
 - **No Tags**: Use links and MOCs exclusively.
+- **No useless artifacts**: Before creating a note, section or property, all three must hold. If one fails, don't create it.
+  a. Has a concrete reader: a routine that reads this path, or a specific question in a MOC that no other note answers yet. "Might be useful later" doesn't count.
+  b. Can't fit in an existing note: append to an existing log or memo before starting a new file.
+  c. Stays true without upkeep: write dated facts ("2026-11-03: 4 signups") and append-only logs. Never create a note that only works if someone keeps it current, such as status pages, task lists, roadmaps or "current state" snapshots. Ongoing work belongs in a GitHub issue. The exception is a note a routine owns and rewrites every run, such as a routine memo or a Base-backed property.
+
+  No placeholders, empty sections, "TBD" stubs, or status fields nobody updates. Don't write the vault owner's name into notes ("Owner: David", "waiting on David"). Never delete notes and never mark them in the vault; list removal candidates in your reply instead.
 
 ## Layout & Limits
 
