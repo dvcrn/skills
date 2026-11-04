@@ -1,6 +1,6 @@
 {
   "name": "ask-gemini-mcp",
-  "description": "Fallback for `ask-gemini` when the `agy` CLI is not installed, as in cloud sessions. Asks Gemini one-shot questions through the dpn `ask-antigravity_ask_gemini` MCP tool with all context pasted into the prompt.",
+  "description": "Fallback for `ask-gemini` when the `agy` CLI is not installed, as in cloud sessions. Asks Gemini one-shot questions through the `ask_gemini` MCP tools (sync, or `ask_gemini_async` for slow models) with all context pasted into the prompt.",
   "version": "1.0.0",
   "author": {
     "name": "David Mohl",
