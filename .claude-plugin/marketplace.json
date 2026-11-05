@@ -210,6 +210,11 @@
       "source": "./plugins/mise-tasks"
     },
     {
+      "name": "necessity-and-maintainability",
+      "description": "Judge whether a change should exist and whether it leaves the repository easier to maintain, including cognitive load, structure, and test value.",
+      "source": "./plugins/necessity-and-maintainability"
+    },
+    {
       "name": "obsidian-ai-vault",
       "description": "Rules for reading and writing David's Obsidian AI vault via the hosted Obsidian MCP (mcp__Obsidian__*) or official obsidian CLI: layout, MOCs, naming, folders, note format, and automated project workflows.",
       "source": "./plugins/obsidian-ai-vault"
@@ -268,6 +273,11 @@
       "name": "setup-github-npm-publish",
       "description": "Publish an npm package automatically from GitHub Actions when a semver tag is pushed, using npm trusted publishing (OIDC) instead of an NPM_TOKEN.",
       "source": "./plugins/setup-github-npm-publish"
+    },
+    {
+      "name": "setup-golang-npm-platform-packages",
+      "description": "Distribute a Go binary through npm as per-platform packages pulled in by optionalDependencies (the esbuild pattern), so installs need no install script, no GitHub release, and no network access beyond the npm registry.",
+      "source": "./plugins/setup-golang-npm-platform-packages"
     },
     {
       "name": "setup-golang-npm-publish",

@@ -63,6 +63,7 @@ npx skills add dvcrn/skills
 - `github-comment-quality`: MUST be used whenever writing or replying to anything on GitHub - issues, pull requests, discussions, review threads. Enforces technical brevity, bans AI execution diaries, report bloat, bot watermarks, and em dashes.
 - `comment-and-documentation-quality`: Standards and quality gates for code comments, JSDoc/docstrings, technical documentation, and git commit messages.
 - `code-and-comment-quality`: Aggregate review standard that combines the code review axes with the comment, documentation, and commit message audit into a single pass.
+- `necessity-and-maintainability`: Judge whether a change should exist and whether it leaves the repository easier to maintain, including cognitive load, structure, and test value.
 
 ### Elixir & Phoenix
 
@@ -83,6 +84,7 @@ npx skills add dvcrn/skills
 
 - `setup-goreleaser`: Set up GoReleaser for a Go repository so a semver git tag builds cross-platform release binaries and a GitHub release through GitHub Actions.
 - `setup-golang-npm-publish`: Distribute a Go binary through npm with a thin wrapper package in npm/ that downloads the matching GoReleaser release archive on install.
+- `setup-golang-npm-platform-packages`: Distribute a Go binary through npm as per-platform packages pulled in by optionalDependencies (the esbuild pattern), so installs need no install script, no GitHub release, and no network access beyond the npm registry.
 - `setup-github-npm-publish`: Publish an npm package automatically from GitHub Actions when a semver tag is pushed, using npm trusted publishing (OIDC) instead of an NPM_TOKEN.
 - `setup-cloudflare-workers-builds-go`: Set up Cloudflare Workers Builds (deploy on git push) for a Go Worker built with syumai/workers-go, using the cf CLI and mise-pinned Go. (requires `fnox`)
 

@@ -1,0 +1,9 @@
+{
+  "name": "necessity-and-maintainability",
+  "description": "Judge whether a change should exist and whether it leaves the repository easier to maintain, including cognitive load, structure, and test value.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

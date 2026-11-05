@@ -68,7 +68,8 @@
         "git-commit-quality",
         "github-comment-quality",
         "comment-and-documentation-quality",
-        "code-and-comment-quality"
+        "code-and-comment-quality",
+        "necessity-and-maintainability"
       ]
     },
     {
@@ -95,6 +96,7 @@
       "skills": [
         "setup-goreleaser",
         "setup-golang-npm-publish",
+        "setup-golang-npm-platform-packages",
         "setup-github-npm-publish",
         "setup-cloudflare-workers-builds-go"
       ]
