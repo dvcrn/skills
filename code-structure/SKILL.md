@@ -1,6 +1,6 @@
 ---
 name: code-structure
-description: Rules for where code goes and how it is shaped so humans can follow it: layer separation, package ownership, file growth, function shape, helper granularity. Use before writing code (plan), before committing (self-check), and when reviewing a change (review).
+description: Rules for where code goes and how it is shaped so humans can follow it - layer separation, package ownership, file growth, function shape, helper granularity. Use before writing code (plan), before committing (self-check), and when reviewing a change (review).
 ---
 
 # Code Structure
