@@ -1,72 +1,53 @@
 ---
 name: ask-gemini-for-pr-review
-description: Delegate a GitHub PR code review to Gemini, with posting when authorized.
+description: Delegate a GitHub PR code review to Gemini and post the review to GitHub. Use ask-gemini-for-review for local-only reviews without posting.
 ---
 
 # Ask Gemini for PR Review
 
-Delegate a GitHub pull request review to Gemini 3.8 Flash (High) using the `agy` CLI, enforcing `code-review-and-quality` for the review and `pr-review-delivery` for labeling and posting inline review comments and summary assessment directly to GitHub.
+Delegate a GitHub pull request review to Gemini 3.8 Flash (High) using the `agy` CLI, enforcing `code-review-and-quality` and `code-structure` (in review mode) to find defects, and `pr-review-delivery` (including its `references/github-delivery.md`, plus `references/re-review.md` when re-reviewing) to filter, label, and post the review directly to GitHub.
 
-**PR target:** Require a PR number, `owner/repo#number`, or URL supplied by the user, including an unambiguous prior mention. Do not infer it from the current branch or choose an open PR. If no target was provided, ask.
+- Posting authority follows `pr-review-delivery`'s output rule; for local-only requests without GitHub posting, use `ask-gemini-for-review`.
+- To also audit comments, documentation, and commit messages in the same pass, include `code-and-comment-quality` in the prompt.
 
-**Output rule:** When the user explicitly invokes this skill's GitHub posting workflow, that request authorizes one `COMMENT` review. Do not ask again. Post it, then report the review URL and a one-paragraph summary. Automatic skill selection or a general request to inspect a PR does not authorize posting; honor explicit local-only or read-only requests. Pass the established delivery choice to any delegate.
+## Step 0: Resolve the PR Target
 
-## When to Use
-
-- When asked to review a GitHub pull request using Gemini.
-- To evaluate a PR across the five axes (Correctness, Readability, Architecture, Security, Performance) and post structured review comments directly to the PR.
-
-## Step 0: PR Target Resolution & Normalization
-
-Resolve the PR from a number, URL, established conversation context, or an explicit PR named earlier in the conversation. Ask only if the target remains ambiguous. A review request authorizes inspection; posting requires user authorization, including authorization already established in the conversation.
-
-Normalize and verify before delegating:
+Resolve the target per `pr-review-delivery`, then confirm the repository, number, and head SHA before delegating:
 
 ```bash
-# Derive owner/repo for bare numbers
-REPO_NAME="$(gh repo view --json nameWithOwner -q .nameWithOwner)"
-
-# Verify the PR exists and fetch the latest head commit SHA
 gh pr view NUMBER --repo OWNER/REPO --json number,title,state,headRefOid,baseRefName
 ```
 
-## Boundaries & Constraints
+## Boundaries
 
-- **Review and GitHub posting only:** Gemini must not edit local repository files or run mutating build commands.
-- **Restricted network access:** Network access is permitted exclusively for GitHub CLI (`gh`) and GitHub API requests targeting the specific PR. General web search is forbidden.
-- **Read scope:** Do not inspect secrets, credentials, `.env` files, private keys, binaries, or unrelated paths.
-- **Skills by name:** agy loads installed skills itself. Name `code-review-and-quality` and `pr-review-delivery` in the prompt; do not pass skill directories with `--add-dir`.
-- **Report missing skills:** The prompt must tell Gemini to stop and reply to the user if either skill is not available. Do not invent a substitute standard.
+- **Read-only local repo:** Gemini must not edit local repository files or run mutating local commands. Do not inspect secrets, credentials, `.env` files, private keys, binaries, or unrelated paths.
+- **Scoped network:** Network access is permitted exclusively for `gh` and GitHub API requests targeting the PR. General web search is forbidden.
 
 ## Canonical Invocation
 
-State the delivery choice in the prompt: `Posting is authorized` or `Return findings locally; do not post`. Use the authorization already established by the user's request.
-
 ```bash
+PR="OWNER/REPO#NUMBER"
+HEAD_SHA="<verified-head-sha>"
+
 agy --model "Gemini 3.8 Flash (High)" \
   --add-dir /path/to/repo \
   --print-timeout 10m \
   --dangerously-skip-permissions --sandbox \
-  -p "This is a GitHub PR review task.
-Do not make any code changes in the local repository. Do not implement anything locally.
-Do not search the general web. Network access is permitted ONLY for GitHub CLI (gh) and GitHub API calls for this PR.
+  -p "This is a GitHub PR review task for $PR at head $HEAD_SHA.
+Do not make any code changes in the local repository or run mutating local commands.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
+Do not search the general web. Network access is permitted ONLY for gh and GitHub API calls for $PR.
 
-Use the code-review-and-quality skill to find defects and the pr-review-delivery skill to label, filter and deliver them. If the skill 'code-review-and-quality' or 'pr-review-delivery' is not available, stop and reply to the user naming the missing skill. Do not invent a substitute standard.
+Load and apply these skills by name:
+- code-review-and-quality
+- code-structure (in review mode)
+- pr-review-delivery (and its references/github-delivery.md; also read references/re-review.md if re-reviewing)
+If any of these skills is not available, stop and reply to the user naming the missing skill. Do not invent a substitute standard or post a review.
 
-Target PR: OWNER/REPO#NUMBER
-
-Fetch PR metadata and diff using gh, read full changed files in context, review against the five axes (Correctness, Readability, Architecture, Security, Performance), and report findings locally unless the caller includes existing posting authorization in this prompt. With authorization, submit a single GitHub review with inline comments anchored to diff hunks and a summary body.
-Submit with event: COMMENT. Unless user or repository policy prohibits attribution, open the summary body with dynamic model attribution: '_Reviewed by Gemini 3.8 Flash (High) (reasoning effort: high)._'
-Report the review URL and summary once posted."
+Fetch PR metadata and diff for $PR at $HEAD_SHA using gh, read changed files at $HEAD_SHA and necessary surrounding context, and review the PR.
+Then filter, label, and post one COMMENT review pinned to commit_id $HEAD_SHA following pr-review-delivery and its references/github-delivery.md. Verify the submitted review by its returned review ID and report the review URL and a one-paragraph summary."
 ```
 
-_(For general `agy` CLI flags and options, see the `ask-gemini` skill)._
+## Retries and Failure Handling
 
-## Failure Fallback & Idempotent Retries
-
-For execution failures or timeouts:
-
-1. **Check before retrying:** Query existing PR reviews via `gh api repos/OWNER/REPO/pulls/NUMBER/reviews` to verify if a review was already submitted for the current head commit. Never retry if a review has already landed.
-2. Shorten an unusually long prompt without altering the standard or PR target.
-3. Lower Gemini 3.8 Flash from High to Medium to Low. Stop after Low and report any fallback used.
+Before retrying after a timeout or execution error, check `gh api repos/OWNER/REPO/pulls/NUMBER/reviews` to confirm whether a review was already posted for `$HEAD_SHA`. Never retry if the review already landed. When no review was posted, follow the failure fallback ladder in `ask-gemini`.

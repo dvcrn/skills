@@ -5,90 +5,33 @@ description: Delegates article and technical documentation deslop reviews and re
 
 # Ask Gemini for Deslop Review & Rewrite
 
-Delegate an article deslop review (audit) or in-place rewrite to Gemini 3.8 Flash (Medium) using the `agy` CLI. Gemini must load `deslop-articles` by skill name and apply it to the requested targets.
+Delegate an article deslop audit or in-place rewrite to Gemini 3.8 Flash (Medium) using the `agy` CLI, enforcing `deslop-articles`.
 
-Do not extract or pipe raw article contents or `git diff` output into the prompt. Gemini runs in the workspace, identifies the target files, and reads each complete article in context.
+Do not pipe raw article contents or `git diff` output into the prompt; Gemini runs in the workspace and reads each complete target article in context.
 
-## Review vs. Rewrite Modes
+## Modes & Boundaries
 
-- **Review / Audit Mode (Default):** Gemini evaluates the target article against `deslop-articles` and outputs structured findings with exact line numbers, anti-pattern classifications, and clean replacements without altering files.
-- **Rewrite Mode:** When explicitly requested, Gemini rewrites the target article files in place, respecting technical constraints, metadata, and author voice.
+- **Audit Mode (default):** Report line-anchored findings and proposed replacements without modifying files.
+- **Rewrite Mode:** When explicitly requested, edit only the stated target article files in place. Preserve verified commands, flags, URLs, paths, ports, frontmatter metadata, links, images, and author voice. Do not commit, push, install dependencies, or touch unrelated files.
 
-## Boundaries & Constraints
+## Canonical Invocations
 
-Gemini may:
-
-- Read repository instructions and relevant source material.
-- Edit only the explicitly requested article or guide files (in Rewrite mode).
-- Run non-mutating content and syntax checks.
-
-Gemini must not:
-
-- Edit files outside the stated target.
-- Casually alter commands, URLs, paths, ports, metadata, links, images, or tested instructions during prose cleanup.
-- Commit, amend, push, publish, install dependencies, or modify external state.
-
-After Gemini finishes, inspect the working tree and verify that only the intended files were audited or edited.
-
-## Standards Source
-
-Always use the named `deslop-articles` skill as the review standard. agy loads installed skills itself, so name the skill in the prompt and do not pass its directory with `--add-dir`.
-
-Do not inject the skill contents into the prompt. Do not ask Gemini to invent rules from the skill name.
-
-Every prompt must say:
-
-- Load and use `deslop-articles` by skill name.
-- If the skill `deslop-articles` is not available, stop and reply to the user that it is missing.
-- Do not substitute Gemini's own writing standard.
-
-Relay a missing-skill report to the user verbatim. Never present the review or rewrite as complete when a required standard was unavailable.
-
-## How to Call Gemini
-
-Both modes need `--dangerously-skip-permissions --sandbox`.
-
-`agy` runs headless here, so it cannot prompt for tool permission and auto-denies instead. Without the flag even audit mode fails, because reading a file and running `git diff` are themselves permissioned tool calls. The failure is silent in a way that is easy to misread:
-
-```
-jetski: no output produced - a tool required the "command" permission that
-headless mode cannot prompt for, so it was auto-denied.
-```
-
-Always pair it with `--sandbox`, which keeps terminal restrictions on while the permission prompts are skipped. Auto-approving every tool call without a sandbox is a wider grant than either mode needs.
-
-Skipping permissions is not a substitute for the audit-only instruction in the prompt. In audit mode, checksum the target files before and after the run and compare, because the flag is what makes an unwanted edit possible:
-
-```bash
-find <target-dir> -name '*.md' | sort | xargs shasum -a 256 > /tmp/before.sha
-# run the audit
-find <target-dir> -name '*.md' | sort | xargs shasum -a 256 > /tmp/after.sha
-diff /tmp/before.sha /tmp/after.sha && echo "no file modified during the audit"
-```
-
-
-### 1. Audit / Review Mode (Findings Only)
-
-Use for reviewing articles, PRs, or working tree drafts without modifying files:
+### 1. Audit Mode (Findings Only)
 
 ```bash
 agy --model "Gemini 3.8 Flash (Medium)" \
   --add-dir /path/to/repo \
   --print-timeout 10m \
   --dangerously-skip-permissions --sandbox \
-  -p "This is an audit-only task. Do not modify repository state.
-Load and use the deslop-articles skill by name. If the skill 'deslop-articles' is not available, stop and reply to the user that it is missing. Do not invent a substitute standard.
+  -p "This is an audit-only task. Do not modify any files or repository state.
+Load and apply the deslop-articles skill by name. If the skill 'deslop-articles' is not available, stop and reply to the user that it is missing. Do not invent a substitute standard.
 
 Target: <specific files, directory, working tree article changes, or branch comparison>
 
-Read the repository instructions and each complete target article. Audit the prose against the deslop-articles standards (flagging throat-clearing, unneeded plumbing trivia, absence commentary, synthetic buzzwords, fake ranges, bold-spam, and any em dashes or pause double-hyphens).
-
-Output structured findings with line numbers, the identified anti-pattern, the issue, and the clean replacement."
+Read the repository instructions and each complete target article, then audit the prose against deslop-articles and return line-anchored findings with proposed replacements."
 ```
 
 ### 2. In-Place Rewrite Mode
-
-Use when in-place editing of the target files is explicitly requested:
 
 ```bash
 agy --model "Gemini 3.8 Flash (Medium)" \
@@ -96,36 +39,16 @@ agy --model "Gemini 3.8 Flash (Medium)" \
   --print-timeout 10m \
   --dangerously-skip-permissions --sandbox \
   -p "This is an in-place article editing task.
-Load and use the deslop-articles skill by name. If the skill 'deslop-articles' is not available, stop and reply to the user that it is missing. Do not invent a substitute standard.
+Load and apply the deslop-articles skill by name. If the skill 'deslop-articles' is not available, stop and reply to the user that it is missing. Do not invent a substitute standard.
 
 Target: <specific files, directory, working tree article changes, or branch comparison>
 
-Read the repository instructions and each complete target article. Rewrite only the target article files using deslop-articles. Preserve verified instructions, technical literals, metadata, links, images, safety warnings, and author voice. Do not commit, push, publish, install dependencies, or edit unrelated files.
-
-After editing, inspect the diff and report the files changed, material cuts, preserved constraints, and checks run."
+Read the repository instructions and each complete target article. Rewrite only the target article files following deslop-articles. Do not commit, push, install dependencies, or edit unrelated files. After editing, inspect the diff and report the files changed and major cuts."
 ```
 
-## Target Guidance
-
-- **Specific files:** Name every allowed file in the prompt. Gemini must not widen the edit to neighboring articles.
-- **Working tree:** Tell Gemini to identify modified article files from `git status` and `git diff --name-only`, then audit or edit only those files.
-- **Branch or PR:** Tell Gemini to compare the branch against `main` or `origin/main`, identify added or modified article files, and process only those files. It must read the complete files, not only diff hunks.
-
-## Failure Fallback
-
-For an execution failure or timeout:
-
-1. Retry once unchanged.
-2. Shorten an unusually long prompt without removing the named skill, target, or boundaries.
-3. Lower Gemini 3.8 Flash from Medium to Low.
-4. Stop after the Low attempt and report every fallback used.
-
-Do not apply the fallback ladder after Gemini returns a substantive review or missing-skill report.
+For general `agy` flags, skill-loading rules, and the execution failure fallback ladder, follow `ask-gemini`.
 
 ## Post-Run Verification
 
-1. Check `git status` and the complete diff.
-2. If an unexpected change appears, stop and report it.
-3. Confirm the target contains zero em dashes (`—`), en dashes (`–`), or pause-style double hyphens (`--`).
-4. Confirm commands, URLs, paths, ports, metadata, links, images, and safety warnings were preserved unless intentionally and verifiably changed.
-5. Run the repository's relevant content checks when available.
+1. Run `git --no-optional-locks status` and `git --no-pager diff` (and compare `shasum -a 256` before/after when auditing untracked draft files) to verify that Audit mode modified no files, or that Rewrite mode touched only the target articles and preserved frontmatter, commands, URLs, paths, links, and images.
+2. Run the repository's content or lint checks when available.

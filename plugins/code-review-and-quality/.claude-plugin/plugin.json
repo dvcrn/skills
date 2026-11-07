@@ -1,0 +1,9 @@
+{
+  "name": "code-review-and-quality",
+  "description": "Review a change for correctness, security, and performance.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

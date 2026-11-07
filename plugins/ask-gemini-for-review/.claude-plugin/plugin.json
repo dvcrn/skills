@@ -1,6 +1,6 @@
 {
   "name": "ask-gemini-for-review",
-  "description": "Delegate a Gemini code review of local files, changes, or checked-out PRs without posting.",
+  "description": "Delegate a Gemini code review of local files, working tree changes, branches, commits, or checked-out PRs without posting to GitHub.",
   "version": "1.0.0",
   "author": {
     "name": "David Mohl",

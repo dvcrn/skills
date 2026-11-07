@@ -1,64 +1,44 @@
 ---
 name: ask-gemini-for-review
-description: Delegate a Gemini code review of local files, changes, or checked-out PRs without posting.
+description: Delegate a Gemini code review of local files, working tree changes, branches, commits, or checked-out PRs without posting to GitHub.
 ---
 
 # Ask Gemini for Review
 
-Delegate a comprehensive five-axis code review to Gemini 3.8 Flash (High) using the `agy` CLI, enforcing the standards in `code-review-and-quality` and `code-structure`.
+Delegate a read-only local code review to Gemini 3.8 Flash (High) using the `agy` CLI, enforcing `code-review-and-quality` and `code-structure` (in review mode).
 
-## When to Use
+- To also audit comments, documentation, and commit messages in the same pass, tell Gemini to load `code-and-comment-quality` as well.
+- To review a GitHub PR and post the review to GitHub, use `ask-gemini-for-pr-review`.
 
-- To perform a multi-axis code review on a file, directory, branch, or PR.
-- To obtain an independent, high-reasoning review evaluating correctness, readability, architecture, security, and performance.
-- To run review gates before merging without making code changes.
+## Boundaries
 
-## Boundaries & Constraints
-
-- **Review only:** Gemini must not modify code, edit files, or execute mutating commands.
-- **No general web search:** Restrict review to local repository context and loaded standards.
+- **Review only & offline:** Gemini must not modify code, edit files, run mutating commands, or search the web.
 - **Read scope:** Do not inspect secrets, credentials, `.env` files, private keys, binaries, or unrelated paths.
-- **Skills by name:** agy loads installed skills itself. Name `code-review-and-quality` and `code-structure` in the prompt; do not pass skill directories with `--add-dir`.
-- **Report missing skills:** The prompt must tell Gemini to stop and reply to the user if either skill is not available. Do not invent a substitute standard.
-- When a skill is missing, give the user the install command: `npx skills add dvcrn/skills -g --skill <name>`.
 
 ## Canonical Invocation
-
-Run with `--dangerously-skip-permissions --sandbox` so headless execution auto-approves inspection tool requests without stalling while keeping terminal restrictions enabled:
 
 ```bash
 agy --model "Gemini 3.8 Flash (High)" \
   --add-dir /path/to/repo \
   --print-timeout 10m \
   --dangerously-skip-permissions --sandbox \
-  -p "This is a code review task.
+  -p "This is a read-only code review.
 Do not make code changes, edit files, or run mutating commands.
-Do not search the web. Do not inspect secrets, credentials, or unrelated paths.
-Read only the review target, the standard, and necessary repository context.
+Do not search the web. Do not inspect secrets, credentials, binaries, or unrelated paths.
 
-Use the code-review-and-quality skill, and the code-structure skill in review mode. If the skill 'code-review-and-quality' or 'code-structure' is not available, stop and reply to the user that it is missing. Do not invent a substitute standard.
+Load and apply the code-review-and-quality skill and the code-structure skill (in review mode).
+If either skill is not available, stop and reply to the user naming the missing skill. Do not invent a substitute standard.
 
-Target: <target files, working tree changes, or branch comparison>
+Target: <target files, working tree changes, branch comparison, or commit>
 
-Review the target code against the five axes: Correctness, Security, Performance (code-review-and-quality), and Readability, Architecture (code-structure).
-Start each finding with High: (merging breaks something), Medium: (wrong behavior or a regression that doesn't block merge) or Low: (an applyable suggestion replacing lines in the diff plus one sentence, at most three). Flag only what the diff gets wrong or can clean up in place; skip design alternatives, scope expansions and pre-existing problems."
+Inspect the target and necessary surrounding context, then report findings using the severity levels and format defined in code-review-and-quality."
 ```
 
-_(For general `agy` CLI flags and options, see the `ask-gemini` skill)._
+For general `agy` flags, skill-loading rules, and the execution failure fallback ladder, follow `ask-gemini`.
 
 ## Target Prompt Guidance
 
-- **Specific Files:**
-  `Target: ./src/auth.ts and ./src/session.ts. Read the complete files and evaluate them against the five axes.`
-- **Working Tree (Uncommitted Changes):**
-  `Target: Uncommitted working tree changes. Inspect git status and git diff to identify modified files, then read the complete files in context.`
-- **Branch / PR Diff:**
-  `Target: Current branch against main (or origin/main). Inspect modified files via git diff main...HEAD, read them in context, and review against the five axes.`
-
-## Failure Fallback
-
-For execution failures or timeouts:
-
-1. Retry once unchanged.
-2. Shorten an unusually long prompt without altering the standard, target, or review axes.
-3. Lower Gemini 3.8 Flash from High to Medium to Low. Stop after Low and report any fallback used.
+- **Specific files:** `Target: ./src/auth.ts and ./src/session.ts. Read the complete files and surrounding callers.`
+- **Working tree:** `Target: Uncommitted working tree changes. Inspect git status and git diff to identify modified files, then read them in context.`
+- **Branch diff:** `Target: Current branch against main (or origin/main). Inspect git diff main...HEAD and read modified files in context.`
+- **Commit:** `Target: Commit <commit-sha>. Inspect git show <commit-sha> and read modified files in context.`

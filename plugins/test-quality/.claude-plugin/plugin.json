@@ -1,0 +1,9 @@
+{
+  "name": "test-quality",
+  "description": "Rules for writing and reviewing tests - few readable tests that each protect a behavior, shared test setup, real-dependency E2E tests over mock stacks, and no filler tests.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

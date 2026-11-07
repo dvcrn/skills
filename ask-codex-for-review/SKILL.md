@@ -1,73 +1,51 @@
 ---
 name: ask-codex-for-review
-description: Delegates code review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-review-and-quality and code-structure skills. Use for local files, changes, branches, commits, or checked-out PRs that need a five-axis review.
+description: Delegates local code review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-review-and-quality and code-structure skills. Use for local files, working tree changes, branches, commits, or checked-out PRs without posting to GitHub.
 ---
 
 # Ask Codex for Review
 
-Delegate a comprehensive five-axis code review to OpenAI Codex (`gpt-5.6-sol`, high reasoning effort) using `codex exec`, enforcing `code-review-and-quality` and `code-structure`.
+Delegate a read-only local code review to OpenAI Codex (`gpt-5.6-sol`, high reasoning effort) using `codex exec`, enforcing `code-review-and-quality` and `code-structure` (in review mode).
 
-## When to Use
+- To also audit comments, documentation, and commit messages in the same pass, tell Codex to load `code-and-comment-quality` as well.
+- To review a GitHub PR and post the review to GitHub, use `ask-codex-for-pr-review`.
 
-- Thorough code review of local files, working tree diffs, branch comparisons, or checked-out PRs.
-- Independent, high-reasoning evaluation across correctness, readability, architecture, security, and performance.
-- Pre-merge review gates without making code changes.
+## Boundaries
 
-## Boundaries & Constraints
-
-- **Read-only:** Always use `-s read-only` and `--ephemeral`. Codex must not modify code, edit files, or execute mutating commands.
-- **No web search:** Explicitly disable web search via `-c web_search="disabled"`.
+- **Read-only & offline:** Always run with `-s read-only`, `--ephemeral`, and `-c web_search="disabled"`. Target branches or commits must be fetched locally beforehand.
 - **Read scope:** Do not inspect secrets, credentials, `.env` files, private keys, binaries, or unrelated paths.
-- **Fail closed:** Verify the standard exists before launch:
-
-```bash
-for SKILL in code-review-and-quality code-structure; do
-  if [ ! -f "${HOME}/.agents/skills/${SKILL}/SKILL.md" ]; then
-    echo "${SKILL} skill not found at ${HOME}/.agents/skills/${SKILL}; install it with: npx skills add dvcrn/skills -g --skill ${SKILL}" >&2
-    exit 1
-  fi
-done
-```
-
-- **Report missing skills:** The prompt must instruct Codex to stop immediately and report missing paths if `code-review-and-quality` or `code-structure` cannot be resolved. Do not invent a substitute standard.
-- **Local preparation:** Codex runs offline in read-only mode. Target branches or PRs must be checked out or fetched locally beforehand.
 
 ## Canonical Invocation
 
 ```bash
 OUT="$(mktemp -t codex-review.XXXXXX)"
 REPO="/path/to/repo"
-for SKILL in code-review-and-quality code-structure; do
-  if [ ! -f "${HOME}/.agents/skills/${SKILL}/SKILL.md" ]; then
-    echo "${SKILL} skill not found at ${HOME}/.agents/skills/${SKILL}; install it with: npx skills add dvcrn/skills -g --skill ${SKILL}" >&2
-    exit 1
-  fi
-done
 
 if codex exec \
   -m gpt-5.6-sol \
   -c model_reasoning_effort="high" \
   -c web_search="disabled" \
   -C "$REPO" \
-  --add-dir "${HOME}/.agents/skills/code-review-and-quality" \
-  --add-dir "${HOME}/.agents/skills/code-structure" \
   -s read-only \
   --ephemeral \
   -o "$OUT" \
-  "This is a code review only.
-Do not make any code changes or run mutating commands.
+  "This is a read-only code review.
+Do not make code changes, edit files, or run mutating commands.
 Do not access the network or search the web.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
-Read only the review target, the standard, and necessary repository context.
 
-Use the code-review-and-quality skill, and the code-structure skill in review mode.
-If either skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
+Load and apply the code-review-and-quality skill and the code-structure skill (in review mode).
+If either skill is not available, immediately STOP and report the missing skill name. Do not invent a substitute standard.
 
-Target: <target files, working tree changes, or branch comparison>
+Target: <target files, working tree changes, branch comparison, or commit>
 
-Review the target code against the five axes: Correctness, Security, Performance (code-review-and-quality), and Readability, Architecture (code-structure).
-Start each finding with High: (merging breaks something), Medium: (wrong behavior or a regression that doesn't block merge) or Low: (an applyable suggestion replacing lines in the diff plus one sentence, at most three). Flag only what the diff gets wrong or can clean up in place; skip design alternatives, scope expansions and pre-existing problems."
+Inspect the target and necessary surrounding context, then report findings using the severity levels and format defined in code-review-and-quality."
 then
+  if [ ! -s "$OUT" ]; then
+    echo "codex returned no review output" >&2
+    rm -f "$OUT"
+    exit 1
+  fi
   cat "$OUT"
   rm -f "$OUT"
 else
@@ -78,23 +56,11 @@ else
 fi
 ```
 
-*(For general `codex exec` flags and configuration, see the `ask-codex` skill).*
+For general `codex exec` flags, skill-loading rules, and the execution failure fallback ladder, follow `ask-codex`.
 
 ## Target Prompt Guidance
 
-- **Specific Files:**
-  `Target: ./src/auth.ts and ./src/session.ts. Read the complete files and evaluate them against the five axes.`
-- **Working Tree (Uncommitted Changes):**
-  `Target: Uncommitted working tree changes. Inspect git status and git diff to identify modified files, then read the complete files in context.`
-- **Branch / PR Diff:**
-  `Target: Current branch against main (or origin/main). Inspect modified files via git diff main...HEAD, read them in context, and review against the five axes.`
-- **Specific Commit:**
-  `Target: Commit <commit-sha>. Inspect changes via git show <commit-sha>, read modified files in context, and review against the five axes.`
-
-## Failure Fallback
-
-For execution failures or timeouts:
-
-1. Retry once unchanged.
-2. Shorten an unusually long prompt without altering standards or review targets.
-3. Lower reasoning effort from `high` to `medium` to `low`. If `gpt-5.6-sol` still fails at `low`, try `gpt-5.6-terra` at `low` once and stop. Report any fallback used.
+- **Specific files:** `Target: ./src/auth.ts and ./src/session.ts. Read the complete files and surrounding callers.`
+- **Working tree:** `Target: Uncommitted working tree changes. Inspect git status and git diff to identify modified files, then read them in context.`
+- **Branch diff:** `Target: Current branch against main (or origin/main). Inspect git diff main...HEAD and read modified files in context.`
+- **Commit:** `Target: Commit <commit-sha>. Inspect git show <commit-sha> and read modified files in context.`

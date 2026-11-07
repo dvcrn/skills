@@ -1,6 +1,6 @@
 {
   "name": "ask-codex-for-pr-review",
-  "description": "Delegate a GitHub PR code review to local Codex, with posting when authorized.",
+  "description": "Delegate a GitHub PR code review to local Codex and post the review to GitHub.",
   "version": "1.0.0",
   "author": {
     "name": "David Mohl",

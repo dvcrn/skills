@@ -1,9 +1,0 @@
-{
-  "name": "ask-gemini-for-dual-review",
-  "description": "Delegate a local code and documentation review to Gemini without GitHub posting.",
-  "version": "1.0.0",
-  "author": {
-    "name": "David Mohl",
-    "email": "git@d.sh"
-  }
-}

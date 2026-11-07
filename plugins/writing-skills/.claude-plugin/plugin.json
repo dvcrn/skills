@@ -1,0 +1,9 @@
+{
+  "name": "writing-skills",
+  "description": "Rules for writing and editing agent skills (SKILL.md files and their references) so they stay short, single-purpose, and change agent behavior.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

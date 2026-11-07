@@ -1,6 +1,6 @@
 {
   "name": "ask-codex-for-review",
-  "description": "Delegates code review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-review-and-quality skill.",
+  "description": "Delegates local code review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-review-and-quality and code-structure skills.",
   "version": "1.0.0",
   "author": {
     "name": "David Mohl",

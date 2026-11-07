@@ -19,13 +19,13 @@ npx skills add dvcrn/skills
 - `generate-stripe-api-keys`: Create Stripe restricted API keys, including agent-tagged keys for the Stripe MCP server, by opening a prefilled Dashboard create URL.
 - `mise-tasks`: Define, debug, or optimize mise tasks, dependencies, and build caching.
 - `gh`: Create GitHub issues and pull requests using the GitHub CLI (gh). Always write the body to a file in .tmp/ and pass it via --body-file so descriptions are descriptive and consistent.
-- `jules`: Interact with Jules, Google's asynchronous coding agent. (requires `jules`)
 - `litestream-tigris-flyio`: Set up or troubleshoot SQLite replication and restores with Litestream and Tigris on Fly.io.
 - `codex-cloud`: Run Codex tasks in cloud environments. (requires `codex`)
 - `astra-ify`: Audit and rewrite agent instructions for Astra when asked to reduce rigid prompting in a file or pasted text.
 - `setup-github-actions`: Write or optimize GitHub Actions workflows for private repos so they use as little of the plan's included Actions usage as possible - runner choice (ubuntu-slim, arm64), triggers, concurrency, timeouts, job layout, caching, and Claude Code review jobs.
 - `obsidian-ai-vault`: Rules for reading and writing David's Obsidian AI vault via the hosted Obsidian MCP (mcp__Obsidian__*) or official obsidian CLI: layout, MOCs, naming, folders, note format, and automated project workflows.
 - `obsidian-note-organizer`: Guidelines and patterns for creating, naming, structuring, and organizing notes and Maps of Content (MOCs) in the user's Obsidian vault.
+- `writing-skills`: Rules for writing and editing agent skills (SKILL.md files and their references) so they stay short, single-purpose, and change agent behavior.
 
 ### Claude Code Cloud
 
@@ -40,18 +40,14 @@ npx skills add dvcrn/skills
 ### Multi-Agent Delegation & Review Loop
 
 - `ask-gemini`: Delegate questions or tasks to Gemini via the Antigravity CLI (agy). (requires `agy`)
-- `ask-gemini-for-review`: Delegate a Gemini code review of local files, changes, or checked-out PRs without posting. (requires `agy`)
-- `ask-gemini-for-dual-review`: Delegate a local code and documentation review to Gemini without GitHub posting. (requires `agy`)
-- `ask-gemini-for-pr-review`: Delegate a GitHub PR code review to Gemini, with posting when authorized. (requires `agy`)
-- `ask-gemini-for-dual-pr-review`: Delegate a GitHub PR code and documentation review to Gemini, with posting when authorized. (requires `agy`)
+- `ask-gemini-for-review`: Delegate a Gemini code review of local files, working tree changes, branches, commits, or checked-out PRs without posting to GitHub. (requires `agy`)
+- `ask-gemini-for-pr-review`: Delegate a GitHub PR code review to Gemini and post the review to GitHub. (requires `agy`)
 - `ask-gemini-for-comment-audit`: Delegates code comment, documentation, and commit message audits to Gemini 3.8 Flash (Medium) via the Antigravity CLI (agy), enforcing the comment-and-documentation-quality skill. (requires `agy`)
 - `ask-gemini-for-deslop-review`: Delegates article and technical documentation deslop reviews and rewrites to Gemini 3.8 Flash (Medium) via the Antigravity CLI (agy), enforcing the deslop-articles skill. (requires `agy`)
 - `ask-gemini-mcp`: Fallback for `ask-gemini` when the `agy` CLI is not installed, as in cloud sessions. Asks Gemini one-shot questions through the `ask_gemini` MCP tools (sync, or `ask_gemini_async` for slow models) with all context pasted into the prompt.
 - `ask-codex`: Delegate a question or coding task to local Codex when an independent perspective is requested or useful. (requires `codex`)
-- `ask-codex-for-review`: Delegates code review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-review-and-quality skill. (requires `codex`)
-- `ask-codex-for-dual-review`: Delegates a combined code and comment review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-and-comment-quality aggregate for local targets without GitHub posting. (requires `codex`)
-- `ask-codex-for-pr-review`: Delegate a GitHub PR code review to local Codex, with posting when authorized. (requires `codex`)
-- `ask-codex-for-dual-pr-review`: Delegates a combined GitHub PR code and comment review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-and-comment-quality aggregate and posting one structured review to GitHub. (requires `codex`)
+- `ask-codex-for-review`: Delegates local code review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-review-and-quality and code-structure skills. (requires `codex`)
+- `ask-codex-for-pr-review`: Delegate a GitHub PR code review to local Codex and post the review to GitHub. (requires `codex`)
 - `ask-codex-for-comment-audit`: Delegates code comment, documentation, and commit message audits to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the comment-and-documentation-quality skill without changing code. (requires `codex`)
 - `ask-codex-mcp`: Fallback for `ask-codex` when the `codex` CLI is not installed, as in cloud sessions. Asks Codex/GPT one-shot questions through the dpn `ask-codex_ask_codex` MCP tool with all context pasted into the prompt.
 - `pr-review-delivery`: Deliver a list of PR review findings as one GitHub COMMENT review: levels, anchoring, summary and verdict, re-reviews.
@@ -62,12 +58,15 @@ npx skills add dvcrn/skills
 - `git-commit-quality`: MUST be used whenever writing, amending, squashing, or auditing any Git commit message. Enforces subject-only defaults, bans AI attribution, co-author trailers other than David Mohl, and development diaries.
 - `github-comment-quality`: MUST be used whenever writing or replying to anything on GitHub - issues, pull requests, discussions, review threads. Enforces technical brevity, bans AI execution diaries, report bloat, bot watermarks, and em dashes.
 - `comment-and-documentation-quality`: Standards and quality gates for code comments, JSDoc/docstrings, technical documentation, and git commit messages.
-- `code-and-comment-quality`: Aggregate review standard that combines the code review axes with the comment, documentation, and commit message audit into a single pass.
-- `necessity-and-maintainability`: Judge whether a change should exist and whether it leaves the repository easier to maintain, including cognitive load, structure, and test value.
+- `code-and-comment-quality`: Aggregate review standard that combines the code review and structure axes with the comment, documentation, and commit message audit into a single pass.
+- `necessity-and-maintainability`: Judge whether a change should exist, and apply code-structure and test-quality for how its code and tests are organized.
+- `code-review-and-quality`: Review a change for correctness, security, and performance.
+- `code-structure`: Rules for where code goes and how it is shaped so humans can follow it - layer separation, package ownership, file growth, function shape, helper granularity.
+- `test-quality`: Rules for writing and reviewing tests - few readable tests that each protect a behavior, shared test setup, real-dependency E2E tests over mock stacks, and no filler tests.
 
 ### Elixir & Phoenix
 
-- `adapter-pattern`: Define Elixir adapters for app-owned external-service boundaries and Mox-backed tests.
+- `elixir-adapter-pattern`: Define Elixir adapters for app-owned external-service boundaries and Mox-backed tests.
 - `install-newrelic-elixir`: Install, upgrade, configure, provision, or troubleshoot New Relic APM and logs for Elixir and Phoenix applications, including NerdGraph keys, runtime secrets, logs in context, release metadata, and deployment markers.
 - `install-posthog-elixir`: Install, update, or troubleshoot PostHog analytics in Elixir and Phoenix applications.
 - `install-sentry-elixir`: Install, update, or troubleshoot Sentry error monitoring in Elixir and Phoenix applications.
@@ -98,15 +97,5 @@ npx skills add dvcrn/skills
 - `memrise`: Operate the Memrise CLI for community courses, including authentication setup, course/level/word lookup, pool searches, and adding items. (requires `memrise`)
 - `tripit`: Operate and validate the TripIt CLI for trip and itinerary workflows, including CRUD operations for trips, hotels, flights, transport, activities, and document attachments. (requires `tripit`)
 - `wework`: Operate the WeWork CLI for workspace booking workflows, including location lookup, desk availability checks, booking creation, booking listing, and calendar export. (requires `wework`)
-
-### External Dependencies
-
-Some skills load skills from other repositories. Install these alongside this repo.
-
-- `code-review-and-quality` from `addyosmani/agent-skills`, used by `ask-codex-for-dual-pr-review`, `ask-codex-for-dual-review`, `ask-codex-for-pr-review`, `ask-codex-for-review`, `ask-gemini-for-dual-pr-review`, `ask-gemini-for-dual-review`, `ask-gemini-for-pr-review`, `ask-gemini-for-review`, `code-and-comment-quality`:
-
-  ```bash
-  npx skills add addyosmani/agent-skills -g --skill code-review-and-quality
-  ```
 
 <!-- END GENERATED SKILLS -->

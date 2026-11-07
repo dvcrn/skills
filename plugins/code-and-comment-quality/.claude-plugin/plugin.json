@@ -1,6 +1,6 @@
 {
   "name": "code-and-comment-quality",
-  "description": "Aggregate review standard that combines the code review axes with the comment, documentation, and commit message audit into a single pass.",
+  "description": "Aggregate review standard that combines the code review and structure axes with the comment, documentation, and commit message audit into a single pass.",
   "version": "1.0.0",
   "author": {
     "name": "David Mohl",

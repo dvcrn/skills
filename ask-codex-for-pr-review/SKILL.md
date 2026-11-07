@@ -1,65 +1,57 @@
 ---
 name: ask-codex-for-pr-review
-description: Delegate a GitHub PR code review to local Codex, with posting when authorized.
+description: Delegate a GitHub PR code review to local Codex and post the review to GitHub. Use ask-codex-for-review for local-only reviews without posting.
 ---
 
 # Ask Codex for PR Review
 
-Use local Codex for a five-axis PR review. For local changes without GitHub delivery, use `ask-codex-for-review`; for code plus prose use `ask-codex-for-dual-pr-review`.
+Delegate a GitHub pull request review to OpenAI Codex (`gpt-5.6-sol`, high reasoning effort) via `codex exec`, enforcing `code-review-and-quality` and `code-structure` (in review mode) to find defects, and `pr-review-delivery` (including its `references/github-delivery.md`, plus `references/re-review.md` when re-reviewing) to filter, label, and post the review directly to GitHub.
 
+- Posting authority follows `pr-review-delivery`'s output rule; for local-only requests without GitHub posting, use `ask-codex-for-review`.
+- To also audit comments, documentation, and commit messages in the same pass, include `code-and-comment-quality` in the prompt.
 
-**PR target:** Require a PR number, `owner/repo#number`, or URL supplied by the user, including an unambiguous prior mention. Do not infer it from the current branch or choose an open PR. If no target was provided, ask.
+## Step 0: Resolve the PR Target
 
-**Output rule:** When the user explicitly invokes this skill's GitHub posting workflow, that request authorizes one `COMMENT` review. Do not ask again. Post it, then report the review URL and a one-paragraph summary. Automatic skill selection or a general request to inspect a PR does not authorize posting; honor explicit local-only or read-only requests. Pass the established delivery choice to any delegate.
+Resolve the target per `pr-review-delivery`, then confirm the repository, number, and head SHA before delegating:
 
-## Target and standard
+```bash
+gh pr view NUMBER --repo OWNER/REPO --json number,title,state,headRefOid,baseRefName
+```
 
-Resolve the PR from an explicit number, URL, prior conversation, or an explicit PR named earlier in the conversation. Confirm owner, repository, number, and head SHA with `gh pr view`. Ask only if the target remains ambiguous. A general inspection request does not by itself authorize posting.
+## Boundaries
 
-Apply `code-review-and-quality` to find defects and `pr-review-delivery` to label, filter and deliver them. Locate each in the session catalog, at `~/.agents/skills/<name>/SKILL.md`, or in a known repository skill directory. If unavailable after bounded lookup, report the paths checked. Do not invent a substitute or silently omit the standard. Continue without it only if the user authorizes that omission.
-
-## Boundaries and delivery
-
-- Use `-s read-only`, `-C <repo>`, `--ephemeral`, and a unique output file.
-- Do not modify repository files, inspect secrets or unrelated paths, or use dangerous sandbox bypass flags.
-- Limit network access to the target PR through `gh` or GitHub API.
-- For authorized posting, submit one `COMMENT` review, anchor inline comments to the reviewed diff, and put other findings in the summary. Never submit `APPROVE` or `REQUEST_CHANGES`.
-- Follow `pr-review-delivery`'s severity and attribution rules, subject to repository/user communication policy. Include available `humanizer` wording guidance without blocking on its absence.
-- Verify the returned review ID on the intended PR. If execution times out, check whether it already posted before retrying.
-
-## Model and failure handling
-
-Default to `gpt-5.6-sol` with high effort; honor the user's model/effort choice. For execution failures with no posted review, retry once unchanged, shorten an unusually long prompt, then lower effort from high to medium to low; if Sol fails at low, try `gpt-5.6-terra` at low once and stop, and report the actual model and effort. Never retry a substantive review merely to obtain a different verdict.
+- **Read-only local repo:** Always run with `-s read-only`, `-c web_search="disabled"`, `-C "$REPO"`, `--ephemeral`, and a unique `-o` file from `mktemp`. Do not modify local files or inspect secrets, credentials, binaries, or unrelated paths.
+- **Scoped network:** Network access is limited to `gh` and the GitHub API for the target PR. If the `-s read-only` sandbox blocks `gh` from reaching GitHub, fetch the PR beforehand and post Codex's returned review payload from the caller following `pr-review-delivery`'s `references/github-delivery.md`.
 
 ## Canonical Invocation
-
-Use this envelope for invoking Codex:
 
 ```bash
 OUT="$(mktemp -t codex-pr-review.XXXXXX)"
 REPO="/path/to/repo"
-REVIEW_STANDARD="${HOME}/.agents/skills/code-review-and-quality/SKILL.md"
-DELIVERY_STANDARD="${HOME}/.agents/skills/pr-review-delivery/SKILL.md"
-PR="123" # Must be resolved: bare number, owner/repo#123, or URL
-
-# Fail closed if standards are missing
-for f in "$REVIEW_STANDARD" "$DELIVERY_STANDARD"; do
-  if [ ! -f "$f" ]; then
-    echo "required skill not found at $f" >&2
-    exit 1
-  fi
-done
+PR="OWNER/REPO#NUMBER"
+HEAD_SHA="<verified-head-sha>"
 
 if codex exec \
   -m gpt-5.6-sol \
   -c model_reasoning_effort="high" \
+  -c web_search="disabled" \
   -C "$REPO" \
-  --add-dir "${HOME}/.agents/skills/code-review-and-quality" \
-  --add-dir "${HOME}/.agents/skills/pr-review-delivery" \
   -s read-only \
   --ephemeral \
   -o "$OUT" \
-  "Review only; do not modify repository files or inspect secrets or unrelated paths. Network access is limited to gh and the GitHub API for $PR. Apply code-review-and-quality from $REVIEW_STANDARD to find defects and pr-review-delivery from $DELIVERY_STANDARD to label, filter and deliver them. If a standard is unavailable, report the missing file rather than inventing its contents. Review the target and necessary context. Post one COMMENT review only when posting is authorized; otherwise return the findings locally. Use pr-review-delivery's severity and diff-anchoring rules. If posting was authorized and succeeded, verify the submitted review by its returned ID and report its URL; otherwise return local findings."
+  "This is a GitHub PR review task for $PR at head $HEAD_SHA.
+Do not modify local repository files or run mutating local commands.
+Do not inspect secrets, credentials, binaries, or unrelated paths.
+Network access is permitted ONLY for gh and GitHub API calls for $PR.
+
+Load and apply these skills by name:
+- code-review-and-quality
+- code-structure (in review mode)
+- pr-review-delivery (and its references/github-delivery.md; also read references/re-review.md if re-reviewing)
+If any of these skills is not available, immediately STOP and report the missing skill name. Do not invent a substitute standard or post a review.
+
+Fetch PR metadata and diff for $PR at $HEAD_SHA, read changed files at $HEAD_SHA and necessary surrounding context, and review the PR.
+Then filter, label, and post one COMMENT review pinned to commit_id $HEAD_SHA following pr-review-delivery and its references/github-delivery.md. Verify the submitted review by its returned review ID and report the review URL and a one-paragraph summary."
 then
   if [ ! -s "$OUT" ]; then
     echo "codex returned no review output" >&2
@@ -76,6 +68,6 @@ else
 fi
 ```
 
-Set `REVIEW_STANDARD`, `DELIVERY_STANDARD` and their `--add-dir` entries to the resolved locations, and make posting authorization explicit in the prompt. Read output only after successful exit and treat missing output as failure.
+## Retries and Failure Handling
 
-For a delegate that cannot read the files, use [injected-standard.md](references/injected-standard.md).
+Before retrying after a timeout or execution error, check `gh api repos/OWNER/REPO/pulls/NUMBER/reviews` to confirm whether a review was already posted for `$HEAD_SHA`. Never retry if the review already landed. When no review was posted, follow the failure fallback ladder in `ask-codex`.

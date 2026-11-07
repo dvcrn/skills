@@ -10,11 +10,6 @@
   },
   "plugins": [
     {
-      "name": "adapter-pattern",
-      "description": "Define Elixir adapters for app-owned external-service boundaries and Mox-backed tests.",
-      "source": "./plugins/adapter-pattern"
-    },
-    {
       "name": "address-pr-review-comments",
       "description": "Fix GitHub PR review feedback and manage its threads when requested.",
       "source": "./plugins/address-pr-review-comments"
@@ -30,23 +25,13 @@
       "source": "./plugins/ask-codex-for-comment-audit"
     },
     {
-      "name": "ask-codex-for-dual-pr-review",
-      "description": "Delegates a combined GitHub PR code and comment review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-and-comment-quality aggregate and posting one structured review to GitHub.",
-      "source": "./plugins/ask-codex-for-dual-pr-review"
-    },
-    {
-      "name": "ask-codex-for-dual-review",
-      "description": "Delegates a combined code and comment review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-and-comment-quality aggregate for local targets without GitHub posting.",
-      "source": "./plugins/ask-codex-for-dual-review"
-    },
-    {
       "name": "ask-codex-for-pr-review",
-      "description": "Delegate a GitHub PR code review to local Codex, with posting when authorized.",
+      "description": "Delegate a GitHub PR code review to local Codex and post the review to GitHub.",
       "source": "./plugins/ask-codex-for-pr-review"
     },
     {
       "name": "ask-codex-for-review",
-      "description": "Delegates code review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-review-and-quality skill.",
+      "description": "Delegates local code review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-review-and-quality and code-structure skills.",
       "source": "./plugins/ask-codex-for-review"
     },
     {
@@ -70,23 +55,13 @@
       "source": "./plugins/ask-gemini-for-deslop-review"
     },
     {
-      "name": "ask-gemini-for-dual-pr-review",
-      "description": "Delegate a GitHub PR code and documentation review to Gemini, with posting when authorized.",
-      "source": "./plugins/ask-gemini-for-dual-pr-review"
-    },
-    {
-      "name": "ask-gemini-for-dual-review",
-      "description": "Delegate a local code and documentation review to Gemini without GitHub posting.",
-      "source": "./plugins/ask-gemini-for-dual-review"
-    },
-    {
       "name": "ask-gemini-for-pr-review",
-      "description": "Delegate a GitHub PR code review to Gemini, with posting when authorized.",
+      "description": "Delegate a GitHub PR code review to Gemini and post the review to GitHub.",
       "source": "./plugins/ask-gemini-for-pr-review"
     },
     {
       "name": "ask-gemini-for-review",
-      "description": "Delegate a Gemini code review of local files, changes, or checked-out PRs without posting.",
+      "description": "Delegate a Gemini code review of local files, working tree changes, branches, commits, or checked-out PRs without posting to GitHub.",
       "source": "./plugins/ask-gemini-for-review"
     },
     {
@@ -116,8 +91,18 @@
     },
     {
       "name": "code-and-comment-quality",
-      "description": "Aggregate review standard that combines the code review axes with the comment, documentation, and commit message audit into a single pass.",
+      "description": "Aggregate review standard that combines the code review and structure axes with the comment, documentation, and commit message audit into a single pass.",
       "source": "./plugins/code-and-comment-quality"
+    },
+    {
+      "name": "code-review-and-quality",
+      "description": "Review a change for correctness, security, and performance.",
+      "source": "./plugins/code-review-and-quality"
+    },
+    {
+      "name": "code-structure",
+      "description": "Rules for where code goes and how it is shaped so humans can follow it - layer separation, package ownership, file growth, function shape, helper granularity.",
+      "source": "./plugins/code-structure"
     },
     {
       "name": "codex-cloud",
@@ -133,6 +118,11 @@
       "name": "deslop-articles",
       "description": "Use whenever creating, editing, or reviewing any public-facing article, guide, tutorial, or blog post. Eliminates AI padding, synthetic tropes, defensive bloat, and misplaced plumbing trivia while preserving technical depth, concrete constraints, tested commands, and authentic human voice.",
       "source": "./plugins/deslop-articles"
+    },
+    {
+      "name": "elixir-adapter-pattern",
+      "description": "Define Elixir adapters for app-owned external-service boundaries and Mox-backed tests.",
+      "source": "./plugins/elixir-adapter-pattern"
     },
     {
       "name": "encrypt-for-cloud-agent",
@@ -185,11 +175,6 @@
       "source": "./plugins/install-sentry-elixir"
     },
     {
-      "name": "jules",
-      "description": "Interact with Jules, Google's asynchronous coding agent.",
-      "source": "./plugins/jules"
-    },
-    {
       "name": "litestream-tigris-flyio",
       "description": "Set up or troubleshoot SQLite replication and restores with Litestream and Tigris on Fly.io.",
       "source": "./plugins/litestream-tigris-flyio"
@@ -211,7 +196,7 @@
     },
     {
       "name": "necessity-and-maintainability",
-      "description": "Judge whether a change should exist and whether it leaves the repository easier to maintain, including cognitive load, structure, and test value.",
+      "description": "Judge whether a change should exist, and apply code-structure and test-quality for how its code and tests are organized.",
       "source": "./plugins/necessity-and-maintainability"
     },
     {
@@ -295,6 +280,11 @@
       "source": "./plugins/swiftui-stores"
     },
     {
+      "name": "test-quality",
+      "description": "Rules for writing and reviewing tests - few readable tests that each protect a behavior, shared test setup, real-dependency E2E tests over mock stacks, and no filler tests.",
+      "source": "./plugins/test-quality"
+    },
+    {
       "name": "triage-pr-review-comments",
       "description": "Analyzes GitHub PR review comments, investigates the relevant codebase context, and provides a verdict on whether each comment should be fixed or ignored. Does not make code changes.",
       "source": "./plugins/triage-pr-review-comments"
@@ -308,6 +298,11 @@
       "name": "wework",
       "description": "Operate the WeWork CLI for workspace booking workflows, including location lookup, desk availability checks, booking creation, booking listing, and calendar export",
       "source": "./plugins/wework"
+    },
+    {
+      "name": "writing-skills",
+      "description": "Rules for writing and editing agent skills (SKILL.md files and their references) so they stay short, single-purpose, and change agent behavior.",
+      "source": "./plugins/writing-skills"
     }
   ]
 }

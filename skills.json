@@ -19,7 +19,6 @@
         "generate-stripe-api-keys",
         "mise-tasks",
         "gh",
-        "jules",
         "litestream-tigris-flyio",
         "codex-cloud",
         "astra-ify",
@@ -48,17 +47,13 @@
       "skills": [
         "ask-gemini",
         "ask-gemini-for-review",
-        "ask-gemini-for-dual-review",
         "ask-gemini-for-pr-review",
-        "ask-gemini-for-dual-pr-review",
         "ask-gemini-for-comment-audit",
         "ask-gemini-for-deslop-review",
         "ask-gemini-mcp",
         "ask-codex",
         "ask-codex-for-review",
-        "ask-codex-for-dual-review",
         "ask-codex-for-pr-review",
-        "ask-codex-for-dual-pr-review",
         "ask-codex-for-comment-audit",
         "ask-codex-mcp",
         "pr-review-delivery",
@@ -79,7 +74,7 @@
     {
       "title": "Elixir & Phoenix",
       "skills": [
-        "adapter-pattern",
+        "elixir-adapter-pattern",
         "install-newrelic-elixir",
         "install-posthog-elixir",
         "install-sentry-elixir",
@@ -128,12 +123,6 @@
     "ask-codex-for-comment-audit": [
       "codex"
     ],
-    "ask-codex-for-dual-pr-review": [
-      "codex"
-    ],
-    "ask-codex-for-dual-review": [
-      "codex"
-    ],
     "ask-codex-for-pr-review": [
       "codex"
     ],
@@ -147,12 +136,6 @@
       "agy"
     ],
     "ask-gemini-for-deslop-review": [
-      "agy"
-    ],
-    "ask-gemini-for-dual-pr-review": [
-      "agy"
-    ],
-    "ask-gemini-for-dual-review": [
       "agy"
     ],
     "ask-gemini-for-pr-review": [
@@ -178,9 +161,6 @@
     ],
     "go-mcp-server-conventions": [
       "fnox"
-    ],
-    "jules": [
-      "jules"
     ],
     "memrise": [
       "memrise"

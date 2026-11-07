@@ -15,7 +15,7 @@ Each invocation starts a separate session. Include the goal, necessary context a
 
 Preserve existing work. Implementation authorization does not grant destructive Git/filesystem operations, commits, pushes, or unrelated dependency changes. Carry forward authorization already established by the user and continue authorized work through verification.
 
-When requiring another skill, resolve its file from the session catalog, canonical location, or known repository skill directory. If genuinely unavailable, report the skill and attempted paths; do not invent its standard or claim a complete review.
+Codex already loads installed skills, so refer to a skill by name in the prompt and do not pass its directory with `--add-dir` or reference skill file paths. Every such prompt must tell Codex to stop and report the missing skill by name if it is not available; do not invent its standard or claim a complete review.
 
 ## Invocation and access
 
