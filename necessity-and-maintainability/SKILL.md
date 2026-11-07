@@ -21,7 +21,7 @@ Evaluate changes across three gates in order, inspecting the surrounding reposit
 
 1. **Gate 1: Product & Project Necessity** (`Yes` / `No` / `Scope Down` / `Unknown`)
 2. **Gate 2: Holistic Long-Term Maintainability** (`Better` / `Worse`)
-3. **Gate 3: Test Value & Test Architecture** (`High-Signal` / `Needs Work`)
+3. **Gate 3: Test Value & Test Architecture** (`High-Signal` / `Needs Work` / `n/a`)
 
 **Short-circuit rule:** If Gate 1 is `No`, emit the header, scorecard, `REJECT` verdict, and Section 1 only (marking unreached gates as `n/a`); do not review maintainability or tests for code that should not be merged. If Gate 1 is `Scope Down`, evaluate Gates 2 and 3 only on the core scope that survives. If Gate 1 is `Unknown`, ask for product context before evaluating Gates 2 and 3.
 
@@ -124,6 +124,14 @@ Audit tests for both missing critical coverage and low-signal bloat:
 - **When no shared foundation exists:** If the repository has no central bootstrap yet, require extracting shared setup to a central helper once the same setup pattern appears three or more times across tests.
 - **No scattered test file sprawl:** Keep test files placed and named consistently with the rest of the repository.
 
+### Gate 3 Assessment
+
+State one of:
+
+- `High-Signal`: Critical paths and failure modes are covered with readable, high-value tests built on shared foundations.
+- `Needs Work`: Behavioral changes lack expected tests, or the added tests introduce low-signal bloat or ad-hoc setup that reinvents existing helpers.
+- `n/a`: The repository has no test harness and none is expected for this scope, or the change touches only non-testable surface area (documentation, configuration, provisioning scripts, CI workflows, static assets). Do not invent artificial tests when the project has no test suite.
+
 ---
 
 ## Verdict Mapping & Delivery
@@ -132,7 +140,7 @@ Map gate outcomes to the top-level verdict deterministically:
 
 - `REJECT`: Gate 1 is `No`.
 - `REWORK REQUIRED`: Gate 1 is `Scope Down` or `Unknown`, Gate 2 is `Worse`, or Gate 3 is `Needs Work`.
-- `MERGE`: Gate 1 is `Yes`, Gate 2 is `Better`, and Gate 3 is `High-Signal`.
+- `MERGE`: Gate 1 is `Yes`, Gate 2 is `Better`, and Gate 3 is `High-Signal` or `n/a`.
 
 Label individual findings with `**[Critical / Required / Optional / Nit]**`. When posting as a PR review, place the review header, gate scorecard, and verdict in the review summary and emit change-caused findings anchored to the relevant diff lines.
 
@@ -140,12 +148,12 @@ Label individual findings with `**[Critical / Required / Optional / Nit]**`. Whe
 
 Always begin the review output with the `## Necessity & Maintainability Review` header, followed by the gate scorecard and top-level verdict.
 
-When all three gates pass with no findings, emit the header, scorecard, verdict, and a concise summary paragraph:
+When all gates pass (with Gate 3 as `High-Signal` or `n/a`) and there are no findings, emit the header, scorecard, verdict, and a concise summary paragraph:
 
 ```markdown
 ## Necessity & Maintainability Review
 
-**Gates:** Necessity: Yes · Trajectory: Better · Tests: High-Signal
+**Gates:** Necessity: Yes · Trajectory: Better · Tests: [High-Signal / n/a]
 
 **Verdict: MERGE**
 
@@ -175,7 +183,7 @@ Otherwise, use this structure (omitting Sections 2 and 3 when Gate 1 is `No`, ma
 
 ### 3. Test Quality & Setup
 
-- **Assessment:** [High-Signal / Needs Work]
+- **Assessment:** [High-Signal / Needs Work / n/a]
 - **Findings:**
   - **[Critical / Required / Optional / Nit]** `path/to/test:line`: [Missing critical-path test, low-value tests to consolidate/remove, or ad-hoc setup to migrate to the central test foundation]
 ```
