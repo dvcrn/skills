@@ -25,7 +25,8 @@
         "astra-ify",
         "setup-github-actions",
         "obsidian-ai-vault",
-        "obsidian-note-organizer"
+        "obsidian-note-organizer",
+        "writing-skills"
       ]
     },
     {
@@ -69,7 +70,10 @@
         "github-comment-quality",
         "comment-and-documentation-quality",
         "code-and-comment-quality",
-        "necessity-and-maintainability"
+        "necessity-and-maintainability",
+        "code-review-and-quality",
+        "code-structure",
+        "test-quality"
       ]
     },
     {
@@ -193,8 +197,5 @@
     "wework": [
       "wework"
     ]
-  },
-  "dependencies": {
-    "code-review-and-quality": "addyosmani/agent-skills"
   }
 }

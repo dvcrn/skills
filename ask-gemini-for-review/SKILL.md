@@ -5,7 +5,7 @@ description: Delegate a Gemini code review of local files, changes, or checked-o
 
 # Ask Gemini for Review
 
-Delegate a comprehensive five-axis code review to Gemini 3.8 Flash (High) using the `agy` CLI, enforcing the standards in `code-review-and-quality`.
+Delegate a comprehensive five-axis code review to Gemini 3.8 Flash (High) using the `agy` CLI, enforcing the standards in `code-review-and-quality` and `code-structure`.
 
 ## When to Use
 
@@ -18,9 +18,9 @@ Delegate a comprehensive five-axis code review to Gemini 3.8 Flash (High) using 
 - **Review only:** Gemini must not modify code, edit files, or execute mutating commands.
 - **No general web search:** Restrict review to local repository context and loaded standards.
 - **Read scope:** Do not inspect secrets, credentials, `.env` files, private keys, binaries, or unrelated paths.
-- **Skills by name:** agy loads installed skills itself. Name `code-review-and-quality` in the prompt; do not pass skill directories with `--add-dir`.
-- **Report missing skills:** The prompt must tell Gemini to stop and reply to the user if the skill is not available. Do not invent a substitute standard.
-- `code-review-and-quality` lives outside this repo. When it is missing, give the user the install command: `npx skills add addyosmani/agent-skills -g --skill code-review-and-quality`.
+- **Skills by name:** agy loads installed skills itself. Name `code-review-and-quality` and `code-structure` in the prompt; do not pass skill directories with `--add-dir`.
+- **Report missing skills:** The prompt must tell Gemini to stop and reply to the user if either skill is not available. Do not invent a substitute standard.
+- When a skill is missing, give the user the install command: `npx skills add dvcrn/skills -g --skill <name>`.
 
 ## Canonical Invocation
 
@@ -36,11 +36,11 @@ Do not make code changes, edit files, or run mutating commands.
 Do not search the web. Do not inspect secrets, credentials, or unrelated paths.
 Read only the review target, the standard, and necessary repository context.
 
-Use the code-review-and-quality skill. If the skill 'code-review-and-quality' is not available, stop and reply to the user that it is missing. Do not invent a substitute standard.
+Use the code-review-and-quality skill, and the code-structure skill in review mode. If the skill 'code-review-and-quality' or 'code-structure' is not available, stop and reply to the user that it is missing. Do not invent a substitute standard.
 
 Target: <target files, working tree changes, or branch comparison>
 
-Review the target code against the five axes (Correctness, Readability, Architecture, Security, Performance).
+Review the target code against the five axes: Correctness, Security, Performance (code-review-and-quality), and Readability, Architecture (code-structure).
 Start each finding with High: (merging breaks something), Medium: (wrong behavior or a regression that doesn't block merge) or Low: (an applyable suggestion replacing lines in the diff plus one sentence, at most three). Flag only what the diff gets wrong or can clean up in place; skip design alternatives, scope expansions and pre-existing problems."
 ```
 

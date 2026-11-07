@@ -1,5 +1,5 @@
 ---
-name: adapter-pattern
+name: elixir-adapter-pattern
 description: Define Elixir adapters for app-owned external-service boundaries and Mox-backed tests.
 ---
 

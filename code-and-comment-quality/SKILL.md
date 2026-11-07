@@ -1,22 +1,23 @@
 ---
 name: code-and-comment-quality
-description: Aggregate review standard that combines the code review axes with the comment, documentation, and commit message audit into a single pass. Use when a review should judge both the code and the prose written around it, or when delegating a combined review to another model.
+description: Aggregate review standard that combines the code review and structure axes with the comment, documentation, and commit message audit into a single pass. Use when a review should judge both the code and the prose written around it, or when delegating a combined review to another model.
 ---
 
 # Code and Comment Quality
 
 An aggregate standard. It defines no rules of its own: it names the skills that
-carry them and states how to run both in one pass. Load this when a review must
+carry them and states how to run them in one pass. Load this when a review must
 cover the code *and* the prose written around it, rather than running two
 separate reviews.
 
 ## Component Skills
 
-Load both:
+Load all three:
 
 | Skill | Covers |
 | --- | --- |
-| `code-review-and-quality` | The five review axes: Correctness, Readability, Architecture, Security, Performance |
+| `code-review-and-quality` | Correctness, security, performance |
+| `code-structure` (review mode) | Layering, placement, file and function shape, helpers, expressions |
 | `comment-and-documentation-quality` | Code comments, docstrings, READMEs, and commit messages: AI fluff, over-explanation, ghost commentary, tautologies, em dashes |
 
 For a GitHub pull request, also load `pr-review-delivery`, which labels,
@@ -30,12 +31,12 @@ This aggregate is only as good as the skills it loads, so a missing component is
 a reportable condition, never something to silently work around.
 
 - Before reviewing, confirm each component skill resolves.
-- **If a component skill cannot be found, STOP and tell the user exactly which skill is missing and where it was looked for.** For `code-review-and-quality`, include the install command `npx skills add addyosmani/agent-skills -g --skill code-review-and-quality`. Do not fall back to your own idea of the standard, do not guess at its contents, and do not continue with the remaining skill as though the review were complete.
+- **If a component skill cannot be found, STOP and tell the user exactly which skill is missing and where it was looked for.** Include the install command `npx skills add dvcrn/skills -g --skill <name>`. Do not fall back to your own idea of the standard, do not guess at its contents, and do not continue with the remaining skill as though the review were complete.
 - If a skill is missing but the user has already been told and asks you to proceed anyway, run the review with the skills that did resolve and state plainly in the output which standard was not applied.
 
-## Running Both in One Pass
+## Running All in One Pass
 
-Review the target once, judging every change against both standards, and emit a
+Review the target once, judging every change against all three standards, and emit a
 single report rather than two.
 
 - Label every finding with the review skill's severity labels, whatever its source. For a pull request, use the High, Medium and Low levels from `pr-review-delivery`.
@@ -46,8 +47,8 @@ single report rather than two.
 ## Enforced Axes
 
 1. **Correctness**: Bugs, edge cases, error handling, test validity.
-2. **Readability & Simplicity**: Naming, complexity, dead code artifacts.
-3. **Architecture**: Module boundaries, appropriate abstractions, coupling.
+2. **Readability & Simplicity**: Function shape, helpers, naming, expressions (`code-structure` R4 to R6).
+3. **Architecture**: Layering, placement, file growth, abstractions (`code-structure` R1 to R3, R5).
 4. **Security**: Vulnerabilities, input validation, external data handling.
 5. **Performance**: Bottlenecks, N+1 query patterns, memory usage.
 6. **Comments & Documentation**: Signal-free commentary, restated code, ghost commentary about what changed, narrative fluff, and the punctuation and tone rules from `comment-and-documentation-quality`.

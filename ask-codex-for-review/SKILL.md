@@ -1,11 +1,11 @@
 ---
 name: ask-codex-for-review
-description: Delegates code review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-review-and-quality skill. Use for local files, changes, branches, commits, or checked-out PRs that need a five-axis review.
+description: Delegates code review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-review-and-quality and code-structure skills. Use for local files, changes, branches, commits, or checked-out PRs that need a five-axis review.
 ---
 
 # Ask Codex for Review
 
-Delegate a comprehensive five-axis code review to OpenAI Codex (`gpt-5.6-sol`, high reasoning effort) using `codex exec`, enforcing `code-review-and-quality`.
+Delegate a comprehensive five-axis code review to OpenAI Codex (`gpt-5.6-sol`, high reasoning effort) using `codex exec`, enforcing `code-review-and-quality` and `code-structure`.
 
 ## When to Use
 
@@ -21,14 +21,15 @@ Delegate a comprehensive five-axis code review to OpenAI Codex (`gpt-5.6-sol`, h
 - **Fail closed:** Verify the standard exists before launch:
 
 ```bash
-STANDARDS="${HOME}/.agents/skills/code-review-and-quality/SKILL.md"
-if [ ! -f "$STANDARDS" ]; then
-  echo "code-review-and-quality skill not found at $STANDARDS; install it with: npx skills add addyosmani/agent-skills -g --skill code-review-and-quality" >&2
-  exit 1
-fi
+for SKILL in code-review-and-quality code-structure; do
+  if [ ! -f "${HOME}/.agents/skills/${SKILL}/SKILL.md" ]; then
+    echo "${SKILL} skill not found at ${HOME}/.agents/skills/${SKILL}; install it with: npx skills add dvcrn/skills -g --skill ${SKILL}" >&2
+    exit 1
+  fi
+done
 ```
 
-- **Report missing skills:** The prompt must instruct Codex to stop immediately and report missing paths if `code-review-and-quality` cannot be resolved. Do not invent a substitute standard.
+- **Report missing skills:** The prompt must instruct Codex to stop immediately and report missing paths if `code-review-and-quality` or `code-structure` cannot be resolved. Do not invent a substitute standard.
 - **Local preparation:** Codex runs offline in read-only mode. Target branches or PRs must be checked out or fetched locally beforehand.
 
 ## Canonical Invocation
@@ -36,12 +37,12 @@ fi
 ```bash
 OUT="$(mktemp -t codex-review.XXXXXX)"
 REPO="/path/to/repo"
-STANDARDS="${HOME}/.agents/skills/code-review-and-quality/SKILL.md"
-
-if [ ! -f "$STANDARDS" ]; then
-  echo "code-review-and-quality skill not found at $STANDARDS; install it with: npx skills add addyosmani/agent-skills -g --skill code-review-and-quality" >&2
-  exit 1
-fi
+for SKILL in code-review-and-quality code-structure; do
+  if [ ! -f "${HOME}/.agents/skills/${SKILL}/SKILL.md" ]; then
+    echo "${SKILL} skill not found at ${HOME}/.agents/skills/${SKILL}; install it with: npx skills add dvcrn/skills -g --skill ${SKILL}" >&2
+    exit 1
+  fi
+done
 
 if codex exec \
   -m gpt-5.6-sol \
@@ -49,6 +50,7 @@ if codex exec \
   -c web_search="disabled" \
   -C "$REPO" \
   --add-dir "${HOME}/.agents/skills/code-review-and-quality" \
+  --add-dir "${HOME}/.agents/skills/code-structure" \
   -s read-only \
   --ephemeral \
   -o "$OUT" \
@@ -58,12 +60,12 @@ Do not access the network or search the web.
 Do not inspect secrets, credentials, binaries, or unrelated paths.
 Read only the review target, the standard, and necessary repository context.
 
-Use the code-review-and-quality skill.
-If the skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
+Use the code-review-and-quality skill, and the code-structure skill in review mode.
+If either skill is not available, immediately STOP and report that back with the skill name and path you tried. Do not invent a substitute standard.
 
 Target: <target files, working tree changes, or branch comparison>
 
-Review the target code against the five axes (Correctness, Readability, Architecture, Security, Performance).
+Review the target code against the five axes: Correctness, Security, Performance (code-review-and-quality), and Readability, Architecture (code-structure).
 Start each finding with High: (merging breaks something), Medium: (wrong behavior or a regression that doesn't block merge) or Low: (an applyable suggestion replacing lines in the diff plus one sentence, at most three). Flag only what the diff gets wrong or can clean up in place; skip design alternatives, scope expansions and pre-existing problems."
 then
   cat "$OUT"
