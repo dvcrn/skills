@@ -30,9 +30,8 @@ Mixing I/O with multi-branch business logic is a finding. Fix: extract the polic
 
 ### R3. Files
 
-- A file holds one concept. Several domain types with separate lifecycles in one file is a finding.
-- In a non-test file over 500 lines (or the repository's norm if smaller), don't add new top-level types or exported functions. Put them in a sibling file. Unexported helpers for functions already in the file are fine.
-- When a feature needs a split first, make the split its own behavior-preserving commit before the feature commit, on the same branch.
+- A file's name is its concept. A function or type that does another concept's work, such as queuing an email or creating an account inside `analytics.go`, is a finding. Move it to a file named after what it does, or rename the file.
+- When writing or reviewing, check every new call or type that crosses into another concept (such as a new `mail.`, `billing.`, or `accounts.` call) against the name of the file it was added to. An orchestrator file (`account.go`, `auth.go`) may call secondary concerns like analytics or mail; a file named after one concern (`analytics.go`) must only do that concern.
 
 ### R4. Functions
 

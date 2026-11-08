@@ -62,6 +62,50 @@ Better: the snapshot code passes its own backoff or wraps the call. `retry` stay
 
 ## R3. Files
 
+Bad: `analytics.go` holds `recordSignIn`, which creates the account, queues the welcome email, and sends the PostHog event.
+
+```go
+// analytics.go
+func (s *Server) recordSignIn(r *http.Request, id google.Identity, attribution map[string]string) string {
+	uid, created, err := s.cfg.Accounts.Ensure(r.Context(), id.Sub, profile, s.now())
+	if err != nil { ... }
+	e := analytics.Event{Name: analytics.UserLoggedIn, Sub: id.Sub, UserID: uid, ...}
+	if created {
+		e.Name = analytics.UserSignedUp
+		s.background(r, func(ctx context.Context) {
+			mail.Enqueue(ctx, s.cfg.Mail, s.log, mail.WelcomeMessage(id.Sub))
+		})
+	}
+	s.cfg.Analytics.Capture(r.Context(), e)
+	return uid
+}
+```
+
+Why: a reader looking for where accounts are created or where the welcome email is sent won't look in `analytics.go`. The mail call landed there only because `created` was already in scope.
+
+Better: `account.go` orchestrates `recordSignIn` and calls a pure `signInEvent` in `analytics.go`.
+
+```go
+// account.go
+func (s *Server) recordSignIn(r *http.Request, id google.Identity, attribution map[string]string) string {
+	now := s.now()
+	uid, created, err := s.cfg.Accounts.Ensure(r.Context(), id.Sub, profile, now)
+	if err != nil { ... }
+	if created {
+		s.background(r, func(ctx context.Context) {
+			mail.Enqueue(ctx, s.cfg.Mail, s.log, mail.WelcomeMessage(id.Sub))
+		})
+	}
+	s.cfg.Analytics.Capture(r.Context(), signInEvent(r, id, uid, created, attribution, now))
+	return uid
+}
+
+// analytics.go
+func signInEvent(r *http.Request, id google.Identity, uid string, created bool, attribution map[string]string, now time.Time) analytics.Event { ... }
+```
+
+Not a finding: `recordSignIn` in `account.go` calling `mail.Enqueue` and `Analytics.Capture` as side effects of creating an account.
+
 Bad: `provision.go` is 820 lines and the PR adds `type OrphanSweeper struct` with four methods at the bottom.
 
 Better: put them in `provision/orphan.go`. If the sweeper needs code that is tangled into `provision.go`, extract that code in a first commit that changes no behavior, then add the sweeper.
