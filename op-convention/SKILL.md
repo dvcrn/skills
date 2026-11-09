@@ -15,7 +15,7 @@ description: Conventions for storing development secrets in 1Password, covering 
 
 One item is one thing you create, rotate or revoke together. Each secret lives in exactly one item; never copy a value into a second item.
 
-Titles must say what the item is without opening it. Put any context the title cannot carry in the item's note: what it is for, who or what uses it, where it is deployed, its scopes. For example: `1Password service account "m2" (cloud-dev: read/write). Deployed to ~/.config/op/token by homeserver playbooks/common/1password.yml.`
+Titles must say what the item is without opening it. Put any context the title cannot carry in the item's note: what it is for, who or what uses it, where it is deployed, its scopes. For example: `1Password service account "m2" (Server Shared: read/write). Deployed to ~/.config/op/token by homeserver playbooks/common/1password.yml.`
 
 Read the title, notes, URLs and `hostname` first. If the service, purpose, project or environment is still unclear, ask the user before naming, tagging or moving the item, and write the answer into the note. Do not guess.
 
