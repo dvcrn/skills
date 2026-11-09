@@ -60,10 +60,12 @@ Set the commands:
 
 ```sh
 cf builds workers update <script-tag> \
-  --production-settings-build-command "npm install -g mise && bun run build" \
+  --production-settings-build-command "npm install -g mise@2026.11.4 && bun run build" \
   --production-settings-deploy-command "npx wrangler deploy"
 cf builds workers get <script-tag>
 ```
+
+mise is pinned because npm `mise@2026.11.5` shipped without its `@jdxcode/mise-linux-x64` package and fails to install. Unpin once a newer release has its platform packages on npm (`npm view @jdxcode/mise-linux-x64 version`).
 
 `get` should show the GitHub repo, branch `main`, and both commands. `npx wrangler deploy` runs `build.command` again in the same container, where mise is already installed.
 
