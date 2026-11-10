@@ -14,7 +14,7 @@ The issue: listing a large vault takes 4s on every request. The PR adds `interna
 
 Minimal version: a map with a fixed TTL in the vault package, cleared on write.
 
-Findings: `internal/cache/hook.go:12` Medium (N3): nothing calls the invalidation hook. Delete it. `config/config.go:40` Medium (N6): neither the config key nor the env var has a user who needs to change the TTL. Hard-code it. The hit-rate metric gets the same N6 finding unless the PR says who reads it.
+Findings: `internal/cache/lru.go:1` Medium (N6): a map with a fixed TTL in the vault package fixes the 4s listing. Move it there and delete `internal/cache/`. `internal/cache/hook.go:12` Medium (N3): nothing calls the invalidation hook. Delete it. `config/config.go:40` Medium (N6): neither the config key nor the env var has a user who needs to change the TTL. Hard-code it. The hit-rate metric gets the same N6 finding unless the PR says who reads it.
 
 ## Gate 1 verdicts
 
@@ -38,6 +38,8 @@ Better: keep the rule in `AGENTS.md` and link to it from `docs/testing.md`.
 
 Bad: a Node 22 project adds `node-fetch` for one HTTP call.
 
+Why: a second HTTP client adds install weight and upgrade work for something Node 22 ships.
+
 Better: use the global `fetch`.
 
 ## M3: prose
@@ -51,6 +53,8 @@ Better: "Upload retries live in the client. The worker never retries an upload."
 ## M4: stale consumers
 
 Bad: the PR removes the `--legacy-sync` flag, but `wrangler.jsonc` still sets `LEGACY_SYNC` and `docs/sync.md` still documents it.
+
+Why: the next reader assumes `LEGACY_SYNC` still does something, and the docs describe a flag that no longer exists.
 
 Better: `wrangler.jsonc:31` Medium (M4): `LEGACY_SYNC` has no reader after this PR. Remove it and the `docs/sync.md` section.
 
