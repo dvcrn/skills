@@ -40,7 +40,7 @@ Callers may hand findings over with `High:`, `Medium:` or `Low:` text prefixes; 
 
 When running `github-comment-quality` or `humanizer` over comment text, pass only the body below the badge. Never edit, reword or remove the badge line.
 
-Only flag what the diff as written gets wrong. A wrong outcome is High or Medium, never Low. Drop design alternatives, scope expansions, changes to files outside the diff, and anything that was equally true before the PR.
+Deliver every finding the caller hands over that the change causes or worsens, including scope cuts, unnecessary additions, and consumers the change breaks in files it doesn't touch. A wrong outcome is High or Medium, never Low. Drop design alternatives that don't shrink the change, requests to expand its scope, and anything that was equally true before the PR.
 
 Every High or Medium finding needs concrete evidence, a useful file/line reference, and an explanation of impact. Omit praise, restated code, and speculative issues. State a clean result concisely when no findings remain.
 
