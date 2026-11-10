@@ -13,7 +13,7 @@ Read [references/examples.md](references/examples.md) before reviewing.
 
 1. **Problem.** Read the README, AGENTS.md / CLAUDE.md, the PR description, the linked issue, and the comments on both. Write the problem the change solves in one sentence of your own. For a small fix such as a typo, the diff can state the problem. If you can't write it, Gate 1 is `Unjustified`; skip step 2.
 2. **Minimal version.** From the step 1 problem alone, before reading the diff, write the smallest set of files, symbols, config, and docs that solves it.
-3. **Inventory.** List everything the change adds except tests (Gate 4 judges those) and files the repository's generators or conventions require: files, exported symbols, flags, options, config keys, env vars, dependencies, services, CI jobs, docs sections, and rules in agent instruction files. Also list every rename, move, and removal. Each inventory item missing from the minimal version is an N6 finding unless the PR description or linked issue says why the smaller version fails.
+3. **Inventory.** List everything the change adds except tests (Gate 4 judges those) and files the repository's generators or conventions require: files, exported symbols, flags, options, config keys, env vars, dependencies, services, CI jobs, docs sections, and rules in agent instruction files. Also list every rename, move, and removal. For each new symbol, `rg` for non-test callers (N3) and for existing code that already does the job (N5). When step 2 ran, each inventory item missing from the minimal version is an N6 finding unless the PR description or linked issue says why the smaller version fails.
 4. **Consumers.** For each rename, move, or removal from step 3, `rg` everything outside source code for what still reads the old name: `.github/`, `.claude/`, `mise.toml`, Dockerfiles, deploy scripts, agent instruction files, and docs links. Also name tools outside the repository that load a file by name. Each stale consumer is an M4 finding. Callers in source code belong to `code-review-and-quality`.
 5. Run the gates below on the whole change, including docs-only and config-only changes.
 
@@ -26,7 +26,7 @@ Read [references/examples.md](references/examples.md) before reviewing.
 - **N5 Duplicates:** nothing existing already covers it. Cite the existing `path:line`.
 - **N6 Size:** the change adds nothing beyond the minimal version from step 2 without a stated reason. Use N3 instead when the addition has no non-test caller or user at all.
 
-Verdict: `Yes` only when N1 to N6 pass. `Scope Down` when the problem is real but the change is bigger than needed; name exactly what to cut. `Unjustified` when no concrete problem is stated. `No` when the change is unnecessary, duplicate, or net negative; mark the other gates `skipped`.
+Verdict: `Yes` when no N check has a High or Medium finding. `Scope Down` when the problem is real but the change is bigger than needed; name exactly what to cut. `Unjustified` when no concrete problem is stated. `No` when the change is unnecessary, duplicate, or net negative; mark the other gates `skipped`.
 
 ## Gate 2: Maintenance
 
@@ -59,7 +59,7 @@ Format: `path:line` Level (N3): the problem in at most two sentences, then exact
 ## Verdict
 
 - `REJECT`: Gate 1 is `No`.
-- `REWORK REQUIRED`: Gate 1 is `Scope Down` or `Unjustified`, any of this skill's gates has a High or Medium finding, or Gate 4 is `Needs Work`.
+- `REWORK REQUIRED`: Gate 1 is `Scope Down` or `Unjustified`, Gate 2 or Gate 3 has a High or Medium finding, or Gate 4 is `Needs Work`.
 - `MERGE`: otherwise.
 
 ## Output

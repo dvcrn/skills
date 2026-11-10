@@ -1,6 +1,6 @@
 # Necessity and Maintainability Examples
 
-## Step 4: consumers (real case, dvcrn/obsidian-mcp#143)
+## Step 4: consumers
 
 Bad: the PR renames `CLAUDE.md` to `AGENTS.md` and updates the two docs that link to it. The review checks that no file still mentions `CLAUDE.md` and approves.
 
