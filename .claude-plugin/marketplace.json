@@ -196,7 +196,7 @@
     },
     {
       "name": "necessity-and-maintainability",
-      "description": "Judge whether a change should exist, and apply code-structure and test-quality for how its code and tests are organized.",
+      "description": "Skeptic review of whether a change should exist and whether it is the smallest version that solves its problem, covering scope, speculative additions, duplication, maintenance cost, docs and agent instructions, and applying code-structure and test-quality.",
       "source": "./plugins/necessity-and-maintainability"
     },
     {
