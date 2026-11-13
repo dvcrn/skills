@@ -1,14 +1,14 @@
 ---
 name: ask-gemini
-description: Delegate questions or tasks to Gemini via the Antigravity CLI (agy). Use Gemini 4 Hydrogen for small, clearly defined tasks and quick questions, and Gemini 4 Argon for tasks that need deeper reasoning, longer autonomous work, or ideas of its own.
+description: Delegate questions or tasks to Gemini via the Antigravity CLI (agy). Use Gemini 4 Hydrogen for small, clearly defined tasks and quick questions, and Gemini 4 Carbon for tasks that need deeper reasoning, longer autonomous work, or ideas of its own.
 ---
 
 # Ask Gemini
 
 This skill lets you query Gemini via the `agy` CLI. Both Gemini 4 Hydrogen and
-Gemini 4 Argon can run agentic tasks (`--add-dir`, file reads, commands, edits).
+Gemini 4 Carbon can run agentic tasks (`--add-dir`, file reads, commands, edits).
 Pick the model by how much intelligence the task needs. Gemini 4 Hydrogen (Medium)
-is the default. Move to Argon when the task needs the reasoning described below.
+is the default. Move to Carbon when the task needs the reasoning described below.
 
 If `agy` is not on PATH, use `ask-gemini-mcp` instead.
 
@@ -16,7 +16,7 @@ If `agy` is not on PATH, use `ask-gemini-mcp` instead.
 
 ### Gemini 4 Hydrogen: small, clearly defined tasks
 
-Hydrogen is fast and smart, but less capable than Argon. Use it when the task is
+Hydrogen is fast and smart, but less capable than Carbon. Use it when the task is
 well scoped and the answer does not depend on Gemini working out the approach:
 
 - Quick questions and lookups, with or without repository access
@@ -25,19 +25,21 @@ well scoped and the answer does not depend on Gemini working out the approach:
 
 - **`Gemini 4 Hydrogen (Medium)` (Default):** The default for small, well-defined tasks.
 - **`Gemini 4 Hydrogen (Low)`:** Trivial lookups and one-line answers.
-- **`Gemini 4 Hydrogen (High)`:** Routine branch, commit and PR code reviews, or a small task with one tricky step. If it needs more than that, use Argon.
+- **`Gemini 4 Hydrogen (High)`:** Routine branch, commit and PR code reviews, or a small task with one tricky step. If it needs more than that, use Carbon.
 
-### Gemini 4 Argon: reasoning and autonomous work
+### Gemini 4 Carbon: reasoning and autonomous work
 
-Use Argon when the result depends on thinking, not just executing:
+Use Carbon when the result depends on thinking, not just executing:
 
 - Longer, multi-step or autonomous tasks where Gemini decides what to read and do
 - Large or subtle code reviews, deep debugging, and multi-file architecture analysis
 - Design feedback, second opinions, and tasks where Gemini should come up with its own ideas
 
-- **`Gemini 4 Argon (Medium)` (Default for Argon):** Most reasoning tasks, large or subtle reviews, and autonomous work.
-- **`Gemini 4 Argon (Low)`:** Short judgment calls, such as choosing between two options. Plain questions go to Hydrogen.
-- **`Gemini 4 Argon (High)`:** Large or subtle problems where Medium is clearly not enough.
+- **`Gemini 4 Carbon (Medium)` (Default for Carbon):** Most reasoning tasks, large or subtle reviews, and autonomous work.
+- **`Gemini 4 Carbon (Low)`:** Short judgment calls, such as choosing between two options. Plain questions go to Hydrogen.
+- **`Gemini 4 Carbon (High)`:** Large or subtle problems where Medium is clearly not enough.
+
+`Gemini 4 Argon` is only a fallback for Carbon (see Failure fallback).
 
 Run `agy models` to confirm the exact display names available on this machine.
 
@@ -69,9 +71,32 @@ On failure, apply "Failure fallback" to the tier's model.
 
 > "This is just a question — do not make any code changes, do not run any commands, just answer the question."
 
-When delegating code review or research tasks, Gemini can traverse large codebases and read many files for you. Be specific about the scope:
+### Limit what Gemini reads
 
-> "Review the authentication flow. Read whatever files you need but only suggest changes — do not implement them."
+Given a directory, Gemini reads far more than the task needs and can run past
+the 20 minute timeout. Keep its reading to what the task requires:
+
+- **Reviews of a plan, doc, diff, or a few known files:** paste them into the
+  prompt and omit `--add-dir` (see Pasted-Context Prompts). This is the default
+  for reviews.
+- **Tasks that need the repository:** pass `--add-dir` only for the directories
+  involved, not a parent or home directory, and name the files or directories
+  to start from.
+- **Every prompt:** state what to read and what not to, and cap the output.
+
+> "Review the plan below. Do not read any files, browse, or run commands. Everything you need is in this prompt. Output at most 10 prioritized issues, each with a one-line fix."
+
+> "Review the authentication flow in src/auth/session.ts and src/auth/middleware.ts. Read only those files and what they import directly. Only suggest changes; do not implement them."
+
+Phrases to combine into these instructions:
+
+- "Do not read files that are not directly related to the checkout flow."
+- "Start from src/billing/invoice.go. Open another file only if this one calls into it, and stop after 5 files."
+- "Do not explore the repository, list directories, or search for related code. If you need a file that is not named here, say which one and stop."
+- "Do not read tests, fixtures, generated code, lockfiles, vendor/, node_modules/, or build output."
+- "Do not read README, docs, or config files to get context. The context you need is in this prompt."
+- "Answer only what was asked. Do not review unrelated code you happen to open."
+- "Spend your effort on the question, not on gathering background. If the files named here are not enough to answer, say what is missing instead of searching."
 
 ## Required: Report Missing Skills
 
@@ -90,7 +115,13 @@ Each `agy -p` call is a separate non-interactive request. Include the relevant c
 
 ## Failure fallback
 
-For execution failures or timeouts, retry once unchanged, shorten an unusually long prompt, then lower effort one step at a time (High to Medium to Low) on the same model. Stop after Low and do not switch models. Report any fallback used, and do not apply the ladder after a substantive response.
+For execution failures or timeouts, retry once unchanged and shorten an unusually long prompt. Then step down the model ladder, keeping the effort the task called for (Medium, or Low for short judgment calls; a High call drops to Medium first):
+
+1. `Gemini 4 Carbon`
+2. `Gemini 4 Argon`
+3. `Gemini 4 Hydrogen`
+
+A call that started on Hydrogen only drops from Medium to Low. Stop after Hydrogen. Report any fallback used, and do not apply the ladder after a substantive response.
 
 ## How to Call Gemini
 
@@ -99,19 +130,19 @@ For execution failures or timeouts, retry once unchanged, shorten an unusually l
 No directories needed. Omit `--add-dir`:
 
 ```bash
-agy --model "Gemini 4 Hydrogen (Medium)" --print-timeout 10m --dangerously-skip-permissions --sandbox -p "This is just a question. Do not make code changes. your question here"
+agy --model "Gemini 4 Hydrogen (Medium)" --print-timeout 20m --dangerously-skip-permissions --sandbox -p "This is just a question. Do not make code changes. your question here"
 ```
 
 ### Small Task (Hydrogen)
 
 ```bash
-agy --model "Gemini 4 Hydrogen (Medium)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions --sandbox -p "your prompt here"
+agy --model "Gemini 4 Hydrogen (Medium)" --add-dir /path/to/repo --print-timeout 20m --dangerously-skip-permissions --sandbox -p "your prompt here"
 ```
 
-### Reasoning or Autonomous Task (Argon)
+### Reasoning or Autonomous Task (Carbon)
 
 ```bash
-agy --model "Gemini 4 Argon (Medium)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions --sandbox -p "your prompt here"
+agy --model "Gemini 4 Carbon (Medium)" --add-dir /path/to/repo --print-timeout 20m --dangerously-skip-permissions --sandbox -p "your prompt here"
 ```
 
 ### Pasted-Context Prompts
@@ -121,7 +152,7 @@ When everything Gemini needs is in the prompt, omit `--add-dir` and
 
 ```bash
 DIFF="$(git diff main...HEAD)"
-agy --model "Gemini 4 Argon (Medium)" --print-timeout 10m --sandbox -p "This is a review of the diff below. Do not read files, run commands, or edit anything. Answer only from the text in this prompt.
+agy --model "Gemini 4 Carbon (Medium)" --print-timeout 20m --sandbox -p "This is a review of the diff below. Do not read files, run commands, or edit anything. Answer only from the text in this prompt.
 
 <diff>
 ${DIFF}
@@ -137,22 +168,24 @@ Review this diff for correctness, readability, architecture, security, and perfo
 - Pass `--add-dir` for **every path** Gemini needs to read or write.
 - Include the target repository and any additional directories required for the task. Do not add skill folders; reference skills by name instead.
 - Repeatable: pass multiple `--add-dir` flags when more than one path is needed.
-- Example: `agy --add-dir /path/to/repo --print-timeout 10m ...`
+- Example: `agy --add-dir /path/to/repo --print-timeout 20m ...`
 
 ### Timeouts
 
-NOTE: ALWAYS RUN GEMINI WITH `--print-timeout 10m` AS GEMINI CAN TAKE QUITE A WHILE.
+NOTE: ALWAYS RUN GEMINI WITH `--print-timeout 20m` AS GEMINI CAN TAKE QUITE A WHILE.
+
+A 20 minute call outlives a foreground shell timeout capped at 10 minutes, so run `agy` as a background command and wait for it to finish.
 
 ### Important Flags
 
 - `--model "Gemini 4 Hydrogen (Medium)"` - Default for small, clearly defined tasks
 - `--model "Gemini 4 Hydrogen (Low)"` - Trivial lookups
 - `--model "Gemini 4 Hydrogen (High)"` - Routine code reviews, small tasks with one tricky step
-- `--model "Gemini 4 Argon (Medium)"` - Reasoning, large or subtle reviews, and longer autonomous tasks
-- `--model "Gemini 4 Argon (Low)"` - Short judgment calls
-- `--model "Gemini 4 Argon (High)"` - Large or subtle problems where Argon Medium is not enough
+- `--model "Gemini 4 Carbon (Medium)"` - Reasoning, large or subtle reviews, and longer autonomous tasks
+- `--model "Gemini 4 Carbon (Low)"` - Short judgment calls
+- `--model "Gemini 4 Carbon (High)"` - Large or subtle problems where Carbon Medium is not enough
 - `--add-dir <path>` — Add each directory Gemini needs to access. There is no `--workdir` flag; use `--add-dir` for the repo and any other required paths.
-- `--print-timeout 10m` — Always set a 10 minute print timeout; Gemini can take a while.
+- `--print-timeout 20m` — Always set a 20 minute print timeout; Gemini can take a while.
 - `--prompt` / `-p` — Run a single prompt non-interactively and print the response
 - `--dangerously-skip-permissions` — Required for agentic tasks run non-interactively (`-p`) so tool permission requests are auto-approved without stalling headless execution. Omit it for pasted-context prompts so tool calls are denied.
 - `--sandbox` — Run in a sandbox with terminal restrictions enabled. Always set it, and always pair it with `--dangerously-skip-permissions` when that flag is used
@@ -192,20 +225,20 @@ Available subcommands:
 
 ```bash
 # Quick question (Hydrogen Low)
-agy --model "Gemini 4 Hydrogen (Low)" --print-timeout 10m --sandbox -p "This is just a question. Do not read files, make code changes, or run commands. What does HTTP 425 mean?"
+agy --model "Gemini 4 Hydrogen (Low)" --print-timeout 20m --sandbox -p "This is just a question. Do not read files, make code changes, or run commands. What does HTTP 425 mean?"
 
 # Small, well-defined edit (Hydrogen Medium)
-agy --model "Gemini 4 Hydrogen (Medium)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions --sandbox -p "In src/config.ts, rename the export DEFAULT_TIMEOUT to DEFAULT_TIMEOUT_MS and update its imports. Change nothing else."
+agy --model "Gemini 4 Hydrogen (Medium)" --add-dir /path/to/repo --print-timeout 20m --dangerously-skip-permissions --sandbox -p "In src/config.ts, rename the export DEFAULT_TIMEOUT to DEFAULT_TIMEOUT_MS and update its imports. Change nothing else."
 
-# Second opinion on a plan pasted into the prompt (Argon Medium)
-agy --model "Gemini 4 Argon (Medium)" --print-timeout 10m --sandbox -p "Give your opinion only. Do not read files or run commands. Here is the plan: <full plan text>. What are the biggest risks?"
+# Second opinion on a plan pasted into the prompt (Carbon Medium)
+agy --model "Gemini 4 Carbon (Medium)" --print-timeout 20m --sandbox -p "Give your opinion only. Do not read files or run commands. Here is the plan: <full plan text>. What are the biggest risks?"
 
-# Code research across a repository (Argon Medium)
-agy --model "Gemini 4 Argon (Medium)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions --sandbox -p "This is just research. Do not make any code changes. Explore the ./server directory and explain the authentication flow. Read whatever files you need."
+# Code research across a repository (Carbon Medium)
+agy --model "Gemini 4 Carbon (Medium)" --add-dir /path/to/repo/server --print-timeout 20m --dangerously-skip-permissions --sandbox -p "This is just research. Do not make any code changes. Explain the authentication flow, starting from server/auth/. Read only the files on that flow, not the whole directory."
 
-# Large code review (Argon Medium, explicit boundaries)
-agy --model "Gemini 4 Argon (Medium)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions --sandbox -p "This is a code review only. Do not make any code changes. Review the code in ./src, identify improvements, and only output the suggested improvements. Do not implement anything."
+# Large code review (Carbon Medium, explicit boundaries)
+agy --model "Gemini 4 Carbon (Medium)" --add-dir /path/to/repo/src --print-timeout 20m --dangerously-skip-permissions --sandbox -p "This is a code review only. Do not make any code changes. Review src/payments/, reading only those files and what they import directly. Output at most 10 suggested improvements. Do not implement anything."
 
 # Continue a conversation
-agy --model "Gemini 4 Argon (Medium)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions --sandbox --continue -p "Now extract the validation logic into a helper function"
+agy --model "Gemini 4 Carbon (Medium)" --add-dir /path/to/repo --print-timeout 20m --dangerously-skip-permissions --sandbox --continue -p "Now extract the validation logic into a helper function"
 ```
