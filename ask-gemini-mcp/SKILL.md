@@ -41,7 +41,7 @@ Use the smallest tier that answers well. Bigger models are for tasks that need t
 
 Don't use Flash-Lite for evaluations, second opinions, or anything that needs multi-step reasoning. Don't call it to pick a model for this skill.
 
-In sync-only mode, never use a `-high` model or `gemini-4-argon-medium`, even if the user asks, because the call won't return before the client's tool timeout. Use `gemini-4-argon-low` and tell the user why.
+In sync-only mode, never use a `-high` or `-xhigh` model or `gemini-4-argon-medium`, even if the user asks, because the call won't return before the client's tool timeout. Use `gemini-4-argon-low` and tell the user why.
 
 If the user asks for "the fast one", use `gemini-4-hydrogen-low`, or `gemini-3.5-flash-lite` for a text task. If they name another model, use the exact ID from the live list. If you're unsure which one they mean, ask.
 
@@ -74,7 +74,7 @@ Ladders:
 - **Hydrogen (sync):** `gemini-4-hydrogen-medium` → `gemini-4-hydrogen-low` → `gemini-3.5-flash-lite`
 - **Flash-Lite:** retry once with a shorter prompt, then report the failure.
 
-If a call that started on Argon ends up answered by Hydrogen, say so, since that changes what the user is getting an opinion from.
+If a call that started on Argon ends up answered by Hydrogen or Flash-Lite, say so, since that changes what the user is getting an opinion from.
 
 ## Applying a skill as the standard
 
