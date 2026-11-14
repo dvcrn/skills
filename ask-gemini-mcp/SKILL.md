@@ -28,22 +28,22 @@ If the tools are deferred, load them in one tool search. **Async mode** applies 
 
 Use the smallest tier that answers well. Bigger models are for tasks that need them, never a default.
 
-| task                                                                                             | model                     | transport | sync-only mode       |
-| ------------------------------------------------------------------------------------------------ | ------------------------- | --------- | -------------------- |
-| trivial lookup, one-line syntax check, yes/no                                                    | `gemini-3.8-flash-medium` | sync      | same                 |
-| second opinion, sanity check (default)                                                           | `gemini-3.8-flash-medium` | sync      | same                 |
-| second opinion that needs more reasoning or knowledge                                            | `gemini-4-argon-low`      | sync      | same                 |
-| translation, quick proofreading, extraction, classification, short summaries                     | `gemini-3.5-flash-lite`   | sync      | same                 |
-| small or quick code reviews, well-scoped real tasks                                              | `gemini-3.8-flash-high`   | async     | `gemini-4-argon-low` |
-| tasks that need broader judgment or knowledge                                                    | `gemini-4-argon-medium`   | async     | `gemini-4-argon-low` |
-| large or complex code review, architecture, hard multi-step reasoning, only when actually needed | `gemini-4-argon-medium`   | async     | `gemini-4-argon-low` |
-| `gemini-4-argon-high`                                                                            | only when the user asks   | async     | `gemini-4-argon-low` |
+| task                                                                                             | model                      | transport | sync-only mode       |
+| ------------------------------------------------------------------------------------------------ | -------------------------- | --------- | -------------------- |
+| trivial lookup, one-line syntax check, yes/no                                                    | `gemini-4-hydrogen-medium` | sync      | same                 |
+| second opinion, sanity check (default)                                                           | `gemini-4-hydrogen-medium` | sync      | same                 |
+| second opinion that needs more reasoning or knowledge                                            | `gemini-4-argon-low`       | sync      | same                 |
+| translation, quick proofreading, extraction, classification, short summaries                     | `gemini-3.5-flash-lite`    | sync      | same                 |
+| small or quick code reviews, well-scoped real tasks                                              | `gemini-4-hydrogen-high`   | async     | `gemini-4-argon-low` |
+| tasks that need broader judgment or knowledge                                                    | `gemini-4-argon-medium`    | async     | `gemini-4-argon-low` |
+| large or complex code review, architecture, hard multi-step reasoning, only when actually needed | `gemini-4-argon-medium`    | async     | `gemini-4-argon-low` |
+| `gemini-4-argon-high`                                                                            | only when the user asks    | async     | `gemini-4-argon-low` |
 
 Don't use Flash-Lite for evaluations, second opinions, or anything that needs multi-step reasoning. Don't call it to pick a model for this skill.
 
-In sync-only mode, never use a `-high` model or `gemini-4-argon-medium`, even if the user asks, because the call won't return before the client's tool timeout. Use `gemini-4-argon-low` and tell the user why.
+In sync-only mode, never use a `-high` or `-xhigh` model or `gemini-4-argon-medium`, even if the user asks, because the call won't return before the client's tool timeout. Use `gemini-4-argon-low` and tell the user why.
 
-If the user asks for "the fast one", use `gemini-3.8-flash-low`, or `gemini-3.5-flash-lite` for a text task. If they name another model, use the exact ID from the live list. If you're unsure which one they mean, ask.
+If the user asks for "the fast one", use `gemini-4-hydrogen-low`, or `gemini-3.5-flash-lite` for a text task. If they name another model, use the exact ID from the live list. If you're unsure which one they mean, ask.
 
 ## Search grounding
 
@@ -69,16 +69,16 @@ Tell the user which step you had to take:
 
 Ladders:
 
-- **Async:** `gemini-4-argon-high` → `gemini-4-argon-medium` → `gemini-3.8-flash-high` → `gemini-4-argon-low`, all async
-- **Argon low (sync):** `gemini-4-argon-low` → `gemini-3.8-flash-medium` → `gemini-3.8-flash-low` → `gemini-3.5-flash-lite`
-- **Flash (sync):** `gemini-3.8-flash-medium` → `gemini-3.8-flash-low` → `gemini-3.5-flash-lite`
+- **Async:** `gemini-4-argon-high` → `gemini-4-argon-medium` → `gemini-4-hydrogen-high` → `gemini-4-argon-low`, all async
+- **Argon low (sync):** `gemini-4-argon-low` → `gemini-4-hydrogen-medium` → `gemini-4-hydrogen-low` → `gemini-3.5-flash-lite`
+- **Hydrogen (sync):** `gemini-4-hydrogen-medium` → `gemini-4-hydrogen-low` → `gemini-3.5-flash-lite`
 - **Flash-Lite:** retry once with a shorter prompt, then report the failure.
 
-If a call that started on Argon ends up answered by Flash, say so, since that changes what the user is getting an opinion from.
+If a call that started on Argon ends up answered by Hydrogen or Flash-Lite, say so, since that changes what the user is getting an opinion from.
 
 ## Applying a skill as the standard
 
-Use this when the user wants Gemini to review, audit or rewrite something against one of their skills (for example `comment-and-documentation-quality`, `code-and-comment-quality` or `deslop-articles`). Pick the model from the table: `gemini-3.8-flash-high` for routine checks, `gemini-4-argon-medium` for large targets or complex rewrites.
+Use this when the user wants Gemini to review, audit or rewrite something against one of their skills (for example `comment-and-documentation-quality`, `code-and-comment-quality` or `deslop-articles`). Pick the model from the table: `gemini-4-hydrogen-high` for routine checks, `gemini-4-argon-medium` for large targets or complex rewrites.
 
 1. Resolve the standard and fail closed:
 

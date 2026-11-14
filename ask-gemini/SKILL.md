@@ -1,31 +1,31 @@
 ---
 name: ask-gemini
-description: Delegate questions or tasks to Gemini via the Antigravity CLI (agy). Use Gemini 3.8 Flash for small, clearly defined tasks and quick questions, and Gemini 4 Argon for tasks that need deeper reasoning, longer autonomous work, or ideas of its own.
+description: Delegate questions or tasks to Gemini via the Antigravity CLI (agy). Use Gemini 4 Hydrogen for small, clearly defined tasks and quick questions, and Gemini 4 Argon for tasks that need deeper reasoning, longer autonomous work, or ideas of its own.
 ---
 
 # Ask Gemini
 
-This skill lets you query Gemini via the `agy` CLI. Both Gemini 3.8 Flash and
+This skill lets you query Gemini via the `agy` CLI. Both Gemini 4 Hydrogen and
 Gemini 4 Argon can run agentic tasks (`--add-dir`, file reads, commands, edits).
-Pick the model by how much intelligence the task needs. Gemini 3.8 Flash (Medium)
+Pick the model by how much intelligence the task needs. Gemini 4 Hydrogen (Medium)
 is the default. Move to Argon when the task needs the reasoning described below.
 
 If `agy` is not on PATH, use `ask-gemini-mcp` instead.
 
 ## Model Selection Guidance
 
-### Gemini 3.8 Flash: small, clearly defined tasks
+### Gemini 4 Hydrogen: small, clearly defined tasks
 
-Flash is fast and smart, but less capable than Argon. Use it when the task is
+Hydrogen is fast and smart, but less capable than Argon. Use it when the task is
 well scoped and the answer does not depend on Gemini working out the approach:
 
 - Quick questions and lookups, with or without repository access
 - Small edits in files you name
 - Focused code analysis of a known area
 
-- **`Gemini 3.8 Flash (Medium)` (Default):** The default for small, well-defined tasks.
-- **`Gemini 3.8 Flash (Low)`:** Trivial lookups and one-line answers.
-- **`Gemini 3.8 Flash (High)`:** A small task with one tricky step. If it needs more than that, use Argon.
+- **`Gemini 4 Hydrogen (Medium)` (Default):** The default for small, well-defined tasks.
+- **`Gemini 4 Hydrogen (Low)`:** Trivial lookups and one-line answers.
+- **`Gemini 4 Hydrogen (High)`:** A small task with one tricky step. If it needs more than that, use Argon.
 
 ### Gemini 4 Argon: reasoning and autonomous work
 
@@ -36,7 +36,7 @@ Use Argon when the result depends on thinking, not just executing:
 - Design feedback, second opinions, and tasks where Gemini should come up with its own ideas
 
 - **`Gemini 4 Argon (Medium)` (Default for Argon):** Most reasoning tasks, reviews, and autonomous work.
-- **`Gemini 4 Argon (Low)`:** Short judgment calls, such as choosing between two options. Plain questions go to Flash.
+- **`Gemini 4 Argon (Low)`:** Short judgment calls, such as choosing between two options. Plain questions go to Hydrogen.
 - **`Gemini 4 Argon (High)`:** Large or subtle problems where Medium is clearly not enough.
 
 Run `agy models` to confirm the exact display names available on this machine.
@@ -88,13 +88,13 @@ For execution failures or timeouts, retry once unchanged, shorten an unusually l
 No directories needed. Omit `--add-dir`:
 
 ```bash
-agy --model "Gemini 3.8 Flash (Medium)" --print-timeout 10m --dangerously-skip-permissions --sandbox -p "This is just a question. Do not make code changes. your question here"
+agy --model "Gemini 4 Hydrogen (Medium)" --print-timeout 10m --dangerously-skip-permissions --sandbox -p "This is just a question. Do not make code changes. your question here"
 ```
 
-### Small Task (Flash)
+### Small Task (Hydrogen)
 
 ```bash
-agy --model "Gemini 3.8 Flash (Medium)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions --sandbox -p "your prompt here"
+agy --model "Gemini 4 Hydrogen (Medium)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions --sandbox -p "your prompt here"
 ```
 
 ### Reasoning or Autonomous Task (Argon)
@@ -134,9 +134,9 @@ NOTE: ALWAYS RUN GEMINI WITH `--print-timeout 10m` AS GEMINI CAN TAKE QUITE A WH
 
 ### Important Flags
 
-- `--model "Gemini 3.8 Flash (Medium)"` - Default for small, clearly defined tasks
-- `--model "Gemini 3.8 Flash (Low)"` - Trivial lookups
-- `--model "Gemini 3.8 Flash (High)"` - Small tasks with one tricky step
+- `--model "Gemini 4 Hydrogen (Medium)"` - Default for small, clearly defined tasks
+- `--model "Gemini 4 Hydrogen (Low)"` - Trivial lookups
+- `--model "Gemini 4 Hydrogen (High)"` - Small tasks with one tricky step
 - `--model "Gemini 4 Argon (Medium)"` - Reasoning, reviews, and longer autonomous tasks
 - `--model "Gemini 4 Argon (Low)"` - Short judgment calls
 - `--model "Gemini 4 Argon (High)"` - Large or subtle problems where Argon Medium is not enough
@@ -180,11 +180,11 @@ Available subcommands:
 ## Example Usage
 
 ```bash
-# Quick question (Flash Low)
-agy --model "Gemini 3.8 Flash (Low)" --print-timeout 10m --sandbox -p "This is just a question. Do not read files, make code changes, or run commands. What does HTTP 425 mean?"
+# Quick question (Hydrogen Low)
+agy --model "Gemini 4 Hydrogen (Low)" --print-timeout 10m --sandbox -p "This is just a question. Do not read files, make code changes, or run commands. What does HTTP 425 mean?"
 
-# Small, well-defined edit (Flash Medium)
-agy --model "Gemini 3.8 Flash (Medium)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions --sandbox -p "In src/config.ts, rename the export DEFAULT_TIMEOUT to DEFAULT_TIMEOUT_MS and update its imports. Change nothing else."
+# Small, well-defined edit (Hydrogen Medium)
+agy --model "Gemini 4 Hydrogen (Medium)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions --sandbox -p "In src/config.ts, rename the export DEFAULT_TIMEOUT to DEFAULT_TIMEOUT_MS and update its imports. Change nothing else."
 
 # Second opinion on a plan pasted into the prompt (Argon Medium)
 agy --model "Gemini 4 Argon (Medium)" --print-timeout 10m --sandbox -p "Give your opinion only. Do not read files or run commands. Here is the plan: <full plan text>. What are the biggest risks?"
