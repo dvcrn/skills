@@ -47,7 +47,7 @@ When a skill names a tier, pass that tier's model to `--model`.
 
 | tier        | model                        | use                                                                 |
 | ----------- | ---------------------------- | ------------------------------------------------------------------- |
-| `default`   | `Gemini 4 Hydrogen (Medium)` | well-scoped tasks, audits against a named standard                  |
+| `default`   | `Gemini 4 Hydrogen (Medium)` | well-scoped tasks, agentic audits against a named standard         |
 | `high`      | `Gemini 4 Hydrogen (High)`   | branch, commit and PR code reviews, well-scoped tasks with one tricky step |
 | `reasoning` | `Gemini 4 Argon (Medium)`    | large or subtle reviews, design feedback, autonomous work           |
 
@@ -204,7 +204,7 @@ agy --model "Gemini 4 Argon (Medium)" --print-timeout 10m --sandbox -p "Give you
 # Code research across a repository (Argon Medium)
 agy --model "Gemini 4 Argon (Medium)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions --sandbox -p "This is just research. Do not make any code changes. Explore the ./server directory and explain the authentication flow. Read whatever files you need."
 
-# Code review (Argon Medium, explicit boundaries)
+# Large code review (Argon Medium, explicit boundaries)
 agy --model "Gemini 4 Argon (Medium)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions --sandbox -p "This is a code review only. Do not make any code changes. Review the code in ./src, identify improvements, and only output the suggested improvements. Do not implement anything."
 
 # Continue a conversation

@@ -16,7 +16,7 @@ For a combined code and comment review, use `ask-gemini-for-review` (or `ask-gem
 
 ## Canonical Invocation
 
-Replace `<default tier model>` with the `default` model from the Tiers table in `ask-gemini`.
+Load `ask-gemini` and replace `<default tier model>` with the `default` tier's model from its Tiers table. Never pass the placeholder as-is.
 
 ```bash
 agy --model "<default tier model>" \

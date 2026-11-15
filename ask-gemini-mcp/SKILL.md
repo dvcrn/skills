@@ -43,6 +43,8 @@ Don't use Flash-Lite for evaluations, second opinions, or anything that needs mu
 
 In sync-only mode, never use a `-high` or `-xhigh` model or `gemini-4-argon-medium`, even if the user asks, because the call won't return before the client's tool timeout. Use `gemini-4-argon-low` and tell the user why.
 
+If the user asks for "the fast one", use `gemini-4-hydrogen-low`, or `gemini-3.5-flash-lite` for a text task. If they name another model, use the exact ID from the live list. If you're unsure which one they mean, ask.
+
 ### Tiers
 
 Other skills name a tier from `ask-gemini`. Map it here:
@@ -52,8 +54,6 @@ Other skills name a tier from `ask-gemini`. Map it here:
 | `default`   | `gemini-4-hydrogen-medium` | sync      | same                 | Hydrogen (sync)                        |
 | `high`      | `gemini-4-hydrogen-high`   | async     | `gemini-4-argon-low` | Async; in sync-only mode Argon low (sync) |
 | `reasoning` | `gemini-4-argon-medium`    | async     | `gemini-4-argon-low` | Async; in sync-only mode Argon low (sync) |
-
-If the user asks for "the fast one", use `gemini-4-hydrogen-low`, or `gemini-3.5-flash-lite` for a text task. If they name another model, use the exact ID from the live list. If you're unsure which one they mean, ask.
 
 ## Search grounding
 
@@ -88,7 +88,7 @@ If a call that started on Argon ends up answered by Hydrogen or Flash-Lite, say 
 
 ## Applying a skill as the standard
 
-Use this when the user wants Gemini to review, audit or rewrite something against one of their skills (for example `comment-and-documentation-quality`, `code-and-comment-quality` or `deslop-articles`). Pick the model from the table: `gemini-4-hydrogen-high` for routine checks, `gemini-4-argon-medium` for large targets or complex rewrites.
+Use this when the user wants Gemini to review, audit or rewrite something against one of their skills (for example `comment-and-documentation-quality`, `code-and-comment-quality` or `deslop-articles`). Use the `high` tier for routine checks and the `reasoning` tier for large targets or complex rewrites, because the full standard and target go inline.
 
 1. Resolve the standard and fail closed:
 
