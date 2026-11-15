@@ -26,7 +26,7 @@ If the tools are deferred, load them in one tool search. **Async mode** applies 
 
 ## Picking the model
 
-Use the smallest tier that answers well. Bigger models are for tasks that need them, never a default.
+Use the smallest model that answers well. Bigger models are for tasks that need them, never a default.
 
 | task                                                                                             | model                      | transport | sync-only mode       |
 | ------------------------------------------------------------------------------------------------ | -------------------------- | --------- | -------------------- |
@@ -47,11 +47,11 @@ In sync-only mode, never use a `-high` or `-xhigh` model or `gemini-4-argon-medi
 
 Other skills name a tier from `ask-gemini`. Map it here:
 
-| tier        | async mode                       | sync-only mode               | failure ladder |
-| ----------- | -------------------------------- | ---------------------------- | -------------- |
-| `default`   | `gemini-4-hydrogen-medium`, sync | `gemini-4-hydrogen-medium`   | Hydrogen (sync) |
-| `high`      | `gemini-4-hydrogen-high`, async  | `gemini-4-argon-low`         | Async, or Argon low (sync) |
-| `reasoning` | `gemini-4-argon-medium`, async   | `gemini-4-argon-low`         | Async, or Argon low (sync) |
+| tier        | model                      | transport | sync-only mode       | failure ladder                         |
+| ----------- | -------------------------- | --------- | -------------------- | -------------------------------------- |
+| `default`   | `gemini-4-hydrogen-medium` | sync      | same                 | Hydrogen (sync)                        |
+| `high`      | `gemini-4-hydrogen-high`   | async     | `gemini-4-argon-low` | Async; in sync-only mode Argon low (sync) |
+| `reasoning` | `gemini-4-argon-medium`    | async     | `gemini-4-argon-low` | Async; in sync-only mode Argon low (sync) |
 
 If the user asks for "the fast one", use `gemini-4-hydrogen-low`, or `gemini-3.5-flash-lite` for a text task. If they name another model, use the exact ID from the live list. If you're unsure which one they mean, ask.
 
@@ -74,7 +74,7 @@ The response includes `requested_model` and `model`. When they differ (a resolve
 Tell the user which step you had to take:
 
 - **Transient error:** retry once as-is.
-- **Unknown model:** re-fetch the model list and use the closest available model in the same tier, or the next tier down.
+- **Unknown model:** re-fetch the model list and use the closest available model of the same size, or the next smaller one.
 - **Timeout** (sync client timeout, or the async job's 15-minute cap): don't retry the same model. Trim the prompt if it's bloated and move one step down the ladder.
 
 Ladders:

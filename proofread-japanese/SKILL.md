@@ -9,7 +9,7 @@ Every outgoing Japanese text gets reviewed by Gemini before it's final. Load the
 
 ## Model
 
-Use the `default` tier: its model in the "Tiers" table of whichever skill makes the call (`ask-gemini-mcp` or `ask-gemini`), and that tier's failure ladder. If every step fails, show the draft marked as unreviewed.
+Use the `default` tier from the "Tiers" table of whichever skill makes the call (`ask-gemini-mcp` or `ask-gemini`), and that skill's failure steps. If every step fails, show the draft marked as unreviewed.
 
 ## Steps
 

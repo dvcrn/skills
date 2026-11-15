@@ -25,7 +25,7 @@ gh pr view NUMBER --repo OWNER/REPO --json number,title,state,headRefOid,baseRef
 
 ## Canonical Invocation
 
-Pass the `high` tier's model from `ask-gemini` ("Tiers") to `--model`. Look it up there; never pass the placeholder literally.
+Replace `<high tier model>` with the `high` model from the Tiers table in `ask-gemini`.
 
 ```bash
 PR="OWNER/REPO#NUMBER"

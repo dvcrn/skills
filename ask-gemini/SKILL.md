@@ -32,7 +32,7 @@ well scoped and the answer does not depend on Gemini working out the approach:
 Use Argon when the result depends on thinking, not just executing:
 
 - Longer, multi-step or autonomous tasks where Gemini decides what to read and do
-- Code reviews, deep debugging, and multi-file architecture analysis
+- Large or subtle code reviews, deep debugging, and multi-file architecture analysis
 - Design feedback, second opinions, and tasks where Gemini should come up with its own ideas
 
 - **`Gemini 4 Argon (Medium)` (Default for Argon):** Most reasoning tasks, reviews, and autonomous work.
@@ -43,15 +43,15 @@ Run `agy models` to confirm the exact display names available on this machine.
 
 ### Tiers
 
-Other skills pick a tier, not a model, so a model change only touches this table and the matching one in `ask-gemini-mcp`. When a skill names a tier, pass that tier's model to `--model`.
+When a skill names a tier, pass that tier's model to `--model`.
 
 | tier        | model                        | use                                                                 |
 | ----------- | ---------------------------- | ------------------------------------------------------------------- |
-| `default`   | `Gemini 4 Hydrogen (Medium)` | well-scoped tasks, audits against a named standard, proofreading    |
+| `default`   | `Gemini 4 Hydrogen (Medium)` | well-scoped tasks, audits against a named standard                  |
 | `high`      | `Gemini 4 Hydrogen (High)`   | branch, commit and PR code reviews, well-scoped tasks with one tricky step |
 | `reasoning` | `Gemini 4 Argon (Medium)`    | large or subtle reviews, design feedback, autonomous work           |
 
-Failures follow the ladder below on the tier's model.
+On failure, apply "Failure fallback" to the tier's model.
 
 ## When to Use
 

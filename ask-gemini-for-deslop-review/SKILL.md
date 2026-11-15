@@ -16,7 +16,7 @@ Do not pipe raw article contents or `git diff` output into the prompt; Gemini ru
 
 ## Canonical Invocations
 
-Pass the `default` tier's model from `ask-gemini` ("Tiers") to `--model`. Look it up there; never pass the placeholder literally.
+Replace `<default tier model>` with the `default` model from the Tiers table in `ask-gemini`.
 
 ### 1. Audit Mode (Findings Only)
 
