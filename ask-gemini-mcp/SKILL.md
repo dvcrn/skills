@@ -34,7 +34,7 @@ Use the smallest model that answers well. Bigger models are for tasks that need 
 | second opinion, sanity check (default)                                                           | `gemini-4-hydrogen-medium` | sync      | same                 |
 | second opinion that needs more reasoning or knowledge                                            | `gemini-4-argon-low`       | sync      | same                 |
 | translation, quick proofreading, extraction, classification, short summaries                     | `gemini-3.5-flash-lite`    | sync      | same                 |
-| small or quick code reviews, well-scoped real tasks                                              | `gemini-4-hydrogen-high`   | async     | `gemini-4-argon-low` |
+| routine branch, commit and PR code reviews, well-scoped real tasks                               | `gemini-4-hydrogen-high`   | async     | `gemini-4-argon-low` |
 | tasks that need broader judgment or knowledge                                                    | `gemini-4-argon-medium`    | async     | `gemini-4-argon-low` |
 | large or complex code review, architecture, hard multi-step reasoning, only when actually needed | `gemini-4-argon-medium`    | async     | `gemini-4-argon-low` |
 | `gemini-4-argon-high`                                                                            | only when the user asks    | async     | `gemini-4-argon-low` |
@@ -88,7 +88,7 @@ If a call that started on Argon ends up answered by Hydrogen or Flash-Lite, say 
 
 ## Applying a skill as the standard
 
-Use this when the user wants Gemini to review, audit or rewrite something against one of their skills (for example `comment-and-documentation-quality`, `code-and-comment-quality` or `deslop-articles`). Use the `high` tier for routine checks and the `reasoning` tier for large targets or complex rewrites, because the full standard and target go inline.
+Use this when the user wants Gemini to review, audit or rewrite something against one of their skills (for example `comment-and-documentation-quality`, `code-and-comment-quality` or `deslop-articles`). Use the `high` tier for routine checks and the `reasoning` tier for large targets or complex rewrites. Skip `default` here, since the full standard and target go inline.
 
 1. Resolve the standard and fail closed:
 

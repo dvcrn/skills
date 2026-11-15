@@ -25,7 +25,7 @@ well scoped and the answer does not depend on Gemini working out the approach:
 
 - **`Gemini 4 Hydrogen (Medium)` (Default):** The default for small, well-defined tasks.
 - **`Gemini 4 Hydrogen (Low)`:** Trivial lookups and one-line answers.
-- **`Gemini 4 Hydrogen (High)`:** A small task with one tricky step. If it needs more than that, use Argon.
+- **`Gemini 4 Hydrogen (High)`:** Routine branch, commit and PR code reviews, or a small task with one tricky step. If it needs more than that, use Argon.
 
 ### Gemini 4 Argon: reasoning and autonomous work
 
@@ -35,7 +35,7 @@ Use Argon when the result depends on thinking, not just executing:
 - Large or subtle code reviews, deep debugging, and multi-file architecture analysis
 - Design feedback, second opinions, and tasks where Gemini should come up with its own ideas
 
-- **`Gemini 4 Argon (Medium)` (Default for Argon):** Most reasoning tasks, reviews, and autonomous work.
+- **`Gemini 4 Argon (Medium)` (Default for Argon):** Most reasoning tasks, large or subtle reviews, and autonomous work.
 - **`Gemini 4 Argon (Low)`:** Short judgment calls, such as choosing between two options. Plain questions go to Hydrogen.
 - **`Gemini 4 Argon (High)`:** Large or subtle problems where Medium is clearly not enough.
 
