@@ -47,13 +47,12 @@ If the user asks for "the fast one", use `gemini-4-hydrogen-low`, or `gemini-3.5
 
 ### Tiers
 
-Other skills name a tier from `ask-gemini`. Map it here:
+Other skills name a tier from `ask-gemini`. Map it to a model here, then take its transport, sync-only replacement and failure ladder from the table above and "Failures". A skill audit with the full standard pasted inline uses "Applying a skill as the standard" instead.
 
-| tier        | model                      | transport | sync-only mode       | failure ladder                         |
-| ----------- | -------------------------- | --------- | -------------------- | -------------------------------------- |
-| `default`   | `gemini-4-hydrogen-medium` | sync      | same                 | Hydrogen (sync)                        |
-| `high`      | `gemini-4-hydrogen-high`   | async     | `gemini-4-argon-low` | Async; in sync-only mode Argon low (sync) |
-| `reasoning` | `gemini-4-argon-medium`    | async     | `gemini-4-argon-low` | Async; in sync-only mode Argon low (sync) |
+| tier      | model                      |
+| --------- | -------------------------- |
+| `default` | `gemini-4-hydrogen-medium` |
+| `high`    | `gemini-4-hydrogen-high`   |
 
 ## Search grounding
 
@@ -88,7 +87,7 @@ If a call that started on Argon ends up answered by Hydrogen or Flash-Lite, say 
 
 ## Applying a skill as the standard
 
-Use this when the user wants Gemini to review, audit or rewrite something against one of their skills (for example `comment-and-documentation-quality`, `code-and-comment-quality` or `deslop-articles`). Use the `high` tier for routine checks and the `reasoning` tier for large targets or complex rewrites. Skip `default` here, since the full standard and target go inline.
+Use this when the user wants Gemini to review, audit or rewrite something against one of their skills (for example `comment-and-documentation-quality`, `code-and-comment-quality` or `deslop-articles`). Use the `high` tier for routine checks and `gemini-4-argon-medium` for large targets or complex rewrites. Skip `default` here, since the full standard and target go inline.
 
 1. Resolve the standard and fail closed:
 

@@ -45,11 +45,10 @@ Run `agy models` to confirm the exact display names available on this machine.
 
 When a skill names a tier, pass that tier's model to `--model`.
 
-| tier        | model                        | use                                                                 |
-| ----------- | ---------------------------- | ------------------------------------------------------------------- |
-| `default`   | `Gemini 4 Hydrogen (Medium)` | well-scoped tasks, agentic audits against a named standard         |
-| `high`      | `Gemini 4 Hydrogen (High)`   | branch, commit and PR code reviews, well-scoped tasks with one tricky step |
-| `reasoning` | `Gemini 4 Argon (Medium)`    | large or subtle reviews, design feedback, autonomous work           |
+| tier      | model                        |
+| --------- | ---------------------------- |
+| `default` | `Gemini 4 Hydrogen (Medium)` |
+| `high`    | `Gemini 4 Hydrogen (High)`   |
 
 On failure, apply "Failure fallback" to the tier's model.
 
@@ -148,8 +147,8 @@ NOTE: ALWAYS RUN GEMINI WITH `--print-timeout 10m` AS GEMINI CAN TAKE QUITE A WH
 
 - `--model "Gemini 4 Hydrogen (Medium)"` - Default for small, clearly defined tasks
 - `--model "Gemini 4 Hydrogen (Low)"` - Trivial lookups
-- `--model "Gemini 4 Hydrogen (High)"` - Small tasks with one tricky step
-- `--model "Gemini 4 Argon (Medium)"` - Reasoning, reviews, and longer autonomous tasks
+- `--model "Gemini 4 Hydrogen (High)"` - Routine code reviews, small tasks with one tricky step
+- `--model "Gemini 4 Argon (Medium)"` - Reasoning, large or subtle reviews, and longer autonomous tasks
 - `--model "Gemini 4 Argon (Low)"` - Short judgment calls
 - `--model "Gemini 4 Argon (High)"` - Large or subtle problems where Argon Medium is not enough
 - `--add-dir <path>` — Add each directory Gemini needs to access. There is no `--workdir` flag; use `--add-dir` for the repo and any other required paths.

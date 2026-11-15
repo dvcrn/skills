@@ -17,7 +17,7 @@ Delegate a read-only local code review to Gemini at `ask-gemini`'s `high` tier u
 
 ## Canonical Invocation
 
-Load `ask-gemini` and replace `<high tier model>` with the `high` tier's model from its Tiers table. Never pass the placeholder as-is.
+Load `ask-gemini` and replace `<high tier model>` with the `high` tier's model from its Tiers table. If `ask-gemini` is not available, stop and tell the user it is missing. Never guess a model or pass the placeholder as-is.
 
 ```bash
 agy --model "<high tier model>" \
