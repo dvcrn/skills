@@ -43,6 +43,16 @@ Don't use Flash-Lite for evaluations, second opinions, or anything that needs mu
 
 In sync-only mode, never use a `-high` or `-xhigh` model or `gemini-4-argon-medium`, even if the user asks, because the call won't return before the client's tool timeout. Use `gemini-4-argon-low` and tell the user why.
 
+### Tiers
+
+Other skills name a tier from `ask-gemini`. Map it here:
+
+| tier        | async mode                       | sync-only mode               | failure ladder |
+| ----------- | -------------------------------- | ---------------------------- | -------------- |
+| `default`   | `gemini-4-hydrogen-medium`, sync | `gemini-4-hydrogen-medium`   | Hydrogen (sync) |
+| `high`      | `gemini-4-hydrogen-high`, async  | `gemini-4-argon-low`         | Async, or Argon low (sync) |
+| `reasoning` | `gemini-4-argon-medium`, async   | `gemini-4-argon-low`         | Async, or Argon low (sync) |
+
 If the user asks for "the fast one", use `gemini-4-hydrogen-low`, or `gemini-3.5-flash-lite` for a text task. If they name another model, use the exact ID from the live list. If you're unsure which one they mean, ask.
 
 ## Search grounding

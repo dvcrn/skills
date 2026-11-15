@@ -41,6 +41,18 @@ Use Argon when the result depends on thinking, not just executing:
 
 Run `agy models` to confirm the exact display names available on this machine.
 
+### Tiers
+
+Other skills pick a tier, not a model, so a model change only touches this table and the matching one in `ask-gemini-mcp`. When a skill names a tier, pass that tier's model to `--model`.
+
+| tier        | model                        | use                                                                 |
+| ----------- | ---------------------------- | ------------------------------------------------------------------- |
+| `default`   | `Gemini 4 Hydrogen (Medium)` | well-scoped tasks, audits against a named standard, proofreading    |
+| `high`      | `Gemini 4 Hydrogen (High)`   | branch, commit and PR code reviews, well-scoped tasks with one tricky step |
+| `reasoning` | `Gemini 4 Argon (Medium)`    | large or subtle reviews, design feedback, autonomous work           |
+
+Failures follow the ladder below on the tier's model.
+
 ## When to Use
 
 - You need to ask Gemini a question or give it a task

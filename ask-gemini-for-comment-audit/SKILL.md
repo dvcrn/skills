@@ -1,11 +1,11 @@
 ---
 name: ask-gemini-for-comment-audit
-description: Delegates code comment, documentation, and commit message audits to Gemini 3.8 Flash (Medium) via the Antigravity CLI (agy), enforcing the comment-and-documentation-quality skill. Use for repositories, branches, working tree changes, files, or commit ranges.
+description: Delegates code comment, documentation, and commit message audits to Gemini via the Antigravity CLI (agy), enforcing the comment-and-documentation-quality skill. Use for repositories, branches, working tree changes, files, or commit ranges.
 ---
 
 # Ask Gemini for Comment & Documentation Audit
 
-Delegate a read-only code comment, docstring, technical documentation, and commit message audit to Gemini 3.8 Flash (Medium) using the `agy` CLI, enforcing `comment-and-documentation-quality`.
+Delegate a read-only code comment, docstring, technical documentation, and commit message audit to Gemini at `ask-gemini`'s `default` tier using the `agy` CLI, enforcing `comment-and-documentation-quality`.
 
 For a combined code and comment review, use `ask-gemini-for-review` (or `ask-gemini-for-pr-review`) and include `code-and-comment-quality`.
 
@@ -16,8 +16,10 @@ For a combined code and comment review, use `ask-gemini-for-review` (or `ask-gem
 
 ## Canonical Invocation
 
+Pass the `default` tier's model from `ask-gemini` ("Tiers") to `--model`. Look it up there; never pass the placeholder literally.
+
 ```bash
-agy --model "Gemini 3.8 Flash (Medium)" \
+agy --model "<default tier model>" \
   --add-dir /path/to/repo \
   --print-timeout 10m \
   --dangerously-skip-permissions --sandbox \

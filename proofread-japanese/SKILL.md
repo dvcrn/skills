@@ -5,11 +5,11 @@ description: Proofread any outgoing Japanese (emails, letters, forum posts, mess
 
 # Proofread Japanese
 
-Every outgoing Japanese text gets reviewed by Gemini before it's final. Load the `ask-gemini-mcp` skill first for the call itself, or `ask-gemini` with the same models when the MCP tool is unavailable.
+Every outgoing Japanese text gets reviewed by Gemini before it's final. Load the `ask-gemini-mcp` skill first for the call itself, or `ask-gemini` when the MCP tool is unavailable.
 
-## Models
+## Model
 
-Use `gemini-3.8-flash-medium`. Fall back to `gemini-3.8-flash-low`, then `gemini-3.5-flash-lite`. If all fail, show the draft marked as unreviewed.
+Use the `default` tier: its model in the "Tiers" table of whichever skill makes the call (`ask-gemini-mcp` or `ask-gemini`), and that tier's failure ladder. If every step fails, show the draft marked as unreviewed.
 
 ## Steps
 
