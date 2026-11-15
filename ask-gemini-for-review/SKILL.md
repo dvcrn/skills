@@ -5,7 +5,7 @@ description: Delegate a Gemini code review of local files, working tree changes,
 
 # Ask Gemini for Review
 
-Delegate a read-only local code review to Gemini 3.8 Flash (High) using the `agy` CLI, enforcing `code-review-and-quality` and `code-structure` (in review mode).
+Delegate a read-only local code review to Gemini at `ask-gemini`'s `high` tier using the `agy` CLI, enforcing `code-review-and-quality` and `code-structure` (in review mode).
 
 - To also audit comments, documentation, and commit messages in the same pass, tell Gemini to load `code-and-comment-quality` as well.
 - To review a GitHub PR and post the review to GitHub, use `ask-gemini-for-pr-review`.
@@ -17,8 +17,10 @@ Delegate a read-only local code review to Gemini 3.8 Flash (High) using the `agy
 
 ## Canonical Invocation
 
+Load `ask-gemini` and replace `<high tier model>` with the `high` tier's model from its Tiers table. If `ask-gemini` is not available, stop and tell the user it is missing. Never guess a model or pass the placeholder as-is.
+
 ```bash
-agy --model "Gemini 3.8 Flash (High)" \
+agy --model "<high tier model>" \
   --add-dir /path/to/repo \
   --print-timeout 10m \
   --dangerously-skip-permissions --sandbox \

@@ -42,8 +42,8 @@ npx skills add dvcrn/skills
 - `ask-gemini`: Delegate questions or tasks to Gemini via the Antigravity CLI (agy). (requires `agy`)
 - `ask-gemini-for-review`: Delegate a Gemini code review of local files, working tree changes, branches, commits, or checked-out PRs without posting to GitHub. (requires `agy`)
 - `ask-gemini-for-pr-review`: Delegate a GitHub PR code review to Gemini and post the review to GitHub. (requires `agy`)
-- `ask-gemini-for-comment-audit`: Delegates code comment, documentation, and commit message audits to Gemini 3.8 Flash (Medium) via the Antigravity CLI (agy), enforcing the comment-and-documentation-quality skill. (requires `agy`)
-- `ask-gemini-for-deslop-review`: Delegates article and technical documentation deslop reviews and rewrites to Gemini 3.8 Flash (Medium) via the Antigravity CLI (agy), enforcing the deslop-articles skill. (requires `agy`)
+- `ask-gemini-for-comment-audit`: Delegates code comment, documentation, and commit message audits to Gemini via the Antigravity CLI (agy), enforcing the comment-and-documentation-quality skill. (requires `agy`)
+- `ask-gemini-for-deslop-review`: Delegates article and technical documentation deslop reviews and rewrites to Gemini via the Antigravity CLI (agy), enforcing the deslop-articles skill. (requires `agy`)
 - `ask-gemini-mcp`: Fallback for `ask-gemini` when the `agy` CLI is not installed, as in cloud sessions. Asks Gemini one-shot questions through the `ask_gemini` MCP tools (sync, or `ask_gemini_async` for slow models) with all context pasted into the prompt.
 - `ask-codex`: Delegate a question or coding task to local Codex when an independent perspective is requested or useful. (requires `codex`)
 - `ask-codex-for-review`: Delegates local code review to OpenAI Codex gpt-5.6-sol at high reasoning effort via `codex exec`, enforcing the code-review-and-quality and code-structure skills. (requires `codex`)

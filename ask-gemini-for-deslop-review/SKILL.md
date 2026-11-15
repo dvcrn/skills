@@ -1,11 +1,11 @@
 ---
 name: ask-gemini-for-deslop-review
-description: Delegates article and technical documentation deslop reviews and rewrites to Gemini 3.8 Flash (Medium) via the Antigravity CLI (agy), enforcing the deslop-articles skill. Use for articles, guides, tutorials, or public documentation.
+description: Delegates article and technical documentation deslop reviews and rewrites to Gemini via the Antigravity CLI (agy), enforcing the deslop-articles skill. Use for articles, guides, tutorials, or public documentation.
 ---
 
 # Ask Gemini for Deslop Review & Rewrite
 
-Delegate an article deslop audit or in-place rewrite to Gemini 3.8 Flash (Medium) using the `agy` CLI, enforcing `deslop-articles`.
+Delegate an article deslop audit or in-place rewrite to Gemini at `ask-gemini`'s `default` tier using the `agy` CLI, enforcing `deslop-articles`.
 
 Do not pipe raw article contents or `git diff` output into the prompt; Gemini runs in the workspace and reads each complete target article in context.
 
@@ -16,10 +16,12 @@ Do not pipe raw article contents or `git diff` output into the prompt; Gemini ru
 
 ## Canonical Invocations
 
+Load `ask-gemini` and replace `<default tier model>` with the `default` tier's model from its Tiers table. If `ask-gemini` is not available, stop and tell the user it is missing. Never guess a model or pass the placeholder as-is.
+
 ### 1. Audit Mode (Findings Only)
 
 ```bash
-agy --model "Gemini 3.8 Flash (Medium)" \
+agy --model "<default tier model>" \
   --add-dir /path/to/repo \
   --print-timeout 10m \
   --dangerously-skip-permissions --sandbox \
@@ -34,7 +36,7 @@ Read the repository instructions and each complete target article, then audit th
 ### 2. In-Place Rewrite Mode
 
 ```bash
-agy --model "Gemini 3.8 Flash (Medium)" \
+agy --model "<default tier model>" \
   --add-dir /path/to/repo \
   --print-timeout 10m \
   --dangerously-skip-permissions --sandbox \

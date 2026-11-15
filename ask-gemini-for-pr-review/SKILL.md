@@ -5,7 +5,7 @@ description: Delegate a GitHub PR code review to Gemini and post the review to G
 
 # Ask Gemini for PR Review
 
-Delegate a GitHub pull request review to Gemini 3.8 Flash (High) using the `agy` CLI, enforcing `code-review-and-quality` and `code-structure` (in review mode) to find defects, and `pr-review-delivery` (including its `references/github-delivery.md`, plus `references/re-review.md` when re-reviewing) to filter, label, and post the review directly to GitHub.
+Delegate a GitHub pull request review to Gemini at `ask-gemini`'s `high` tier using the `agy` CLI, enforcing `code-review-and-quality` and `code-structure` (in review mode) to find defects, and `pr-review-delivery` (including its `references/github-delivery.md`, plus `references/re-review.md` when re-reviewing) to filter, label, and post the review directly to GitHub.
 
 - Posting authority follows `pr-review-delivery`'s output rule; for local-only requests without GitHub posting, use `ask-gemini-for-review`.
 - To also audit comments, documentation, and commit messages in the same pass, include `code-and-comment-quality` in the prompt.
@@ -25,11 +25,13 @@ gh pr view NUMBER --repo OWNER/REPO --json number,title,state,headRefOid,baseRef
 
 ## Canonical Invocation
 
+Load `ask-gemini` and replace `<high tier model>` with the `high` tier's model from its Tiers table. If `ask-gemini` is not available, stop and tell the user it is missing. Never guess a model or pass the placeholder as-is.
+
 ```bash
 PR="OWNER/REPO#NUMBER"
 HEAD_SHA="<verified-head-sha>"
 
-agy --model "Gemini 3.8 Flash (High)" \
+agy --model "<high tier model>" \
   --add-dir /path/to/repo \
   --print-timeout 10m \
   --dangerously-skip-permissions --sandbox \

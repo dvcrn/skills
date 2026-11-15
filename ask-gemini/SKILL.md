@@ -25,21 +25,32 @@ well scoped and the answer does not depend on Gemini working out the approach:
 
 - **`Gemini 4 Hydrogen (Medium)` (Default):** The default for small, well-defined tasks.
 - **`Gemini 4 Hydrogen (Low)`:** Trivial lookups and one-line answers.
-- **`Gemini 4 Hydrogen (High)`:** A small task with one tricky step. If it needs more than that, use Argon.
+- **`Gemini 4 Hydrogen (High)`:** Routine branch, commit and PR code reviews, or a small task with one tricky step. If it needs more than that, use Argon.
 
 ### Gemini 4 Argon: reasoning and autonomous work
 
 Use Argon when the result depends on thinking, not just executing:
 
 - Longer, multi-step or autonomous tasks where Gemini decides what to read and do
-- Code reviews, deep debugging, and multi-file architecture analysis
+- Large or subtle code reviews, deep debugging, and multi-file architecture analysis
 - Design feedback, second opinions, and tasks where Gemini should come up with its own ideas
 
-- **`Gemini 4 Argon (Medium)` (Default for Argon):** Most reasoning tasks, reviews, and autonomous work.
+- **`Gemini 4 Argon (Medium)` (Default for Argon):** Most reasoning tasks, large or subtle reviews, and autonomous work.
 - **`Gemini 4 Argon (Low)`:** Short judgment calls, such as choosing between two options. Plain questions go to Hydrogen.
 - **`Gemini 4 Argon (High)`:** Large or subtle problems where Medium is clearly not enough.
 
 Run `agy models` to confirm the exact display names available on this machine.
+
+### Tiers
+
+When a skill names a tier, pass that tier's model to `--model`.
+
+| tier      | model                        |
+| --------- | ---------------------------- |
+| `default` | `Gemini 4 Hydrogen (Medium)` |
+| `high`    | `Gemini 4 Hydrogen (High)`   |
+
+On failure, apply "Failure fallback" to the tier's model.
 
 ## When to Use
 
@@ -136,8 +147,8 @@ NOTE: ALWAYS RUN GEMINI WITH `--print-timeout 10m` AS GEMINI CAN TAKE QUITE A WH
 
 - `--model "Gemini 4 Hydrogen (Medium)"` - Default for small, clearly defined tasks
 - `--model "Gemini 4 Hydrogen (Low)"` - Trivial lookups
-- `--model "Gemini 4 Hydrogen (High)"` - Small tasks with one tricky step
-- `--model "Gemini 4 Argon (Medium)"` - Reasoning, reviews, and longer autonomous tasks
+- `--model "Gemini 4 Hydrogen (High)"` - Routine code reviews, small tasks with one tricky step
+- `--model "Gemini 4 Argon (Medium)"` - Reasoning, large or subtle reviews, and longer autonomous tasks
 - `--model "Gemini 4 Argon (Low)"` - Short judgment calls
 - `--model "Gemini 4 Argon (High)"` - Large or subtle problems where Argon Medium is not enough
 - `--add-dir <path>` — Add each directory Gemini needs to access. There is no `--workdir` flag; use `--add-dir` for the repo and any other required paths.
@@ -192,7 +203,7 @@ agy --model "Gemini 4 Argon (Medium)" --print-timeout 10m --sandbox -p "Give you
 # Code research across a repository (Argon Medium)
 agy --model "Gemini 4 Argon (Medium)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions --sandbox -p "This is just research. Do not make any code changes. Explore the ./server directory and explain the authentication flow. Read whatever files you need."
 
-# Code review (Argon Medium, explicit boundaries)
+# Large code review (Argon Medium, explicit boundaries)
 agy --model "Gemini 4 Argon (Medium)" --add-dir /path/to/repo --print-timeout 10m --dangerously-skip-permissions --sandbox -p "This is a code review only. Do not make any code changes. Review the code in ./src, identify improvements, and only output the suggested improvements. Do not implement anything."
 
 # Continue a conversation
