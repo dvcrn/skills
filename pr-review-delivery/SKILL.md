@@ -25,7 +25,7 @@ Label each finding with one of these levels:
 | Level | Meaning |
 | --- | --- |
 | High | Merging as-is breaks something: CI red, prod failure, data loss, security hole |
-| Medium | Wrong behavior or a regression that doesn't block merge |
+| Medium | Wrong behavior or a regression that doesn't block merge, or a cost the change adds for the next reader: code, options or docs to cut, a stale consumer, or a structure finding with a concrete move |
 | Low | Applyable cleanup only: a GitHub suggestion block replacing lines inside the diff, plus one sentence. No prose-only Low findings. At most three per review. |
 
 Every new inline review comment starts with the badge for its level on its own line, then a blank line, then the finding. Thread replies take no badge. No text prefix follows the badge.
@@ -40,7 +40,7 @@ Callers may hand findings over with `High:`, `Medium:` or `Low:` text prefixes; 
 
 When running `github-comment-quality` or `humanizer` over comment text, pass only the body below the badge. Never edit, reword or remove the badge line.
 
-Deliver every finding the caller hands over that the change causes or worsens, including scope cuts, unnecessary additions, and consumers the change breaks in files it doesn't touch. A wrong outcome is High or Medium, never Low. Drop design alternatives that don't shrink the change, requests to expand its scope, and anything that was equally true before the PR.
+Deliver every finding the caller hands over that the change causes or worsens, including scope cuts, unnecessary additions, and consumers the change breaks in files it doesn't touch. A wrong outcome is High or Medium, never Low. Drop design alternatives that are preference: keep one only when the finding names the code, state, indirection or sync burden it removes. Drop requests to expand the change's scope and anything that was equally true before the PR. Moving code the change adds or grows to another file or package is not a scope expansion.
 
 Every High or Medium finding needs concrete evidence, a useful file/line reference, and an explanation of impact. Omit praise, restated code, and speculative issues. State a clean result concisely when no findings remain.
 

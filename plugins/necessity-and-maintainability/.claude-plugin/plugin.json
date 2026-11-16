@@ -1,6 +1,6 @@
 {
   "name": "necessity-and-maintainability",
-  "description": "Skeptic review of whether a change should exist and whether it is the smallest version that solves its problem, covering scope, speculative additions, duplication, maintenance cost, docs and agent instructions, and applying code-structure and test-quality.",
+  "description": "Skeptic review of whether a change should exist and whether it is the smallest version that solves its problem, covering scope, speculative additions, duplication, maintenance cost, docs and agent instructions, and stale consumers.",
   "version": "1.0.0",
   "author": {
     "name": "David Mohl",

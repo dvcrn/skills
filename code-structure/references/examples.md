@@ -1,6 +1,6 @@
 # Code Structure Examples
 
-Go examples; the same moves apply in other languages. Each shows the bad shape, why it's a finding, and the fix. "Not a finding" examples mark where the rules stop.
+Mostly Go examples; the same moves apply in other languages. Each shows the bad shape, why it's a finding, and the fix. "Not a finding" examples mark where the rules stop.
 
 ## R1. Layers
 
@@ -59,6 +59,14 @@ Better: move it to `internal/vault/name.go` as a method or function next to `Vau
 Bad: the shared `retry.Do` gets `if opts.IsSnapshotUpload { ... }`.
 
 Better: the snapshot code passes its own backoff or wraps the call. `retry` stays generic.
+
+Bad: `internal/server/` holds 20 non-test files in groups `device_auth*`, `mcp_*`, `transform*`, `responses_*`, `upstream_*`. The PR adds 265 lines of catalog fetching, caching, and backoff to `upstream_models.go`, with `modelsCache` and `modelsLookupRetryAt` as fields on `Server`.
+
+Why: a reader changing the model cache has to learn which of `Server`'s fields and 20 files matter to it, and nothing stops the handlers from reaching into the cache.
+
+Better: `internal/server/upstream_models.go:1` Medium (R2): `internal/server` already holds five subsystems and this adds 265 lines to one of them. Move `upstream_models*.go` to `internal/modelcatalog` with a `Catalog` type that owns the cache and backoff fields, in a first commit that changes no behavior. `Server` keeps one `catalog.Lookup(ctx, slug)` call.
+
+Not a finding: a 20-line fix in `device_auth.go` in the same package. The change doesn't grow a group past the threshold.
 
 ## R3. Files
 
@@ -171,3 +179,44 @@ if active {
 	label = "on"
 }
 ```
+
+## R7. Flow and state
+
+Bad: the exit reaction is spread over three functions.
+
+```js
+async function startGo(runtimeContext, onExit) {
+  const exitHandlers = new Set([onExit]);
+  go._resolveExitPromise = () => { resolveExitPromise(); for (const h of exitHandlers) h(); };
+  return { binding: runtimeContext.binding, exitHandlers };
+}
+function getGoRuntime(env) {
+  let starting;
+  const reset = () => { if (goRuntime === starting) goRuntime = undefined; };
+  starting = startGo(createRuntimeContext({ env }), reset);
+}
+async function handleGoRequest(request, env) {
+  const { binding, exitHandlers } = await getGoRuntime(env);
+  exitHandlers.add(failOnExit);
+}
+```
+
+Why: to learn what happens when Go exits, a reader opens all three. `exitHandlers` is created in `startGo`, returned through a promise, and mutated in `handleGoRequest`. It mixes two fixed reactions (reset the runtime, reject waiting requests) behind one generic set, and `let starting` exists only so `reset` can refer to it.
+
+Better: `server/worker.mjs:55` Medium (R7): the exit reaction is `reset` from `getGoRuntime` plus `failOnExit` from `handleGoRequest`, joined in a set that `startGo` creates and returns. Use a module-level `pendingGoRequests` set and one `handleGoExit()` that clears `goBinding` and rejects each entry.
+
+```js
+const pendingGoRequests = new Set();
+function handleGoExit() {
+  goBinding = undefined;
+  const error = new Error("Go program exited while handling the request");
+  for (const reject of pendingGoRequests) reject(error);
+}
+```
+
+Not a finding:
+
+- `pendingGoRequests` itself. Its members are per-request and unknown when the code is written.
+- The deferred-promise idiom: `let reject; new Promise((_, r) => { reject = r; })`.
+- A callback an API requires: event listeners, middleware, `sort` comparators.
+- A tangled flow that existed before, where the change adds one call to it.

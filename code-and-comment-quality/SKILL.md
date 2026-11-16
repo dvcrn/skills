@@ -46,7 +46,7 @@ single report rather than two.
 
 1. **Correctness**: Bugs, edge cases, error handling, test validity.
 2. **Readability & Simplicity**: Function shape, helpers, naming, expressions (`code-structure` R4 to R6).
-3. **Architecture**: Layering, placement, file growth, abstractions (`code-structure` R1 to R3, R5).
+3. **Architecture**: Layering, placement, file growth, abstractions (`code-structure` R1 to R3, R5, R7).
 4. **Security**: Vulnerabilities, input validation, external data handling.
 5. **Performance**: Bottlenecks, N+1 query patterns, memory usage.
 6. **Comments & Documentation**: Signal-free commentary, restated code, ghost commentary about what changed, narrative fluff, and the punctuation and tone rules from `comment-and-documentation-quality`.

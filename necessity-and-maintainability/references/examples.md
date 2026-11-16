@@ -16,9 +16,9 @@ Minimal version: a map with a fixed TTL in the vault package, cleared on write.
 
 Findings: `internal/cache/lru.go:1` Medium (N6): a map with a fixed TTL in the vault package fixes the 4s listing. Move it there and delete `internal/cache/`. `internal/cache/hook.go:12` Medium (N3): nothing calls the invalidation hook. Delete it. `config/config.go:40` Medium (N6): neither the config key nor the env var has a user who needs to change the TTL. Hard-code it. The hit-rate metric gets the same N6 finding unless the PR says who reads it.
 
-## Gate 1 verdicts
+## Necessity call
 
-**Yes:** the issue reports that credentials leak when a connect's write response is lost. The PR reuses the existing `DeleteOrphan` path for cleanup. The minimal version matches the PR.
+**Yes:** the issue reports that credentials leak when a connect's write response is lost. The PR reuses the existing `DeleteOrphan` path for cleanup. The minimal version matches the PR. Output: one line saying there are no findings.
 
 **Scope Down:** the issue asks for retrying failed syncs. The PR adds retries, plus a `RetryPolicy` interface, a `--retry-strategy` flag, and exponential, linear, and fixed strategies, while every call site uses exponential. Keep the retry and cut the interface, the flag, and the unused strategies.
 

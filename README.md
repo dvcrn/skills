@@ -60,9 +60,9 @@ npx skills add dvcrn/skills
 - `github-comment-quality`: MUST be used whenever writing or replying to anything on GitHub - issues, pull requests, discussions, review threads. Enforces technical brevity, bans AI execution diaries, report bloat, bot watermarks, and em dashes.
 - `comment-and-documentation-quality`: Standards and quality gates for code comments, JSDoc/docstrings, technical documentation, and git commit messages.
 - `code-and-comment-quality`: Aggregate review standard that combines the code review and structure axes with the comment, documentation, and commit message audit into a single pass.
-- `necessity-and-maintainability`: Skeptic review of whether a change should exist and whether it is the smallest version that solves its problem, covering scope, speculative additions, duplication, maintenance cost, docs and agent instructions, and applying code-structure and test-quality.
+- `necessity-and-maintainability`: Skeptic review of whether a change should exist and whether it is the smallest version that solves its problem, covering scope, speculative additions, duplication, maintenance cost, docs and agent instructions, and stale consumers.
 - `code-review-and-quality`: Review a change for correctness, security, and performance.
-- `code-structure`: Rules for where code goes and how it is shaped so humans can follow it - layer separation, package ownership, file growth, function shape, helper granularity.
+- `code-structure`: Rules for where code goes and how it is shaped so humans can follow it - layer separation, package and file ownership and growth, function shape, helper granularity, and control flow and state a reader can trace.
 - `test-quality`: Rules for writing and reviewing tests - few readable tests that each protect a behavior, shared test setup, real-dependency E2E tests over mock stacks, and no filler tests.
 
 ### Elixir & Phoenix

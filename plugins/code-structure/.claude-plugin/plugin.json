@@ -1,6 +1,6 @@
 {
   "name": "code-structure",
-  "description": "Rules for where code goes and how it is shaped so humans can follow it - layer separation, package ownership, file growth, function shape, helper granularity.",
+  "description": "Rules for where code goes and how it is shaped so humans can follow it - layer separation, package and file ownership and growth, function shape, helper granularity, and control flow and state a reader can trace.",
   "version": "1.0.0",
   "author": {
     "name": "David Mohl",

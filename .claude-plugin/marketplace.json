@@ -101,7 +101,7 @@
     },
     {
       "name": "code-structure",
-      "description": "Rules for where code goes and how it is shaped so humans can follow it - layer separation, package ownership, file growth, function shape, helper granularity.",
+      "description": "Rules for where code goes and how it is shaped so humans can follow it - layer separation, package and file ownership and growth, function shape, helper granularity, and control flow and state a reader can trace.",
       "source": "./plugins/code-structure"
     },
     {
@@ -211,7 +211,7 @@
     },
     {
       "name": "necessity-and-maintainability",
-      "description": "Skeptic review of whether a change should exist and whether it is the smallest version that solves its problem, covering scope, speculative additions, duplication, maintenance cost, docs and agent instructions, and applying code-structure and test-quality.",
+      "description": "Skeptic review of whether a change should exist and whether it is the smallest version that solves its problem, covering scope, speculative additions, duplication, maintenance cost, docs and agent instructions, and stale consumers.",
       "source": "./plugins/necessity-and-maintainability"
     },
     {

@@ -99,7 +99,7 @@ A 422 rejects the **whole** review, so nothing is posted twice. Fix the offendin
 
 ### The summary body
 
-The review body carries a short overall read, the verdict, and only what has no inline home. Inline findings are never repeated in the body. No restated PR description, no finding counts, no list of checks that ran or passed.
+The review body carries a short overall read, the verdict, and only what has no inline home. Inline findings are never repeated in the body. No restated PR description, no finding counts, no list of checks that ran or passed, and no section, paragraph or line per skill, gate or check, whatever the caller's own output format says. With no High or Medium findings, the body is the attribution line, the read, and the verdict.
 
 **Unless user or repository policy prohibits attribution, the first line attributes the review to the model that produced it** — model name, and reasoning effort when that's known. This tells the author what reviewed their code and how hard it thought about it. Use the model you are actually running as, not a placeholder:
 
@@ -120,7 +120,7 @@ _Reviewed by <model name> (reasoning effort: <level>)._
 
 - `path:line`: <High:|Medium:> <only findings that couldn't anchor inline>
 
-Unverified: <one line, only what you couldn't check that the author should know, e.g. "newer commit 80e4ce8 not reviewed". Omit if nothing.>
+Unverified: <one line, only a gap specific to this PR that the author should know, e.g. "newer commit 80e4ce8 not reviewed". Limits that hold for every review by this reviewer, such as tests not run in a read-only environment, are not listed. Omit if nothing.>
 ```
 
 Omit the General findings heading when there are none.
