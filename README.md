@@ -20,6 +20,7 @@ npx skills add dvcrn/skills
 - `mise-tasks`: Define, debug, or optimize mise tasks, dependencies, and build caching.
 - `gh`: Create GitHub issues and pull requests using the GitHub CLI (gh). Always write the body to a file in .tmp/ and pass it via --body-file so descriptions are descriptive and consistent.
 - `litestream-tigris-flyio`: Set up or troubleshoot SQLite replication and restores with Litestream and Tigris on Fly.io.
+- `migrate-fly-to-k8s`: Migrate an existing Fly.io application to the oort or kuiper k3s clusters (~/src/oort, dvcrn/k8s) with Cloudflare Tunnels, 1Password secrets, kuiper GHCR release builds, and OpenTelemetry via Grafana Alloy.
 - `codex-cloud`: Run Codex tasks in cloud environments. (requires `codex`)
 - `astra-ify`: Audit and rewrite agent instructions for Astra when asked to reduce rigid prompting in a file or pasted text.
 - `setup-github-actions`: Write or optimize GitHub Actions workflows for private repos so they use as little of the plan's included Actions usage as possible - runner choice (ubuntu-slim, arm64), triggers, concurrency, timeouts, job layout, caching, and Claude Code review jobs.
@@ -68,8 +69,10 @@ npx skills add dvcrn/skills
 
 - `elixir-adapter-pattern`: Define Elixir adapters for app-owned external-service boundaries and Mox-backed tests.
 - `install-newrelic-elixir`: Install, upgrade, configure, provision, or troubleshoot New Relic APM and logs for Elixir and Phoenix applications, including NerdGraph keys, runtime secrets, logs in context, release metadata, and deployment markers.
+- `install-otel-elixir`: Install, configure, or troubleshoot vendor-neutral OpenTelemetry traces, metrics, and log correlation in Elixir and Phoenix applications.
 - `install-posthog-elixir`: Install, update, or troubleshoot PostHog analytics in Elixir and Phoenix applications.
 - `install-sentry-elixir`: Install, update, or troubleshoot Sentry error monitoring in Elixir and Phoenix applications.
+- `migrate-to-otel-elixir`: Migrate Elixir and Phoenix applications off New Relic (:new_relic_agent) onto vendor-neutral OpenTelemetry traces, metrics, and log correlation.
 - `phoenix-hooks`: Use when we need an explanation of standard Phoenix LiveView client hooks (phx-hook) and when to use colocated vs regular hooks.
 - `phoenix-colocated-hooks`: Use when we need an explanation of phoenix colocated hooks.
 - `phoenix-colocated-js`: Use when we need an explanation of Phoenix.LiveView.ColocatedJS and how colocated JS is compiled and imported.

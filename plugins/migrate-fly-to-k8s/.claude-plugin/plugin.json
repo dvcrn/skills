@@ -1,0 +1,9 @@
+{
+  "name": "migrate-fly-to-k8s",
+  "description": "Migrate an existing Fly.io application to the oort or kuiper k3s clusters (~/src/oort, dvcrn/k8s) with Cloudflare Tunnels, 1Password secrets, kuiper GHCR release builds, and OpenTelemetry via Grafana Alloy.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

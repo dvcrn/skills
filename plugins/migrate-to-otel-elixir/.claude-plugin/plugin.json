@@ -1,0 +1,9 @@
+{
+  "name": "migrate-to-otel-elixir",
+  "description": "Migrate Elixir and Phoenix applications off New Relic (:new_relic_agent) onto vendor-neutral OpenTelemetry traces, metrics, and log correlation.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

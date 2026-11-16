@@ -20,6 +20,7 @@
         "mise-tasks",
         "gh",
         "litestream-tigris-flyio",
+        "migrate-fly-to-k8s",
         "codex-cloud",
         "astra-ify",
         "setup-github-actions",
@@ -76,8 +77,10 @@
       "skills": [
         "elixir-adapter-pattern",
         "install-newrelic-elixir",
+        "install-otel-elixir",
         "install-posthog-elixir",
         "install-sentry-elixir",
+        "migrate-to-otel-elixir",
         "phoenix-hooks",
         "phoenix-colocated-hooks",
         "phoenix-colocated-js",

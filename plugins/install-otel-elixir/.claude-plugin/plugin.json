@@ -1,0 +1,9 @@
+{
+  "name": "install-otel-elixir",
+  "description": "Install, configure, or troubleshoot vendor-neutral OpenTelemetry traces, metrics, and log correlation in Elixir and Phoenix applications.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

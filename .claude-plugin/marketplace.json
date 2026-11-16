@@ -165,6 +165,11 @@
       "source": "./plugins/install-newrelic-elixir"
     },
     {
+      "name": "install-otel-elixir",
+      "description": "Install, configure, or troubleshoot vendor-neutral OpenTelemetry traces, metrics, and log correlation in Elixir and Phoenix applications.",
+      "source": "./plugins/install-otel-elixir"
+    },
+    {
       "name": "install-posthog-elixir",
       "description": "Install, update, or troubleshoot PostHog analytics in Elixir and Phoenix applications.",
       "source": "./plugins/install-posthog-elixir"
@@ -188,6 +193,16 @@
       "name": "memrise",
       "description": "Operate the Memrise CLI for community courses, including authentication setup, course/level/word lookup, pool searches, and adding items",
       "source": "./plugins/memrise"
+    },
+    {
+      "name": "migrate-fly-to-k8s",
+      "description": "Migrate an existing Fly.io application to the oort or kuiper k3s clusters (~/src/oort, dvcrn/k8s) with Cloudflare Tunnels, 1Password secrets, kuiper GHCR release builds, and OpenTelemetry via Grafana Alloy.",
+      "source": "./plugins/migrate-fly-to-k8s"
+    },
+    {
+      "name": "migrate-to-otel-elixir",
+      "description": "Migrate Elixir and Phoenix applications off New Relic (:new_relic_agent) onto vendor-neutral OpenTelemetry traces, metrics, and log correlation.",
+      "source": "./plugins/migrate-to-otel-elixir"
     },
     {
       "name": "mise-tasks",
