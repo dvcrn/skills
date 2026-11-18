@@ -1,45 +1,55 @@
 ---
 name: ask-gemini
-description: Delegate questions or tasks to Gemini via the Antigravity CLI (agy). Use Gemini 4 Hydrogen for small, clearly defined tasks and quick questions, and Gemini 4 Carbon for tasks that need deeper reasoning, longer autonomous work, or ideas of its own.
+description: Delegate questions or tasks to Gemini via the Antigravity CLI (agy). Use Gemini 4 Neon by default for most questions, reviews, and tasks; Gemini 4 Hydrogen for fast, small lookups; and Gemini 4 Carbon for tasks that need deeper reasoning, longer autonomous work, or ideas of its own.
 ---
 
 # Ask Gemini
 
-This skill lets you query Gemini via the `agy` CLI. Both Gemini 4 Hydrogen and
-Gemini 4 Carbon can run agentic tasks (`--add-dir`, file reads, commands, edits).
-Pick the model by how much intelligence the task needs. Gemini 4 Hydrogen (Medium)
-is the default. Move to Carbon when the task needs the reasoning described below.
+This skill lets you query Gemini via the `agy` CLI. Gemini 4 Hydrogen,
+Gemini 4 Neon, and Gemini 4 Carbon can all run agentic tasks (`--add-dir`, file
+reads, commands, edits). Pick the model by how much intelligence the task needs.
+Gemini 4 Neon (Medium) is the default for most questions and tasks. Use Hydrogen
+for fast, small lookups, and Carbon when the task needs deeper reasoning.
 
 If `agy` is not on PATH, use `ask-gemini-mcp` instead.
 
 ## Model Selection Guidance
 
-### Gemini 4 Hydrogen: small, clearly defined tasks
+### Gemini 4 Neon: default for most tasks
 
-Hydrogen is fast and smart, but less capable than Carbon. Use it when the task is
-well scoped and the answer does not depend on Gemini working out the approach:
+Neon is the default for everyday questions, code reviews, and general tasks:
 
-- Quick questions and lookups, with or without repository access
-- Small edits in files you name
-- Focused code analysis of a known area
+- General questions, second opinions, and sanity checks
+- Routine branch, commit, and PR code reviews
+- Well-scoped tasks and focused code analysis
 
-- **`Gemini 4 Hydrogen (Medium)` (Default):** The default for small, well-defined tasks.
+- **`Gemini 4 Neon (Medium)` (Default):** The default for most questions, audits, and everyday tasks.
+- **`Gemini 4 Neon (Low)`:** Lighter questions and quick second opinions.
+- **`Gemini 4 Neon (High)`:** Routine branch, commit and PR code reviews, or tasks with tricky steps. If it needs deeper reasoning, use Carbon.
+
+### Gemini 4 Hydrogen: fast and small
+
+Hydrogen is fast and small. Use it when speed matters and the task is trivial or
+tightly scoped:
+
+- Quick lookups, syntax checks, and one-line answers
+- Small mechanical edits in files you name
+
+- **`Gemini 4 Hydrogen (Medium)` (Default for Hydrogen):** Small, clearly defined edits and quick lookups.
 - **`Gemini 4 Hydrogen (Low)`:** Trivial lookups and one-line answers.
-- **`Gemini 4 Hydrogen (High)`:** Routine branch, commit and PR code reviews, or a small task with one tricky step. If it needs more than that, use Carbon.
+- **`Gemini 4 Hydrogen (High)`:** Small tasks that need extra care while staying on the fast model.
 
-### Gemini 4 Carbon: reasoning and autonomous work
+### Gemini 4 Carbon: deep reasoning and autonomous work
 
-Use Carbon when the result depends on thinking, not just executing:
+Use Carbon when the result depends on deep thinking, not just executing:
 
 - Longer, multi-step or autonomous tasks where Gemini decides what to read and do
 - Large or subtle code reviews, deep debugging, and multi-file architecture analysis
-- Design feedback, second opinions, and tasks where Gemini should come up with its own ideas
+- Design feedback, hard second opinions, and tasks where Gemini should come up with its own ideas
 
-- **`Gemini 4 Carbon (Medium)` (Default for Carbon):** Most reasoning tasks, large or subtle reviews, and autonomous work.
-- **`Gemini 4 Carbon (Low)`:** Short judgment calls, such as choosing between two options. Plain questions go to Hydrogen.
+- **`Gemini 4 Carbon (Medium)` (Default for Carbon):** Most deep reasoning tasks, large or subtle reviews, and autonomous work.
+- **`Gemini 4 Carbon (Low)`:** Short judgment calls, such as choosing between two options. Plain questions go to Neon or Hydrogen.
 - **`Gemini 4 Carbon (High)`:** Large or subtle problems where Medium is clearly not enough.
-
-`Gemini 4 Argon` is only a fallback for Carbon (see Failure fallback).
 
 Run `agy models` to confirm the exact display names available on this machine.
 
@@ -47,10 +57,10 @@ Run `agy models` to confirm the exact display names available on this machine.
 
 When a skill names a tier, pass that tier's model to `--model`.
 
-| tier      | model                        |
-| --------- | ---------------------------- |
-| `default` | `Gemini 4 Hydrogen (Medium)` |
-| `high`    | `Gemini 4 Hydrogen (High)`   |
+| tier      | model                    |
+| --------- | ------------------------ |
+| `default` | `Gemini 4 Neon (Medium)` |
+| `high`    | `Gemini 4 Neon (High)`   |
 
 On failure, apply "Failure fallback" to the tier's model.
 
@@ -118,7 +128,7 @@ Each `agy -p` call is a separate non-interactive request. Include the relevant c
 For execution failures or timeouts, retry once unchanged and shorten an unusually long prompt. Then step down the model ladder, keeping the effort the task called for (Medium, or Low for short judgment calls; a High call drops to Medium first):
 
 1. `Gemini 4 Carbon`
-2. `Gemini 4 Argon`
+2. `Gemini 4 Neon`
 3. `Gemini 4 Hydrogen`
 
 A call that started on Hydrogen only drops from Medium to Low. Stop after Hydrogen. Report any fallback used, and do not apply the ladder after a substantive response.
@@ -130,16 +140,16 @@ A call that started on Hydrogen only drops from Medium to Low. Stop after Hydrog
 No directories needed. Omit `--add-dir`:
 
 ```bash
-agy --model "Gemini 4 Hydrogen (Medium)" --print-timeout 20m --dangerously-skip-permissions --sandbox -p "This is just a question. Do not make code changes. your question here"
+agy --model "Gemini 4 Neon (Medium)" --print-timeout 20m --dangerously-skip-permissions --sandbox -p "This is just a question. Do not make code changes. your question here"
 ```
 
-### Small Task (Hydrogen)
+### Everyday Task (Neon)
 
 ```bash
-agy --model "Gemini 4 Hydrogen (Medium)" --add-dir /path/to/repo --print-timeout 20m --dangerously-skip-permissions --sandbox -p "your prompt here"
+agy --model "Gemini 4 Neon (Medium)" --add-dir /path/to/repo --print-timeout 20m --dangerously-skip-permissions --sandbox -p "your prompt here"
 ```
 
-### Reasoning or Autonomous Task (Carbon)
+### Deep Reasoning or Autonomous Task (Carbon)
 
 ```bash
 agy --model "Gemini 4 Carbon (Medium)" --add-dir /path/to/repo --print-timeout 20m --dangerously-skip-permissions --sandbox -p "your prompt here"
@@ -152,7 +162,7 @@ When everything Gemini needs is in the prompt, omit `--add-dir` and
 
 ```bash
 DIFF="$(git diff main...HEAD)"
-agy --model "Gemini 4 Carbon (Medium)" --print-timeout 20m --sandbox -p "This is a review of the diff below. Do not read files, run commands, or edit anything. Answer only from the text in this prompt.
+agy --model "Gemini 4 Neon (High)" --print-timeout 20m --sandbox -p "This is a review of the diff below. Do not read files, run commands, or edit anything. Answer only from the text in this prompt.
 
 <diff>
 ${DIFF}
@@ -178,10 +188,13 @@ A 20 minute call outlives a foreground shell timeout capped at 10 minutes, so ru
 
 ### Important Flags
 
-- `--model "Gemini 4 Hydrogen (Medium)"` - Default for small, clearly defined tasks
-- `--model "Gemini 4 Hydrogen (Low)"` - Trivial lookups
-- `--model "Gemini 4 Hydrogen (High)"` - Routine code reviews, small tasks with one tricky step
-- `--model "Gemini 4 Carbon (Medium)"` - Reasoning, large or subtle reviews, and longer autonomous tasks
+- `--model "Gemini 4 Neon (Medium)"` - Default for most questions and tasks
+- `--model "Gemini 4 Neon (Low)"` - Lighter questions and quick second opinions
+- `--model "Gemini 4 Neon (High)"` - Routine code reviews and tasks with tricky steps
+- `--model "Gemini 4 Hydrogen (Medium)"` - Fast, small, clearly defined tasks
+- `--model "Gemini 4 Hydrogen (Low)"` - Trivial lookups and one-line answers
+- `--model "Gemini 4 Hydrogen (High)"` - Small tasks that need extra care while staying on the fast model
+- `--model "Gemini 4 Carbon (Medium)"` - Deep reasoning, large or subtle reviews, and longer autonomous tasks
 - `--model "Gemini 4 Carbon (Low)"` - Short judgment calls
 - `--model "Gemini 4 Carbon (High)"` - Large or subtle problems where Carbon Medium is not enough
 - `--add-dir <path>` — Add each directory Gemini needs to access. There is no `--workdir` flag; use `--add-dir` for the repo and any other required paths.
@@ -224,20 +237,20 @@ Available subcommands:
 ## Example Usage
 
 ```bash
-# Quick question (Hydrogen Low)
+# Quick lookup (Hydrogen Low)
 agy --model "Gemini 4 Hydrogen (Low)" --print-timeout 20m --sandbox -p "This is just a question. Do not read files, make code changes, or run commands. What does HTTP 425 mean?"
 
 # Small, well-defined edit (Hydrogen Medium)
 agy --model "Gemini 4 Hydrogen (Medium)" --add-dir /path/to/repo --print-timeout 20m --dangerously-skip-permissions --sandbox -p "In src/config.ts, rename the export DEFAULT_TIMEOUT to DEFAULT_TIMEOUT_MS and update its imports. Change nothing else."
+
+# Routine code review (Neon High, explicit boundaries)
+agy --model "Gemini 4 Neon (High)" --add-dir /path/to/repo/src --print-timeout 20m --dangerously-skip-permissions --sandbox -p "This is a code review only. Do not make any code changes. Review src/payments/, reading only those files and what they import directly. Output at most 10 suggested improvements. Do not implement anything."
 
 # Second opinion on a plan pasted into the prompt (Carbon Medium)
 agy --model "Gemini 4 Carbon (Medium)" --print-timeout 20m --sandbox -p "Give your opinion only. Do not read files or run commands. Here is the plan: <full plan text>. What are the biggest risks?"
 
 # Code research across a repository (Carbon Medium)
 agy --model "Gemini 4 Carbon (Medium)" --add-dir /path/to/repo/server --print-timeout 20m --dangerously-skip-permissions --sandbox -p "This is just research. Do not make any code changes. Explain the authentication flow, starting from server/auth/. Read only the files on that flow, not the whole directory."
-
-# Large code review (Carbon Medium, explicit boundaries)
-agy --model "Gemini 4 Carbon (Medium)" --add-dir /path/to/repo/src --print-timeout 20m --dangerously-skip-permissions --sandbox -p "This is a code review only. Do not make any code changes. Review src/payments/, reading only those files and what they import directly. Output at most 10 suggested improvements. Do not implement anything."
 
 # Continue a conversation
 agy --model "Gemini 4 Carbon (Medium)" --add-dir /path/to/repo --print-timeout 20m --dangerously-skip-permissions --sandbox --continue -p "Now extract the validation logic into a helper function"
