@@ -77,6 +77,7 @@ npx skills add dvcrn/skills
 - `phoenix-colocated-hooks`: Use when we need an explanation of phoenix colocated hooks.
 - `phoenix-colocated-js`: Use when we need an explanation of Phoenix.LiveView.ColocatedJS and how colocated JS is compiled and imported.
 - `phoenix-live-islands`: Use when embedding a small, self-contained LiveView into an otherwise dead (controller-rendered) Phoenix page with live_render/3, when a controller page needs one dynamic card or widget without converting the whole route to a LiveView, or when debugging an embedded LiveView that renders statically but never connects.
+- `phoenix-liveview-client-state`: Rules for keeping Phoenix LiveView UI responsive with client-side Phoenix.LiveView.JS commands, optimistic updates, restrained topbar loading, and localhost latency simulation.
 
 ### Go
 

@@ -250,6 +250,11 @@
       "source": "./plugins/phoenix-live-islands"
     },
     {
+      "name": "phoenix-liveview-client-state",
+      "description": "Rules for keeping Phoenix LiveView UI responsive with client-side Phoenix.LiveView.JS commands, optimistic updates, restrained topbar loading, and localhost latency simulation.",
+      "source": "./plugins/phoenix-liveview-client-state"
+    },
+    {
       "name": "pr-review-delivery",
       "description": "Deliver a list of PR review findings as one GitHub COMMENT review: levels, anchoring, summary and verdict, re-reviews.",
       "source": "./plugins/pr-review-delivery"

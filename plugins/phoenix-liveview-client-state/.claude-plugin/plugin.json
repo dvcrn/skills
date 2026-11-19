@@ -1,0 +1,9 @@
+{
+  "name": "phoenix-liveview-client-state",
+  "description": "Rules for keeping Phoenix LiveView UI responsive with client-side Phoenix.LiveView.JS commands, optimistic updates, restrained topbar loading, and localhost latency simulation.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

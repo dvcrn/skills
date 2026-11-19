@@ -84,7 +84,8 @@
         "phoenix-hooks",
         "phoenix-colocated-hooks",
         "phoenix-colocated-js",
-        "phoenix-live-islands"
+        "phoenix-live-islands",
+        "phoenix-liveview-client-state"
       ]
     },
     {
