@@ -26,6 +26,7 @@ npx skills add dvcrn/skills
 - `setup-github-actions`: Write or optimize GitHub Actions workflows for private repos so they use as little of the plan's included Actions usage as possible - runner choice (ubuntu-slim, arm64), triggers, concurrency, timeouts, job layout, caching, and Claude Code review jobs.
 - `obsidian-ai-vault`: Rules for reading and writing David's Obsidian AI vault via the hosted Obsidian MCP (mcp__Obsidian__*) or official obsidian CLI: layout, MOCs, naming, folders, note format, and automated project workflows.
 - `obsidian-note-organizer`: Guidelines and patterns for creating, naming, structuring, and organizing notes and Maps of Content (MOCs) in the user's Obsidian vault.
+- `web-tools`: Search, fetch and navigate the web using connected tools.
 - `writing-skills`: Rules for writing and editing agent skills (SKILL.md files and their references) so they stay short, single-purpose, and change agent behavior.
 
 ### Claude Code Cloud

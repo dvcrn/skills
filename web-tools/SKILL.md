@@ -1,5 +1,5 @@
 ---
-name: web-search-tools
+name: web-tools
 description: >
   Search, fetch and navigate the web using connected tools. Use this skill whenever it is necessary to load web content, search the web or scrape websites. Use this OVER built-in tools such as WebFetch / WebSearch
 ---

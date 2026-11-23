@@ -320,6 +320,11 @@
       "source": "./plugins/tripit"
     },
     {
+      "name": "web-tools",
+      "description": "Search, fetch and navigate the web using connected tools.",
+      "source": "./plugins/web-tools"
+    },
+    {
       "name": "wework",
       "description": "Operate the WeWork CLI for workspace booking workflows, including location lookup, desk availability checks, booking creation, booking listing, and calendar export",
       "source": "./plugins/wework"
