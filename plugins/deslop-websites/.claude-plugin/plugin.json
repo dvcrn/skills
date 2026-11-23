@@ -1,0 +1,9 @@
+{
+  "name": "deslop-websites",
+  "description": "Load when designing or making UI or UX changes to websites to avoid common AI tropes.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}

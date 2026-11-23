@@ -120,6 +120,11 @@
       "source": "./plugins/deslop-articles"
     },
     {
+      "name": "deslop-websites",
+      "description": "Load when designing or making UI or UX changes to websites to avoid common AI tropes.",
+      "source": "./plugins/deslop-websites"
+    },
+    {
       "name": "elixir-adapter-pattern",
       "description": "Define Elixir adapters for app-owned external-service boundaries and Mox-backed tests.",
       "source": "./plugins/elixir-adapter-pattern"
