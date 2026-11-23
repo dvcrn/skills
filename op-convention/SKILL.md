@@ -19,13 +19,13 @@ Titles must say what the item is without opening it. Put any context the title c
 
 Read the title, notes, URLs and `hostname` first. If the service, purpose, project or environment is still unclear, ask the user before naming, tagging or moving the item, and write the answer into the note. Do not guess.
 
-| Item | Holds | Category | Title | Fields |
-|---|---|---|---|---|
-| Vendor credential | One issuance from a vendor: a token, or a set issued together (access key ID + secret, OAuth client ID + secret) | API Credential | `<Service> - <consumer>` or `<Service> - <account> - <consumer>`, e.g. `GitHub - Zed MCP`, `Stripe - configmesh - Cloudflare MCP gateway` | Built-in: `credential` for the secret, `username` for the ID or account, `hostname`, `expires` when known |
-| Project secrets | Secrets the app generates itself, with no vendor behind them (`SECRET_KEY_BASE`, signing and encryption keys) | Secure Note | Project slug, kebab-case, e.g. `quickshot` | One concealed custom field per secret, labelled exactly like its env var |
-| k8s Secret | Everything one k8s `Secret` contains, because the operator maps one item to one Secret | Secure Note | The Secret's name, e.g. `beeper-secrets` | One concealed custom field per Secret key |
-| Account | A real account with a username and password | Login | `<Service> - <purpose>` | Built-in |
-| File or SSH key | Service-account JSON, certificates, SSH keys | Document / SSH Key | `<Service> - <purpose>` | The 1Password SSH agent only serves SSH Key items |
+| Item              | Holds                                                                                                            | Category           | Title                                                                                                                                     | Fields                                                                                                    |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Vendor credential | One issuance from a vendor: a token, or a set issued together (access key ID + secret, OAuth client ID + secret) | API Credential     | `<Service> - <consumer>` or `<Service> - <account> - <consumer>`, e.g. `GitHub - Zed MCP`, `Stripe - configmesh - Cloudflare MCP gateway` | Built-in: `credential` for the secret, `username` for the ID or account, `hostname`, `expires` when known |
+| Project secrets   | Secrets the app generates itself, with no vendor behind them (`SECRET_KEY_BASE`, signing and encryption keys)    | Secure Note        | Project slug, kebab-case, e.g. `quickshot`                                                                                                | One concealed custom field per secret, labelled exactly like its env var                                  |
+| k8s Secret        | Everything one k8s `Secret` contains, because the operator maps one item to one Secret                           | Secure Note        | The Secret's name, e.g. `beeper-secrets`                                                                                                  | One concealed custom field per Secret key                                                                 |
+| Account           | A real account with a username and password                                                                      | Login              | `<Service> - <purpose>`                                                                                                                   | Built-in                                                                                                  |
+| File or SSH key   | Service-account JSON, certificates, SSH keys                                                                     | Document / SSH Key | `<Service> - <purpose>`                                                                                                                   | The 1Password SSH agent only serves SSH Key items                                                         |
 
 - Titles use only letters, digits, spaces, `-`, `_` and `.`. Any other character (`(`, `:`, `/`, `[`, `,`, `@`, ...) breaks `op://` references. Replace a disallowed character with a space and collapse repeated spaces.
 - Vendor credential titles are `<Service> - <consumer>`, or `<Service> - <account> - <consumer>`:
@@ -46,6 +46,11 @@ References copy the exact spelling of the vault, item and field, so a search for
 op://Dev/quickshot/SECRET_KEY_BASE
 op://Dev/OpenRouter - personal/credential
 ```
+
+### Cloudflare
+
+For Cloudflare, also include the combined Authorization header field next to cf-access-client-id and cf-access-client-secret: `{"cf-access-client-
+  id":"...","cf-access-client-secret":"..."}`
 
 ## Tags
 
