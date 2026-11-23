@@ -3,11 +3,14 @@
 //
 // Usage:
 //   node render.mjs --binary <name> --scope <npm-scope> --owner <github-owner> --repo <github-repo> \
-//     --description "<text>" [--package <npm-name>] [--main ./cmd/<binary>] [--env-prefix <PREFIX_>] [--force]
+//     --description "<text>" [--package <npm-name>] [--main ./cmd/<binary>] [--env-prefix <PREFIX_>] \
+//     [--from-release] [--force]
 //
 // Platform packages are named @<scope>/<package>-<os>-<cpu>. --package defaults to --binary,
 // --main to ./cmd/<binary>. --env-prefix defaults to the binary name upper-cased with dashes
 // turned into underscores; a trailing underscore is always added, e.g. MCP_SERVER_FOO_.
+// --from-release writes a build_npm.mjs that repackages the GoReleaser archives of
+// <owner>/<repo> instead of running go build.
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -23,6 +26,7 @@ const { values } = parseArgs({
     description: { type: "string" },
     main: { type: "string" },
     "env-prefix": { type: "string" },
+    "from-release": { type: "boolean", default: false },
     force: { type: "boolean", default: false },
   },
 });
@@ -32,6 +36,11 @@ for (const required of ["binary", "scope", "owner", "repo", "description"]) {
     console.error(`missing --${required}`);
     process.exit(2);
   }
+}
+
+if (values["from-release"] && values.main) {
+  console.error("--main cannot be used with --from-release");
+  process.exit(2);
 }
 
 const pkgName = values.package ?? values.binary;
@@ -51,9 +60,11 @@ const tokens = {
 };
 
 const assets = join(dirname(fileURLToPath(import.meta.url)), "..", "assets");
+const buildScript = values["from-release"] ? "build_npm_from_release.mjs" : "build_npm.mjs";
 const files = [
   ...readdirSync(join(assets, "npm")).map((name) => [join(assets, "npm", name), join("npm", name)]),
-  ...["build_npm.mjs", "publish_npm.sh"].map((name) => [join(assets, "scripts", name), join("scripts", name)]),
+  [join(assets, "scripts", buildScript), join("scripts", "build_npm.mjs")],
+  [join(assets, "scripts", "publish_npm.sh"), join("scripts", "publish_npm.sh")],
 ];
 
 const existing = files.map(([, target]) => target).filter((target) => existsSync(target));
