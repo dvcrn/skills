@@ -333,6 +333,11 @@
       "name": "writing-skills",
       "description": "Rules for writing and editing agent skills (SKILL.md files and their references) so they stay short, single-purpose, and change agent behavior.",
       "source": "./plugins/writing-skills"
+    },
+    {
+      "name": "xcode-xcproj",
+      "description": "Edit and migrate Xcode projects with the JSON project.xcproj format and xcrun xcodeproj / xcprojformatter (Xcode 27.2+).",
+      "source": "./plugins/xcode-xcproj"
     }
   ]
 }

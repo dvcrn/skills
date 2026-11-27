@@ -96,6 +96,7 @@ npx skills add dvcrn/skills
 ### Swift & SwiftUI
 
 - `swiftui-stores`: Design, review, or migrate SwiftUI shared state using Observation-based Stores.
+- `xcode-xcproj`: Edit and migrate Xcode projects with the JSON project.xcproj format and xcrun xcodeproj / xcprojformatter (Xcode 27.2+).
 
 ### CLI Plugins
 

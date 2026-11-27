@@ -1,0 +1,9 @@
+{
+  "name": "xcode-xcproj",
+  "description": "Edit and migrate Xcode projects with the JSON project.xcproj format and xcrun xcodeproj / xcprojformatter (Xcode 27.2+).",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Mohl",
+    "email": "git@d.sh"
+  }
+}
